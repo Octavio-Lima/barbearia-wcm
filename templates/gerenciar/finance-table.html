@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - Lançamentos</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"
+        defer></script>
+
+    <!-- CSS JS -->
+    <link rel="stylesheet" href="../css/financeTable.css">
+    <script src="../js/finance-page.js" type="module" defer></script>
+    <script src="../js/finance-table.js" type="module" defer></script>
+    <script src="../js/fixBodyVH.js" type="module" defer></script>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- <script src="https://code.jquery.com/jquery-3.6.3.js"
+        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+        crossorigin="anonymous"></script> -->
+</head>
+
+<body>
+    <header>
+        <div class="pt-3 px-3">
+            <a href="./manage.html"><i class="fa fa-house"></i></a>
+            <h1 class="d-inline">FLUXO DE CAIXA</h1>
+
+            <div class="mt-3">
+                <button type="button" class="btn-header" id="button-add-entry">Adicionar</button>
+                <button type="button" class="btn-header" id="button-del-entry">Remover</button>
+                <button type="button" class="btn-header" id="button-filter-entry">Filtrar</button>
+                <button type="button" class="btn-header d-none" id="button-show-detail">Detalhes</button>
+                <!-- <button type="button" class="btn-header d-block d-md-none mt-1" id="button-show-detail">Detalhes</button> -->
+            </div>
+        </div>
+
+        <hr>
+    </header>
+    
+    <main>
+        <table class="table" id="entry-table">
+            <thead>
+            <tr id="header-row">
+                <th class="col-3" scope="col">Nome do Lançamento</th>
+                <th class="col-1 d-none d-md-table-cell">Tipo de Lançamento</th>
+                <th class="col-1 d-none d-md-table-cell">Dia Criado</th>
+                <th class="col-1">Dia Pago</th>
+                <th class="col-1 d-none d-md-table-cell">Criado Por</th>
+                <th class="col-1">Valor</th>
+                <!-- <th class="col-1 d-none d-md-table-cell">Detalhes</th> -->
+            </tr>
+            </thead>
+            <tbody>
+                <!-- <tr class="entry-credit">
+                    <td scope="row">Primeiro Lançamento</th>
+                    <td class="d-none d-md-table-cell">Entrada</td>
+                    <td class="d-none d-md-table-cell">28/11/2020</td>
+                    <td>02/04/2024</td>
+                    <td class="d-none d-md-table-cell">Administrador</td>
+                    <td>R$170,30</td>
+                    <td><button class="btn-show-detail"><i class="fa fa-bars"></i></button></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </main>
+    
+    <footer>
+        <div class="ms-3">
+            <p>Total:&nbsp;</p>
+            <p id="total-profits">R$0,00</p>
+        </div>
+        
+        <i class="fa-solid fa-circle d-none d-md-block"></i>
+        
+        <div class="d-none d-md-block">
+            <p>Total (João):&nbsp;</p>
+            <p id="total-profits-worker-0">R$0,00</p>
+        </div>
+        
+        <i class="fa-solid fa-circle d-none d-md-block"></i>
+        
+        <div class="d-none d-md-block">
+            <p>Total (Lucio):&nbsp;</p>
+            <p id="total-profits-worker-1">R$0,00</p>
+        </div>
+        
+        <div class="flex-grow-1"></div> 
+        
+        <div class="me-3">
+            <p>Usuário:&nbsp;</p>
+            <p id="active-user-name">Nome</p>
+        </div>
+    </footer>
+    
+    <!-- -------------------------- Janela de Filtros -------------------------- -->
+    <aside class="col-3 d-none" id="filter-container">
+        <div class="d-flex flex-column" id="">
+
+            <!-- Filtar Datas -->
+            <div class="filter-date">
+                <h3>Filtrar</h3>
+                <div class="d-flex flex-row">
+                    <p class="d-inline my-auto"><i class="fa fa-calendar"></i> Data Inicial:</p>
+                    <input type="date" class="d-inline header-input" id="initial-date">
+                </div>
+    
+                <div class="d-flex flex-row">
+                    <p class="d-inline my-auto"><i class="fa fa-calendar"></i> Data Fim:</p>
+                    <input type="date" class="d-inline header-input" id="end-date">
+                </div>
+            </div>
+        
+            <hr>
+            
+            <div class="filter-box">
+                <div class="filter-tag">
+                    <p>Trabalhador</p>
+                    <button class="fa-solid fa-xmark"></button>
+                </div>
+                <div class="">
+                    <button class="add-tag fa-solid fa-plus"></button>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column">
+                <div class="flex-grow-1"></div>
+                <button type="button" class="btn-header">Aplicar Filtros</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Bloquear Elementos do Fundo -->
+    <div class="block-bg-elements d-none"></div>
+
+    <div class="pop-up-group">
+
+        <!-- Popup Adicionar Novo Lançamento -->
+        <div class="pop-up d-none" id="add-entry-diag-box">
+            <h3>ADICIONAR NOVO LANÇAMENTO</h3>
+            <form action="#" id="add-entry-form">
+                
+                <label for="entry-name">NOME DO LANÇAMENTO:</label>
+                <input type="text" name="entry-name" id="input-entry-name" class="text-input" required>
+
+                <label for="entry-name">DATA DE PAGAMENTO:</label>
+                <input type="date" name="" id="entry-date" class="text-input">
+                <!-- <div class="d-flex flex-row mb-4">
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">DIA:</label>
+                        <select name="" id="add-entry-day" class="d-inline">
+                        </select>
+                    </div>
+    
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">MÊS:</label>
+                        <select name="" id="add-entry-month" class="d-inline">
+                        </select>
+                    </div>
+    
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">ANO:</label>
+                        <select name="" id="add-entry-year" class="d-inline">
+                            <option value="0" selected>0000</option>
+                        </select>
+                    </div>
+                </div> -->
+
+                <label for="entry-name">VALOR DO LANÇAMENTO:</label>
+                <input type="text" name="" id="entry-value" class="text-input" value="0,00">
+
+                <label for="entry-type">FORMA DE PAGAMENTO:</label>
+                <select name="pay-type" id="pay-type">
+                    <option value='0' selected>SELECIONAR</option>
+                    <option value='DINHEIRO'>DINHEIRO</option>
+                    <option value='DEBITO'>C. DÉBITO</option>
+                    <option value='CREDITO'>C. CRÉDITO</option>
+                    <option value='PIX'>PIX</option>
+                </select>
+
+                <label for="entry-type">TIPO:</label>
+                <select name="entry-type" id="entry-type">
+                    <option value='0'>SELECIONAR</option>
+                    <option value='true'>ENTRADA</option>
+                    <option value='false'>SAÍDA</option>
+                </select>
+            </form>
+            <button class="diag-box-button confirm-button" id="confirm-add-entry-button">Adicionar</button>
+            <button class="diag-box-button cancel-button">Cancelar</button>
+        </div>
+
+        <!-- Popup Editar Lançamento -->
+        <div class="pop-up d-none" id="edit-entry-diag-box">
+            <h3>Editar Lançamento</h3>
+            <form action="#" class="edit-entry-form">
+                <label for="entry-name">nome do lançamento:</label>
+                <input type="text" name="entry-name" id="edit-entry-name" class="text-input"><br>
+
+                <label for="entry-name">DATA DE PAGAMENTO:</label>
+                <!-- <input type="date" name="" id="entry-date" class="text-input"> -->
+                <!-- <div class="d-flex flex-row mb-4">
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">DIA:</label>
+                        <select name="" id="add-entry-day" class="d-inline">
+                        </select>
+                    </div>
+    
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">MÊS:</label>
+                        <select name="" id="add-entry-month" class="d-inline">
+                        </select>
+                    </div>
+    
+                    <div class="d-flex flex-column">
+                        <label for="day" class="d-inline">ANO:</label>
+                        <select name="" id="add-entry-year" class="d-inline">
+                            <option value="0" selected>0000</option>
+                        </select>
+                    </div>
+                </div> -->
+
+                <input type="date" name="" id="edit-entry-date" class="text-input"><br>
+
+                <label for="entry-name">Valor do Lançamento:</label>
+                <input type="text" name="" id="edit-entry-price" class="text-input"><br>
+                <label for="entry-type">Pagamento:</label>
+                <select name="pay-type" id="edit-pay-type">
+                    <option value='0'>Dinheiro</option>
+                    <option value='1'>C. Débito</option>
+                    <option value='2'>C. Crédito</option>
+                    <option value='3'>Pix</option>
+                </select>
+                <label for="entry-type">Tipo:</label>
+                <select name="entry-type" id="edit-entry-type">
+                    <option value='true'>Entrada</option>
+                    <option value='false'>Saida</option>
+                </select>
+            </form>
+            <button class="diag-box-button confirm-button" id="button-confirm-edit">Salvar</button>
+            <button class="diag-box-button cancel-button">Cancelar</button>
+        </div>
+
+        <!-- Popup Apagar Lançamento -->
+        <div class="pop-up d-none">
+            <h5>DESEJA APAGAR O LANÇAMENTO SELECIONADO?</h5>
+            <button class="diag-box-button" id="button-confirm-del">APAGAR</button>
+            <button class="diag-box-button cancel-button">CANCELAR</button>
+        </div>
+
+        <!-- Detalhes do lançamento -->
+        <div class="pop-up d-none" id="detail-popup">
+            <h3>Detalhes do Lançamento</h3>
+            <h2>Nome/Cliente: <p id="det-name"></p>
+            </h2>
+            <hr>
+            <h2>Produtos vendidos:</h2>
+            <table>
+                <tbody>
+                    <!-- <tr>
+            <td>Shampoo</td>
+            <td>R$10,00</td>
+          </tr> -->
+                </tbody>
+            </table>
+            <h2>Procedimentos:</h2>
+            <table>
+                <tbody>
+                    <!-- <tr>
+            <td>Corte de cabelo</td>
+            <td>R$10,00</td>
+          </tr> -->
+                </tbody>
+            </table>
+            <hr>
+            <h2>preço total: <p id="det-total-value"></p></h2>
+            <!-- <h2>troco: <p></p></h2> -->
+            <h2>Forma de pagamento: <p id="det-pay-type"></p></h2>
+            <h2>lançamento pago em: <p id="det-payed-in"></p></h2>
+            <hr>
+            <h2>lançamento criado em: <p id="det-created-in"></p></h2>
+            <h2>lançamento criado por: <p id="det-created-by"></p></h2>
+            <h2>lançamento alterado por: <p id="det-edited-by"></p></h2>
+            <button type="button" class="diag-box-button confirm-button" id="button-edit-entry">Editar</button>
+            <button type="button" class="diag-box-button cancel-button">Voltar</button>
+        </div>
+    </div>
+</body>
+
+</html>

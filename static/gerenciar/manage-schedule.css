@@ -1,0 +1,260 @@
+* {
+    font-family: 'Antonio', sans-serif;
+    text-transform: uppercase;
+    user-select: none;
+    /* background-color: #0f03; */
+}
+
+body {
+    background-color: #ECF0F3;
+    background-size: cover;
+}
+
+/* --------------------------- Container Principal -------------------------- */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    
+    margin: 0 auto;
+    padding: 4rem 2rem 0;
+
+    min-height: 100vh;
+    width: 355px;
+    max-width: 100%;
+}
+
+/* --------------------------------- Header --------------------------------- */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+page-title-container {
+    width: 100%;
+    display: flexbox;
+    height: 54px;
+    margin: 10px 0;
+
+    display: flex;
+}
+
+.title-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+
+    color: #6e6e6e;
+    text-align: center;
+
+    display: inline-flex;
+
+    margin: auto 0 auto 0.5rem;
+    padding: 0;
+    line-height: 0;
+}
+
+.page-title {
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    text-decoration: none;
+
+    width: 100%;
+    padding: 0 0;
+    margin: auto 15px;
+}
+
+#schedule-date {
+    margin: 1rem auto;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #000;
+}
+
+#schedule-date + p {
+    margin: 1rem auto;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #000;
+}
+
+hr {
+    border: 1px #000 solid;
+    width: 80%;
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Agendamentos                                */
+/* -------------------------------------------------------------------------- */
+#schedule-list {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 10px;
+    overflow-y: scroll;
+    margin-bottom: 20px;
+}
+
+.schedule-entry {
+    display: flex;
+    flex-direction: row;
+
+    font-size: 18px;
+    min-height: 70px;
+}
+
+.time {
+    font-size: 1.2rem;
+    width: 40px;
+    margin: auto 0;
+    margin-right: 2rem;
+    text-align: center;
+}
+
+.container-entry-details {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+
+.detail-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.info-top {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.info-bottom {
+    font-size: 0.7rem;
+}
+
+/* ---------------------------- Horario Agendado ---------------------------- */
+.row-busy-top {
+    margin-top: 1.1rem;
+    background-color: #15c;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+.row-busy {
+    background-color: #15c;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+.row-busy-bottom {
+    background-color: #15c;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Janela Pop Up                               */
+/* -------------------------------------------------------------------------- */
+
+modal-window .block-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #000B;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+modal-window .window {
+    position: absolute;
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
+
+    background-color: white;
+    border-radius: 10px;
+    min-width: 64px;
+    min-height: 64px;
+
+    padding: 1rem;
+}
+
+modal-window h2 {
+    font-weight: bold;
+}
+
+modal-window p {
+    margin: 0;
+}
+
+modal-window hr {
+    border: 1px #000 solid;
+    width: 100%;
+}
+
+modal-window input {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Media Queries                               */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: asd) {    
+    body {
+        background-color: #131313;
+    }
+
+    /* --------------------------------- Header --------------------------------- */
+    
+    .title-icon {
+        color: #ddd;
+    }
+    
+    .page-title {
+        color: #ddd;
+    }
+    
+    #schedule-date {
+        color: #ddd;
+    }
+    
+    hr {
+        border-color: #ddd;
+    }
+    
+    /* ---------------------------- Horario Agendado ---------------------------- */
+
+    .time {
+        color: #ddd;
+    }
+
+    .row-busy-top {
+        background-color: #15c;
+        color: #ECF0F3;
+    }
+    
+    .row-busy {
+        background-color: #15c;
+        color: #ECF0F3;
+    }
+    
+    .row-busy-bottom {
+        background-color: #15c;
+        color: #ECF0F3;
+    }
+}

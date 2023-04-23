@@ -1,0 +1,351 @@
+/* // Fechar janela de Agendamento se clicar fora da janela principal */
+#close-popup {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+}
+
+/* -------------------------- Janela de Agendamento ------------------------- */
+
+.row-unav-cuz-dumb {
+    background-color: #d1d !important;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 90%;
+    padding: 5px 0 0 5px;
+
+    color: #ECF0F3 !important;
+}
+
+main-pop-up {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+pop-up {
+    background-color: #fff;
+
+    border-radius: 25px;
+    margin: 0 45px 0;
+    
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.btn-confirm { /* Botão da janela de agendamentos */
+    background-color: #fff;
+    margin: 2.4% auto;
+    font-size: 0.8rem;
+}
+
+.btn-confirm:hover {
+    color: #06f;
+}
+
+.btn-confirm:active {
+    color: #04a;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Calendario                                 */
+/* -------------------------------------------------------------------------- */
+
+/* ----------------------------- Selecionar Mês ----------------------------- */
+
+#month-selector {
+    display: flex; 
+    flex-direction: row;
+    margin: auto;
+}
+
+#month-name {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+#month-selector button { /* Botão de selecionar o mês para agendar */
+    background-color: #0000;
+    font-size: 0.8rem;
+}
+
+.hide-arrow { /* esconder botão de selecionar o mês */
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---------------------------- Tabela Calendario --------------------------- */
+
+#calendar-table {
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    padding-bottom: 10px;
+    flex-grow: 1;
+
+    --day-slot-size: 0.6rem;
+}
+
+#calendar-table th {
+    font-size: var(--day-slot-size);
+    color: #686868;
+}
+
+#calendar-table td {
+    font-size: var(--day-slot-size);
+    color: #000;
+}
+
+.unavailable-day,
+#calendar-table td:empty {
+    /* Alterado Sabado e Domingo para Vermelho, e dias vazios*/
+    color: #f00 !important;
+    pointer-events: none;
+}
+
+.disabled-day {
+    /* Alterado Sabado e Domingo para Vermelho, e dias vazios*/
+    color: #aaa !important;
+    pointer-events: none;
+}
+
+.selected-day {
+    background-color: #146df3;
+    border-radius: 15px;
+    color: #fff !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                           Informações do Cliente                           */
+/* -------------------------------------------------------------------------- */
+
+.title-no-style {
+    font-size: 0.75rem;
+    margin: 10px;
+    font-weight: bold;
+    color: #000;
+}
+
+#client-form {
+    width: 100%;
+}
+
+#client-form input {
+    display: block;
+    width: 91%;
+
+    background-color: #f7f7f7;
+    padding-left: 4%;
+    margin: 1% 4%;
+
+    font-size: 0.7rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        Lista de Serviços e Produtos                        */
+/* -------------------------------------------------------------------------- */
+
+.title-underline {
+    font-size: 0.8rem;
+    margin: 10px;
+    font-weight: bold;
+    color: #000;
+}
+
+.sub-title {
+    font-size: 0.8rem;
+}
+
+#service-title {
+    font-weight: bold;
+}
+
+#msg-select-service {
+    margin: 5px;
+    font-size: 0.75rem;
+}
+
+.service-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+#service-window {
+    height: 10px;
+}
+
+#service-window table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 80%;
+    margin: 0 auto;
+    padding: 0% 7%;
+}
+
+#service-table td:first-child,
+#total-table td:first-child {
+    text-align: left;
+}
+
+#service-table td,
+#total-table td {
+    text-align: right;
+    padding: 0 5px;
+    font-size: 0.75rem;
+}
+
+#service-window .selected {
+    background-color: #ddd;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            Horarios disponiveis                            */
+/* -------------------------------------------------------------------------- */
+
+#schedule-list-container {
+    display: flex;
+    height: 10px;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+#schedule-list {
+    margin: 10px;
+}
+
+
+#schedule-list .selected {
+    background-color: #ddd;
+}
+
+.unavailable {
+    color: #f00;
+    /* display: none; */
+}
+
+.schedule-entry {
+    font-size: 0.7rem;
+}
+
+.schedule-entry:not(.unavailable) {
+    margin-left: 5px;
+}
+
+.row-unav-top {
+    background-color: #d11;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 90%;
+    padding: 5px 0 0 5px;
+
+    color: #ECF0F3;
+}
+
+.row-unav {
+    /* display: none; */
+    background-color: #d11;
+    width: 90%;
+    padding: 0 0 0 5px;
+
+    color: #ECF0F3;
+}
+
+.row-unav-base {
+    background-color: #d11;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    width: 90%;
+    padding: 0 0 5px 5px;
+
+    color: #ECF0F3;
+}
+
+.row-busy-top {
+    background-color: #456;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 90%;
+    padding: 5px 0 0 5px;
+
+    color: #fff;
+}
+
+.row-busy {
+    background-color: #456;
+    width: 90%;
+    padding: 0 0 0 5px;
+
+    color: #fff;
+}
+
+.row-busy-base {
+    background-color: #456;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    width: 90%;
+    padding: 0 0 5px 5px;
+
+    color: #fff;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                      Resumo das informações do Cliente                     */
+/* -------------------------------------------------------------------------- */
+
+#client-img {
+    --image-size: 25px;
+    margin: 0px auto;
+    width: var(--image-size);
+    height: var(--image-size);
+    clip-path: circle(calc(var(--image-size) / 2) at center);
+}
+
+#summary-client-date {
+    font-weight: bold;
+    color: #000;
+    font-size: 1rem;
+}
+
+#summary-info-service {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+#client-info-overview {
+    margin-top: 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: left;
+}
+
+.selected-service-list {
+    overflow-y: scroll;
+    height: 10px;
+
+    flex-grow: 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Outros                                   */
+/* -------------------------------------------------------------------------- */
+
+h6 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.warning-msg {
+    color: #d11;
+    font-size: 0.8rem;
+}
+
+hr {
+    border: 1px solid;
+    margin: 0;
+}

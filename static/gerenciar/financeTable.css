@@ -1,0 +1,595 @@
+:root {
+    --vh: 1vh;
+}
+
+* {
+    font-family: 'Antonio', sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: #ECF0F3;
+    /* min-height: calc(var(--vh) * 100); */
+    height: 100vh;
+    max-height: 100vh;
+    /* overflow: hidden; */
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Header                                   */
+/* -------------------------------------------------------------------------- */
+
+header h1 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin: 1.6rem 0 0;
+
+    color: #000;
+}
+
+#header-hr {
+    margin: 0.8rem 0 0;
+    border: 1px #000 solid;
+}
+
+.btn-header {
+    margin-top: 0.3rem;
+    min-width: 100px;
+    padding: 0.5rem 0;
+    
+    border-radius: 5px;
+    border-style: none;
+
+    background-color: #ddd;
+    color: #000;
+}
+
+.btn-header:hover {
+    background-color: #bbb;
+}
+
+.btn-header:active {
+    background-color: #aaa;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                             Filtrar Lançamentos                            */
+/* -------------------------------------------------------------------------- */
+
+#filter-container {
+    background: linear-gradient(to right, #d0d5d8, #ECF0F3) no-repeat;
+    background-size: 10px auto;
+    background-position: left;
+    padding: .5rem 1rem;
+}
+
+.filter-box {
+    background-color: #fff;
+    height: 100%;
+    border-radius: 10px;
+
+    flex-grow: 1;
+
+    margin: 3px 15px 0px 0px;
+    padding: 8px;
+
+    position: relative;
+}
+
+.filter-tag {
+    background-color: #e9e9ed;
+    max-width: fit-content;
+    height: fit-content;
+
+    padding: 5px 10px;
+
+    display: flex;
+
+    border: #090 3px solid;
+    border-radius: 10px;
+    border-style: outset;
+}
+
+.filter-tag p {
+    margin: 0;
+}
+
+.filter-tag button {
+    background-color: #0000;
+    color: #aaa;
+    font-size: 1rem;
+    border: 0;
+    border-radius: 10rem;
+    height: fit-content;
+}
+
+.filter-tag button:hover {
+    color: #555;
+}
+
+.filter-tag button:active {
+    color: #222;
+}
+
+.add-tag {
+    background-color: #05e;
+    width: 40px;
+    height: 40px;
+
+    color: #fff;
+
+    border: #000 2px solid;
+    border-radius: 10px;
+    border-style: none;
+
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.add-tag:hover {
+    transition: 90ms;
+    background-color: #03b;
+}
+
+.add-tag:active {
+    transition: 90ms;
+    background-color: #027;
+}
+
+.header-input {
+    margin: 3px 15px auto 5px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            Tabela de Lançamentos                           */
+/* -------------------------------------------------------------------------- */
+
+main {
+    flex-grow: 1;
+    overflow: auto;
+}
+
+#header-row {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+}
+
+th, td {
+    font-size: 1rem;
+}
+
+th:first-child,
+td:first-child {
+    text-align: left;
+    padding-left: 1.5rem;
+}
+
+td,
+th {
+    text-align: center;
+}
+
+tr {
+    height: 2px;
+}
+
+/* Entry Credit */
+.entry-credit:nth-child(even) { background-color: #cedfee;}
+.entry-credit:nth-child(odd) { background-color: #f1f6fa; }
+.entry-credit:hover { background-color: #5595c9; transition: 90ms; }
+.entry-credit:is(.selected) { background-color: #0059be; color: #fff; transition: 90ms; }
+
+/* Entry Debt*/
+.entry-debt:nth-child(even) { background-color: #ffcbcb; }
+.entry-debt:nth-child(odd) { background-color: #ff9a9a; }
+.entry-debt:hover { background-color: #f36767; transition: 90ms; }
+.entry-debt:is(.selected) { background-color: #b60000; color: #fff; transition: 90ms; }
+
+
+/* -------------------------------------------------------------------------- */
+/*                                   Footer                                   */
+/* -------------------------------------------------------------------------- */
+
+footer {
+    border-top: 2px solid #aaa;
+    height: 50px;
+    max-height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+footer p {
+    font-size: 1rem;
+    display: inline;
+}
+
+footer i {
+    font-size: 0.3rem;
+    margin: 0 1rem;
+}
+
+.red-text {
+    color: #e00;
+}
+
+hr {
+    margin: 10px 0 0;
+}
+
+.btn-show-detail {
+    margin: 0; padding: 0; border: 0;
+    min-width: fit-content;
+    width: 40px;
+    height: 100%;
+    background-color: #0000;
+}
+
+.btn-show-detail:hover {
+    color: #fff;
+    transition: 70ms;
+}
+
+.block-bg-elements {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000b3;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.show-more-btn:hover {
+    background-color: #ECF0F3;
+    border: 2px solid #000;
+    border-radius: 5px;
+    padding: 7px;
+}
+
+.taskbar-buttons {
+    border-style: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px;
+    margin-right: 5px;
+}
+
+
+/* Caixas de Dialogo */
+
+.pop-up-group {
+    position: absolute;
+    top: 30px;
+    right: 50%;
+    transform: translate(50%, 0);
+
+    min-width: 350px;
+    z-index: 5;
+}
+
+
+.text-input {
+    width: 100%;
+}
+
+#add-entry-form,
+.edit-entry-form {
+    text-align: left;
+    border-bottom: 2px #aaa solid;
+    padding-bottom: 20px;
+}
+
+.diag-box-button {
+    background-color: #ECF0F3;
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+
+    border-radius: 10px;
+    margin: 10px 5px;
+    padding: 10px;
+    min-width: 100px;
+    border: 2px solid #0059be;
+}
+
+#button-confirm-del:hover {
+    background-color: #ff0000;
+    border: 2px solid #ff0000;
+    color: #fff;
+}
+
+.confirm-button:hover {
+    background-color: #00c000;
+    border: 2px solid #00c000;
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background-color: #0059be;
+    color: #fff;
+}
+
+/* || Janela de ação */
+
+/* Adicionar lançamento */
+
+h3 {
+    margin-bottom: 20px;
+}
+
+.pop-up {
+    background-color: #ECF0F3;
+    border-radius: 10px;
+    padding: 20px 50px;
+
+    text-align: center;
+
+    z-index: 5;
+}
+
+input {
+    font-size: 16px;
+    margin: 4px 0 20px;
+    padding: 5px 5px;
+    border-radius: 5px;
+}
+
+select {
+    background-color: #fff;
+    font-size: 16px;
+    padding: 5px 5px;
+    border-radius: 5px;
+    margin: 0 15px 0 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        PopUp Detalhe dos Lançamentos                       */
+/* -------------------------------------------------------------------------- */
+
+#detail-popup {
+    width: 400px;
+}
+
+#detail-popup h2 {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    margin: 5px 0 5px;
+}
+
+#detail-popup p {
+    text-align: left;
+    color: #333;
+    display: inline;
+}
+
+#detail-popup tr {
+    height: fit-content;
+    padding: 0;
+}
+
+#detail-popup td:first-child {
+    width: 80%;
+    text-align: left;
+}
+
+#detail-popup td:last-child {
+    width: 20%;
+    text-align: left;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Caixa de Alerta                              */
+/* -------------------------------------------------------------------------- */
+
+.alert-box {
+    background-color: #fff;
+    min-width: 250px;
+    max-width: 350px;
+
+    padding: 6px 9px 12px 9px;
+    position: absolute;
+    top: -600px;
+    right: 50%;
+    transform: translate( 50%, 0);
+
+    border: 1px #aaa solid;
+    box-shadow: 5px 10px 18px #888888;
+    border-radius: 10px;
+
+    animation-name: alertPopUp;
+    animation-duration: 7s;
+    animation-iteration-count: 1;
+    z-index: 10;
+}
+
+@keyframes alertPopUp {
+    0%   { top: -600px;}
+    5%  { top: 20px; }
+    95%  { top: 20px; }
+    100%  { top: -600px; }
+}
+
+#alert-title {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+#alert-message {
+    font-size: 1rem;
+    font-weight: 400;
+    padding: 8px 4px 0px;
+    margin: 0;
+}
+
+.alert-box button {
+    background-color: #0000;
+    color: #aaa;
+    font-size: 1.2rem;
+    border: 0;
+    border-radius: 10rem;
+}
+
+.alert-box button:hover {
+    color: #555;
+}
+
+.alert-box button:active {
+    color: #222;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Menu de Contexto                              */
+/* -------------------------------------------------------------------------- */
+
+.context-menu {
+
+    --mouseX: 0;
+    --mouseY: 0;
+
+    position: absolute;
+    left: var(--mouseX);
+    top: var(--mouseY);
+
+    border-radius: 5px;
+    padding: 0.5rem 0;
+
+    min-width: 6rem;
+    background-color: #fff;
+    box-shadow: 2px 2px 10px #aaa;
+}
+
+.context-menu a {
+    font-family: Arial, Helvetica, sans-serif;
+    display: block;
+    padding: 0.2rem 0.4rem;
+    margin-bottom: 3px;
+    font-size: 1rem;
+}
+
+.context-menu a:hover {
+    background-color: #ddd;    
+    transition: .15s;
+}
+
+.context-menu a:active {
+    background-color: #aaa;    
+    transition: .15s;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Tema Escuro                                */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #131313;
+    }
+    
+    /* -------------------------------------------------------------------------- */
+    /*                                   Header                                   */
+    /* -------------------------------------------------------------------------- */
+    
+    header h1 {
+        color: #fff;
+    }
+    
+    #header-hr {
+        margin: 0.8rem 0 0;
+        border: 1px #ddd solid;
+        opacity: 0.7;
+    }
+    
+    .dot-spacer {
+        color: #ddd;
+    }
+    
+    /* || TABLE */
+    
+    #header-row {
+        background-color: #333;
+        color: #ddd;
+    }
+    
+    /* Entry Credit */
+    .entry-credit:nth-child(even) { background-image: linear-gradient(to right, #111, #222); color: #ddd;}
+    .entry-credit:nth-child(odd) { background-image: linear-gradient(to right, #222, #333); color: #ddd;}
+    .entry-credit:hover { background-image: linear-gradient(to right, #3a698f, #5595c9); transition: 90ms; }
+    .entry-credit:is(.selected) { background-image: linear-gradient(to right, #003879, #0059be); color: #fff; transition: 90ms; }
+    
+    /* Entry Debt*/
+    .entry-debt:nth-child(even) { background-image: linear-gradient(to right, #b65151, #d36464); color: #ddd;}
+    .entry-debt:nth-child(odd) { background-image: linear-gradient(to right, #d36464, #dd7a7a); color: #ddd;}
+    .entry-debt:hover { background-image: linear-gradient(to right, #8f3030, #c75050); transition: 90ms; }
+    .entry-debt:is(.selected) { background-image: linear-gradient(to right, #6d0000, #b60000); color: #fff; transition: 90ms; }
+    /* Entry Debt*/
+    /* .entry-debt:nth-child(even) { background-color: #ffcbcb; }
+    .entry-debt:nth-child(odd) { background-color: #ff9a9a; }
+    .entry-debt:hover { background-color: #f36767; transition: 90ms; }
+    .entry-debt:is(.selected) { background-color: #b60000; color: #fff; transition: 90ms; } */
+    
+    
+    .btn-show-detail {
+        margin: 0; padding: 0; border: 0;
+        min-width: fit-content;
+        width: 40px;
+        height: 100%;
+        background-color: #0000;
+    }
+    
+    .btn-show-detail:hover {
+        color: #fff;
+    }
+    
+    .show-more-btn:hover {
+        background-color: #ECF0F3;
+        border: 2px solid #000;
+        border-radius: 5px;
+        padding: 7px;
+    }
+    
+    /* Caixas de Dialogo */
+    
+    .diag-box-button {
+        background-color: #ECF0F3;
+        color: #000;
+    }
+    
+    /* || Janela de ação */
+    
+    /* Adicionar lançamento */
+    
+    .pop-up {
+        background-color: #131313;
+        color: #ddd;
+    }
+    
+    /* -------------------------------------------------------------------------- */
+    /*                        PopUp Detalhe dos Lançamentos                       */
+    /* -------------------------------------------------------------------------- */
+    
+    #detail-popup p {
+        color: #333;
+    }
+    
+    /* -------------------------------------------------------------------------- */
+    /*                               Caixa de Alerta                              */
+    /* -------------------------------------------------------------------------- */
+    
+    .alert-box {
+        background-color: #222;
+        border: 1px #000 solid;
+        box-shadow: 5px 10px 18px #000;
+        color: #ddd;
+    }
+}

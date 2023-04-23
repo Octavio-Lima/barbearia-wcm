@@ -1,0 +1,119 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema</title>
+
+    <!-- Scripts -->
+    <script src='{% static "telaprincipal/js/mainpage.js" %}' defer></script>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href='{% static "telaprincipal/css/mainpage.css" %}'>
+</head>
+
+<body>
+    <div class="main-container">
+        <header>
+            <img src="" id="user-img">
+            <div class="my-auto">
+                <h1 id="worker-name"> {{usuario}} </h1>
+                <p  id="worker-job">{{tipoDeAcesso}}</p>
+            </div>
+        </header>
+
+        <main class="link-container">
+            <select-link id="register-client">
+                <p class="link-img"><i class="fa-regular fa-user m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'Cadastrar Clientes' %}">CADASTRAR CLIENTE</a>
+                </div>
+            </select-link>
+
+            <hr>
+
+            <select-link id="schedules">
+                <p class="link-img"><i class="fa-regular fa-calendar m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'Agendamentos' %}">AGENDAMENTOS</a>
+                </div>
+            </select-link>
+
+            <hr>
+
+            <select-link id="cash-flow">
+                <p class="link-img"><i class="fa-regular fa-dollar-sign m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'Fluxo de Caixa' %}">FLUXO DE CAIXA</a>
+                </div>
+            </select-link>
+
+            <hr>
+            
+            <select-link id="product-stock">
+                <p class="link-img"><i class="fa-solid fa-table-list m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'configProducts' %}">ESTOQUE DE PRODUTOS</a>
+                </div>
+            </select-link>
+
+            <hr>
+            
+            <select-link id="product-stock">
+                <p class="link-img"><i class="fa-solid fa-table-list m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'configService' %}">SERVIÇOS PRESTADOS</a>
+                </div>
+            </select-link>
+
+            <hr>
+            
+            <!-- <select-link id="client-data">                
+                <p class="link-img"><i class="fa-regular fa-file m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="#">DADOS DOS CLIENTES</a>
+                </div>
+            </select-link> -->
+
+            <hr>
+            
+            <select-link id="configuration">                
+                <p class="link-img"><i class="fa-solid fa-gear m-auto"></i></p>
+                <div class="d-flex">
+                    <a class="link" href="{% url 'configShop' %}">Configurações</a>
+                </div>
+            </select-link>
+
+            <hr>
+        </main>
+    </div>
+
+    <!-- <div id="dark-mode">
+        <label class="fa-regular fa-sun" for="dark-mode-switch"></label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="dark-mode-switch">
+        </div>
+        <label class="fa-regular fa-moon" for="dark-mode-switch"></label>
+    </div> -->
+
+</body>
+
+</html>

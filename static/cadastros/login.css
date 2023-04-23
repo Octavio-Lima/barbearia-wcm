@@ -1,0 +1,159 @@
+:root {
+    --vh: 1vh;
+}
+
+* {
+    font-family: 'Antonio', sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: #000;
+    background-image: url("../resources/images/branding/background/bg1.png");
+    background-size: cover;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                             Container Principal                            */
+/* -------------------------------------------------------------------------- */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    margin: 0 auto;
+    min-height: 100vh;
+    width: 355px;
+    max-width: 100%;
+}
+
+#brand-logo {
+    max-width: 100%;
+    width: 240px;
+    margin: 3rem auto;
+}
+
+.shaded-container {
+    box-shadow:
+        /* Top */
+        inset -10px 5px 10px 0px #0003,
+        /* Bottom */
+        inset 0px -10px 10px 0px #fffe,
+        /* Left */
+        inset 10px 10px 10px 0px #fffe,
+        /* Right */
+        inset -10px 0px 10px -10px #0003;
+
+    background-color: #ecf0f3;
+    border-radius: 40px;
+    width: 255px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px 30px 40px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                      Counteudo do Container Principal                      */
+/* -------------------------------------------------------------------------- */
+
+.title-login {
+    margin: 2rem 0;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+form {
+    text-align: left;
+}
+
+label{
+    font-size: 1rem;
+    color: #000;
+
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+input {
+    display: block;
+    border-style: none;
+    margin-bottom: 1rem;
+    width: 100%;
+
+    font-size: 1rem;
+    color: #000;
+}
+
+#login-button {
+    margin: 0;
+    width: 120px;
+    max-width: 100%;
+    
+    margin: 1rem 0 0.4rem;
+    padding: 10px 0;
+    border-radius: 50px;
+    border-style: none;
+    background-color: #ecf0f3;
+
+    color: #009b9e;
+    font-size: larger;
+    
+    box-shadow:
+        /* Top */
+        inset -2px 2px 2px 0px #0002,
+        /* Bottom */
+        inset 0px -2px 2px 0px #fffe,
+        /* Left */
+        inset 2px 2px 2px 0px #0002,
+        /* Right */
+        inset -2px 0px 2px -2px #fffe;
+}
+
+#login-button:hover {
+    box-shadow:
+        /* Top */
+        inset -3px 3px 3px 0px #fffe,
+        /* Bottom */
+        inset 0px -3px 3px 0px #0003,
+        /* Left */
+        inset 3px 3px 3px 0px #fffe,
+        /* Right */
+        inset -3px 0px 3px -3px #0003;
+}
+
+#login-button:active {
+    box-shadow:
+        /* Top */
+        inset -3px 3px 3px 0px #0003,
+        /* Bottom */
+        inset 0px -3px 3px 0px #fffe,
+        /* Left */
+        inset 3px 3px 3px 0px #0003,
+        /* Right */
+        inset -3px 0px 3px -3px #fffe;
+}
+
+#warning-message {
+    font-size: 0.8rem;
+    color: red;
+
+    margin: 0;
+}
+
+#forgot-password-link {
+    display: block;
+    font-size: 0.8rem;
+    text-decoration: none;
+
+    color: #8f8f8f;
+}
+
+#forgot-password-link:hover {
+    color: #125bf7;
+}
+
+#forgot-password-link:active {
+    color: #0e3079;
+}
