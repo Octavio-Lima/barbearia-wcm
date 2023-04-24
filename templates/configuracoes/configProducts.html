@@ -20,7 +20,7 @@
 
 </head>
 <body>
-    <main class="container-fluid">
+    <div class="container-fluid">
         <div class="row">
             <side class="col-3">
                 <header>
@@ -43,7 +43,7 @@
             </side>
 
             <!-- Lista de Serviços -->
-            <div class="col">
+            <main class="col">
                 <div>
                     <table class="w-100">
                         <thead class="container-fluid">
@@ -74,25 +74,25 @@
                     </table>
                 </div>
                 <hr>
-            </div>
+            </main>
         </div>
+    </div>
 
-        <!-- Modal Adicionar Serviço -->
-        <div id="new-entry-modal" class="d-none">
-            <form action="">
-                <label for="">Nome do Produto</label>
-                <input type="text" name="" id="inp_new-entry-name" class="d-block">
+    <!-- Modal Adicionar Serviço -->
+    <div id="new-entry-modal" class="d-none">
+        <form action="">
+            <label for="">Nome do Produto</label>
+            <input type="text" name="" id="inp_new-entry-name" class="d-block">
 
-                <label for="">Valor</label>
-                <input type="text" name="" id="inp_new-entry-value" class="d-block">
+            <label for="">Valor</label>
+            <input type="text" name="" id="inp_new-entry-value" class="d-block">
 
-                <label for="">Quantidade de Protudo</label>
-                <input type="number" name="" id="inp_new-entry-quantity" class="d-block">
-            </form>
+            <label for="">Quantidade de Protudo</label>
+            <input type="number" name="" id="inp_new-entry-quantity" class="d-block">
+        </form>
 
-            <button id="btn_confirm-new-entry">Confirmar</button>
-            <button id="btn_cancel-entry">Cancelar</button>
-        </div>
-    </main>
+        <button id="btn_confirm-new-entry">Confirmar</button>
+        <button id="btn_cancel-entry">Cancelar</button>
+    </div>
 </body>
 </html>

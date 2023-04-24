@@ -9,7 +9,7 @@
 
 body {
     background-color: #000;
-    background-image: url("../resources/images/branding/background/bg1.png");
+    background-image: url("/static/geral/bg/bg1.png");
     background-size: cover;
 }
 

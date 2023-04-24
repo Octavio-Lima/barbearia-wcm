@@ -10,7 +10,7 @@
     <title>Sistema</title>
 
     <!-- Scripts -->
-    <script src="login.js" type="module" defer></script>
+    <!-- <script src="login.js" type="module" defer></script> -->
     <!-- <script src="../js/fixBodyVH.js" type="module" defer></script> -->
 
     <!-- Fontes -->
@@ -40,28 +40,27 @@
 
 <body>
     <div class="main-container">
-        <img src="./resources/images/branding/logo/logo-a.svg" id="brand-logo" alt="logo">
+        <img src="{% static 'geral/logo/logo-a.svg' %}" id="brand-logo" alt="logo">
 
         <main class="shaded-container">
             <h2 class="title-login">LOGIN</h2>
-            <form>
+            <form action="#" method="post">
+                {% csrf_token %}
+                {{ form }}
                 <label for="user">E-MAIL:</label>
                 <input type="text" name="user" id="user" value="joao" formaction="#">
             
                 <label for="pass">SENHA:</label>
                 <input type="password" name="pass" id="pass" value="123" formaction="#">
 
-                <div class="text-center">
-                </div>
+                <input class="mx-auto" type="submit" id="login-button" value="ENTRAR">
             </form>
             
             <p class="d-none" id="warning-message">
                 Credendiais incorretas. <br>Verifique novamente as credenciais informadas.
             </p>
-
-            <button type="submit" id="login-button">ENTRAR</button>
             
-            <a id="forgot-password-link" href="{% url 'Mainpage' %}">ESQUECI A SENHA</a>
+            <a id="forgot-password-link" href="#">ESQUECI A SENHA</a>
         </main>
     </div>
 </body>

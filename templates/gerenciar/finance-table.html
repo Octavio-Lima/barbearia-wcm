@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,9 +16,9 @@
         defer></script>
 
     <!-- CSS JS -->
-    <link rel="stylesheet" href="../css/financeTable.css">
-    <script src="../js/finance-page.js" type="module" defer></script>
-    <script src="../js/finance-table.js" type="module" defer></script>
+    <link rel="stylesheet" href="{% static 'gerenciar/financeTable.css' %}">
+    <script src="{% static 'gerenciar/finance-page.js' %}" type="module" defer></script>
+    <script src="{% static 'gerenciar/finance-table.js' %}" type="module" defer></script>
     <script src="../js/fixBodyVH.js" type="module" defer></script>
 
     <!-- Fontes -->
