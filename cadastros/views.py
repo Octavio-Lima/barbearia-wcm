@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import loader
+from .models import User
 
 from .forms import UserForm
 
@@ -9,7 +10,21 @@ def login(request):
         form = UserForm(request.POST)
         
         if form.is_valid():
-            return HttpResponseRedirect("/mainpage/")
+            validatedUser = valitadeLogin(form.cleaned_data)
+
+            if (validatedUser == False):
+                template = loader.get_template('cadastros/login.html')
+                formRequest = {
+                    "form": form,
+                }
+                
+                return HttpResponse(template.render(formRequest, request))
+            
+            response = HttpResponseRedirect("/mainpage/")
+            response.set_cookie('accessName', validatedUser["accessName"])
+            response.set_cookie('accessType', validatedUser["accessType"])
+            response.set_cookie('loggedId', validatedUser["loggedId"])
+            return response
     else:
         form = UserForm()
 
@@ -20,14 +35,13 @@ def login(request):
     
     return HttpResponse(template.render(formRequest, request))
 
-def valitadeLogin(request):
-    # if this is a POST request we need to process the form data
-    if request.method == "POST":
-        # create a form instance and populate it with data from the request:
-        return HttpResponseRedirect("/thanks/")
+def valitadeLogin(user):
+    # Procurar usuario pelo nome e senha
+    userQuery = User.objects.filter(username=user["user"], password=user["passw"]).values()
 
-    # if a GET (or any other method) we'll create a blank form
+    # Se validar, conceder acesso
+    if (len(userQuery) > 0):
+        validUser = userQuery[0]
+        return {'accessName': validUser["name"], 'accessType': validUser["accessType"], 'loggedId': validUser["id"]}
     else:
-        return HttpResponseRedirect("/nani/")
-
-    return render(request, "name.html", {"form": form})
+        return False

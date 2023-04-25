@@ -33,9 +33,9 @@
 <body>
     <div class="main-container">
         <header>
-            <img src="" id="user-img">
+            <img src="{% static 'geral/profilePictures/worker' %}{{loggedId}}.jpg" id="user-img">
             <div class="my-auto">
-                <h1 id="worker-name"> {{usuario}} </h1>
+                <h1 id="worker-name">{{usuario}}</h1>
                 <p  id="worker-job">{{tipoDeAcesso}}</p>
             </div>
         </header>

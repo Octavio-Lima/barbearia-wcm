@@ -3,8 +3,8 @@ const EL_WORKER_JOB = document.getElementById('worker-job');
 
 let access = localStorage.getItem("accessType");
 
-EL_WORKER_NAME.innerHTML = localStorage.getItem("accessName");
-EL_WORKER_JOB.innerHTML = localStorage.getItem("accessType");
+// EL_WORKER_NAME.innerHTML = localStorage.getItem("accessName");
+// EL_WORKER_JOB.innerHTML = localStorage.getItem("accessType");
 
 if (/*!access.includes("PROPRIETARIO") || */!access.includes("GERENCIADOR") ) {
   const EL_PROD_STOCK = document.getElementById('product-stock');
