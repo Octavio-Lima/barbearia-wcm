@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
 
     <title>Portela`s Barbearia - Agendar</title>
 
@@ -22,9 +23,9 @@
     <link rel="stylesheet" href="{% static 'cadastrarcliente/client-schedule.css' %}"> <!-- Maing Page CSS -->
 
     <!-- Scripts -->
-    <script defer src="../js/formating.js" type="module"></script>
-    <script defer src="../js/client-schedule.js" type="module"></script>
-    <script src="../js/fixBodyVH.js" type="module" defer></script>
+    <script src="{% static 'geral/js/formating.js' %}" type="module" defer></script>
+    <script src="{% static 'cadastrarcliente/client-schedule.js' %}" type="module" defer></script>
+    <script src="{% static 'geral/js/fixBodyVH.js' %}" type="module" defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,23 +36,26 @@
 </head>
 
 <body>
+
+    {% csrf_token %}
+
     <div class="main-container">
         <header>
-            <img src="../resources/images/branding/logo/logo1.svg" alt="Barbearia Logo" id="brand-logo" />
+            <img src="{% static 'geral/logo/logo1.svg' %}" alt="Barbearia Logo" id="brand-logo" />
             <h3 class="slogan">O CABELO É A MOLDURA DO ROSTO, CUIDE BEM DELE.</h3>
             <h3 class="title-agendamento">AGENDAMENTO:</h3>
         </header>
 
         <main>
             <div id="barber-list-container">
-                <!-- <div class="barber">
+                <!-- <!-- <div class="barber">
                     <img src="./resources/images/worker/worker0.jpg" class="worker-img" alt="Barbeiro" />
                     <h3 class="worker-name">JOÃO PEDRO</h3>
-                </div>
-                <div class="barber">
-                    <img src="./resources/images/worker/worker1.jpg" class="worker-img" alt="Barbeiro" />
-                    <h3 class="worker-name">LÚCIO</h3>
                 </div> -->
+                {% comment %} <div class="barber">
+                    <img src="{% static 'geral/profilePictures/worker2.jpg' %}" class="worker-img" alt="Barbeiro" />
+                    <h3 class="worker-name">LÚCIO</h3>
+                </div> {% endcomment %}
             </div>
             <div class="menu-button-group">
                 <a draggable="false" class="menu-button" href="https://g.co/kgs/ZuPVoq" target="_blank">LOCALIZAÇÃO</a>
@@ -231,7 +235,8 @@
 
             <!--  RESUMO, INFORMAÇÕES DO CLIENTE  -->
             <pop-up class="d-none" id="overview-window">
-                <img src="./resources/icons/checkmark.jpg" id="client-img" alt="Cliente" />
+                <img src="" id="client-img" alt="Cliente" />
+                <!-- <img src="./resources/icons/checkmark.jpg" id="client-img" alt="Cliente" /> -->
                 <div id="client-info-overview">
                 </div>
                 <h4 class="title-underline" id="summary-client-date">DIA MES, ANO</h4>

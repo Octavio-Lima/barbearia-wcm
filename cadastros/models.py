@@ -11,3 +11,8 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+class BarberUserSetting(models.Model):
+    ShopID = models.IntegerField()
+    BarbeiroId = models.IntegerField()
+    Serviços = models.TextField()

@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     'telaprincipal',
     'configuracoes',
     'cadastrarcliente',
+    'ajaxHandler',
+    'gerenciar',
 ]
 
 MIDDLEWARE = [

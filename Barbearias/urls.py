@@ -8,4 +8,5 @@ urlpatterns = [
     path('', include("cadastros.urls")),
     path('cadastrar/', include("cadastrarcliente.urls")),
     path('admin/', admin.site.urls),
+    path('ajax/', include("ajaxHandler.urls")),
 ]
