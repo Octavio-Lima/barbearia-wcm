@@ -448,6 +448,13 @@ select {
     color: #222;
 }
 
+/* Cor do alerta */
+#alert-message span {
+    color: #d00;
+    font-weight: bold;
+}
+
+
 /* -------------------------------------------------------------------------- */
 /*                              Menu de Contexto                              */
 /* -------------------------------------------------------------------------- */
@@ -491,7 +498,7 @@ select {
 /*                                 Tema Escuro                                */
 /* -------------------------------------------------------------------------- */
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: darka) {
     body {
         background-color: #131313;
     }

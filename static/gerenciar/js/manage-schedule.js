@@ -1,7 +1,7 @@
 // import * as modal from "./modals.js";
 // let apiURL = "https://cb9b-179-106-79-130.sa.ngrok.io/" // URL de teste NGROK
 let apiURL = "http://localhost:5018/" // URL Local
-let shopId = 1
+let shopId = Cookies.get("shopId")
 
 let shopOpensAt = 0
 let shopClosesAt = 24
@@ -35,13 +35,7 @@ async function Initialize() {
     INP_DATE.value = tableDate
 
     // carregar lista de agenda disponivel
-    scheduleList = await LoadScheduleList(INP_DATE.value);
-
-    // Adicionar Agendamentos a lista de horarios preenchidos
-    scheduleList.forEach(entry => {
-        // console.log(entry);
-        AddEntryInfo(entry.scheduleStart, entry.scheduleMinute, entry.scheduleEnd, "corte de cabelo", entry.name, "(31)91689-1125", "@instagram");
-    });
+    UpdateScheduleTable();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -51,16 +45,14 @@ async function Initialize() {
 /* ------------------- Carregar Configurações da Barbearia ------------------ */
 async function ShopConfigurationSetup(ShopID) {
     // Obter lista de Serviços do Banco de Dados
-    let shopConfig = await GetShopSettings(ShopID)
+    let params = '?ShopID=' + shopId
+    let shopConfig = await MakeRequest('/ajax/shop/config' + params, 'get')
 
-    // Obter horario de abrir e fechar
-    let opensAtParsed = shopConfig.abreAs.split("T");
-    opensAtParsed = opensAtParsed[1].split(":")
-    shopOpensAt = parseInt(opensAtParsed[0])
+    let opensAt = shopConfig.AbreAs.split(':');
+    shopOpensAt = opensAt[0];
     
-    let closesAtParsed = shopConfig.fechaAs.split("T"); // -> 10:00:00
-    closesAtParsed = closesAtParsed[1].split(":"); // -> 10:00:00 -> 10
-    shopClosesAt = parseInt(closesAtParsed[0])
+    let closesAt = shopConfig.FechaAs.split(':');
+    shopClosesAt = closesAt[0];
 }
 
 async function GetShopSettings(ShopID) {    
@@ -131,31 +123,6 @@ function CreateEntry(hour, minute) {
     SCHEDULE_TABLE.appendChild(entry);
 }
 
-// Carregar Lista de horarios ocupados
-async function LoadScheduleList(date) {
-    let jsonFile = JSON.stringify({
-        date: date,
-    });
-
-    let url = apiURL + "api/client_schedule/GetScheduleList";
-    const response = await fetch(url, {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-            "content-type": "application/json; charset=UTF-8"
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: jsonFile
-    });
-
-    let jsonResponse = await response.text()
-    jsonResponse = JSON.parse(jsonResponse)
-    return jsonResponse;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                                 Inicializar                                */
 /* -------------------------------------------------------------------------- */
@@ -181,8 +148,18 @@ function AddEntryInfo(startHour, startMinute, scheduleLength, service, client, p
     let el_insta = descriptionBot.item(2);
 
     for (let i = 0; i < scheduleLength; i++) {
-        if (i == 0) { entries[i].item(1).classList.add("row-busy-top"); entries[i].item(0).parentElement.classList.add("top"); } else
-            if (i == scheduleLength - 1) { entries[i].item(1).classList.add("row-busy-bottom"); entries[i].item(0).parentElement.classList.add("base"); } else { entries[i].item(1).classList.add("row-busy"); /*console.log("middle")*/; entries[i].item(0).parentElement.classList.add("middle"); entries[i].item(0).parentElement.children.item(0).classList.add("hidden"); }
+        if (i == 0) { 
+            entries[i].item(1).classList.add("row-busy-top");
+            entries[i].item(0).parentElement.classList.add("top"); 
+        } else if (i == scheduleLength - 1) { 
+            entries[i].item(1).classList.add("row-busy-bottom");
+            entries[i].item(0).parentElement.classList.add("base");
+        } else { 
+            entries[i].item(1).classList.add("row-busy");
+            /*console.log("middle")*/;
+            entries[i].item(0).parentElement.classList.add("middle");
+            entries[i].item(0).parentElement.children.item(0).classList.add("hidden"); 
+        }
     }
 
     el_name.innerHTML = client + "&nbsp;";
@@ -197,8 +174,6 @@ function AddEntryInfo(startHour, startMinute, scheduleLength, service, client, p
 }
 
 function ClearTableInfo() {
-    console.log(entriesList);
-
     let entries = [];
     entriesList.forEach(entry => {
         let scheduleEntry = entry.children;
@@ -228,21 +203,24 @@ function ClearTableInfo() {
 }
 
 /* ---------------------------- Atualizar Tabela ---------------------------- */
-INP_DATE.addEventListener("change", function() {
+INP_DATE.addEventListener("change", async function() {
+    await ShopConfigurationSetup(shopId) // Configurações da Barbearia
+    ClearTableInfo()
+
     UpdateScheduleTable()
 })
 
 async function UpdateScheduleTable() {
-    await ShopConfigurationSetup(shopId) // Configurações da Barbearia
-    ClearTableInfo()
-
     // carregar lista de agenda disponivel
-    scheduleList = await LoadScheduleList(INP_DATE.value);
+    let params = '?date=' + INP_DATE.value
+    let scheduleList = await MakeRequest('/ajax/clients' + params, 'get')
+
+    console.log(scheduleList);
 
     // Adicionar Agendamentos a lista de horarios preenchidos
     scheduleList.forEach(entry => {
         // console.log(entry);
-        AddEntryInfo(entry.scheduleStart, entry.scheduleMinute, entry.scheduleEnd, "corte de cabelo", entry.name, "(31)91689-1125", "@instagram");
+        AddEntryInfo(entry.horaInicio, entry.minuto, entry.duracao, "corte de cabelo", entry.nome, entry.celular, entry.instagram);
     });
 }
 
@@ -251,9 +229,30 @@ async function UpdateScheduleTable() {
 // || Extra
 
 function formatTimeString(n) {
-    if (n <= 9) { return "0" + n; } else { return n }
+    let value = parseInt(n)
+    if (value <= 9) { return "0" + value; } else { return value }
 }
 
 function updateEntryList() {
     entriesList = document.querySelectorAll(".schedule-entry");
+}
+
+async function MakeRequest(url, method, body) {
+    let headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json'
+    }
+
+    if (method == 'post' || method == 'put' || method == 'delete') {
+        const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value
+        headers['X-CSRFToken'] = csrf
+    }
+
+    const response = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: body
+    });
+    
+    return await response.json()
 }

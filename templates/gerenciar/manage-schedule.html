@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -15,11 +17,12 @@
         defer></script>
 
     <!-- Styles-->
-    <link rel="stylesheet" href="../css/manage-schedule.css">
-    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="{% static '/gerenciar/css/manage-schedule.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static '/gerenciar/css/modal.css' %}"> {% endcomment %}
 
     <!-- Scripts -->
-    <script src="../js/manage-schedule.js" defer type="module"></script>
+    <script src="{% static '/gerenciar/js/manage-schedule.js' %}" defer type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <!-- <script src="../js/modal.js" defer type="module"></script> -->
 
     <!-- Fontes -->

@@ -4,10 +4,12 @@
     já o "Finance table" é especifico da tabela da página 
 */
 
-import * as financeTable from "./finance-table.js";
+import * as table from "./finance-table.js";
+import {selectedEntry} from "./finance-table.js";
 
 const blockBgElement = document.querySelector(".block-bg-elements");
 const cancelDiagBox = document.querySelectorAll(".cancel-button")
+
 const allDiagWindow = document.querySelectorAll(".pop-up")
 
 const OP_ADD_ENTRY_PAYTYPE = document.getElementById("pay-type");
@@ -23,121 +25,69 @@ const entryDateInputValue = document.querySelector("#entry-date")
 const entryValueInputValue = document.querySelector("#entry-value")
 const IN_ENTRY_TYPE = document.querySelector("#entry-type")
 
-let accessType = localStorage.getItem("accessType").toUpperCase();
-let accessName = localStorage.getItem("accessName").toUpperCase();
+const EL_TOTAL_PROFIT = document.querySelector("#total-profits")
+
+let accessType = Cookies.get("accessType").toUpperCase();
+let accessName = Cookies.get("accessName").toUpperCase();
 
 const date = new Date();
 
-let date_today = date.getDate();
-let date_month = date.getMonth() + 1;
-let date_year = date.getFullYear();
-let currentDate = 
-    date_today.toString().padStart(2, '0') + "/" + 
-    date_month.toString().padStart(2, '0') + "/" + 
-    date_year.toString().padStart(2, '0')
+let date_today = String(date.getDate()).padStart(2, "0");
+let date_month = String(date.getMonth()+1).padStart(2, "0");
+let date_year = String(date.getFullYear());
+
+let today = `${date_today}/${date_month}/${date_year}`
 
 let EL_ADD_ENTRY_DAY = document.getElementById("add-entry-day");
 let EL_ADD_ENTRY_MONTH = document.getElementById("add-entry-month");
 let EL_ADD_ENTRY_YEAR = document.getElementById("add-entry-year");
 
 /* -------------------------------------------------------------------------- */
-/*                           Botões de Ação - Header                          */
+/*                                 Inicializar                                */
 /* -------------------------------------------------------------------------- */
+table.LoadAllEntries(); // Carregar todos os lançamentos para a tabela
 
-/* ------------------------ Adicionar Novo Lançamento ----------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                   Botões                                   */
+/* -------------------------------------------------------------------------- */
+// Elementos
+const BTN_ADD_NEW_ENTRY = document.querySelector('#button-add-entry');
+const BTN_CONFIRM_NEW_ENTRY = document.querySelector("#confirm-add-entry-button");
+const BTN_EDIT_ENTRY = document.querySelector("#button-edit-entry");
+const BTN_CONFIRM_EDIT_ENTRY = document.querySelector("#button-confirm-edit");
+const BTN_DELETE_ENTRY = document.querySelector("#button-del-entry");
+const BTN_CONFIRM_DELETE_ENTRY = document.querySelector("#button-confirm-del");
 
-document.body.addEventListener("click", (e) => {
-    let tag = e.target.closest(".context-menu")
-    // console.log("shit");
+// Adicionar Novo Lançamento
+BTN_ADD_NEW_ENTRY.addEventListener("click", () => { DisplayPopup(true, 0); })
+BTN_CONFIRM_NEW_ENTRY.addEventListener("click", () => { checklist_addNewEntry(); })
 
-    if (tag == null)
-    {
-        let el_contextMenu = document.querySelector(".context-menu");
-        if (el_contextMenu != null) { el_contextMenu.remove(); }
-    }
-})
+// Editar Lançamentos
+BTN_EDIT_ENTRY.addEventListener("click", () => { DisplayEditWindow() })
+BTN_CONFIRM_EDIT_ENTRY.addEventListener("click", () => { SaveEditedEntry(); })
 
-document.getElementById("button-add-entry").addEventListener("click", function()
-{
-    displayPopup(true, 0);
-})
-
-document.getElementById("confirm-add-entry-button").addEventListener("click", function()
-{
-    checklist_addNewEntry();
-})
-
-function checklist_addNewEntry()
-{
-    // if (entryNameInputValue.value == "") { displayAlert("Informações Incompletas", "Deve ser preenchido o nome do lançamento para que seja possível cria-lo") } else
-    // if (entryDateInputValue.value == "") { displayAlert("Informações Incompletas", "Deve ser escolhido um dia válido para que seja possível cria-lo") } else 
-    // if (OP_ADD_ENTRY_PAYTYPE.value == "0") { displayAlert("Informações Incompletas", "Deve ser escolhido a forma de pagamento do lançamento para que seja possível cria-lo") } else
-    // if (IN_ENTRY_TYPE.value == "0") { displayAlert("Informações Incompletas", "Deve ser escolhido o tipo de pagamento do lançamento para que seja possível cria-lo") }
-    // else
-    // {
-        financeTable.checkEntryList();
-        financeTable.addNewEntry(true, 1, entryNameInputValue.value, IN_ENTRY_TYPE.value, currentDate, entryDateInputValue.value, accessName, entryValueInputValue.value, OP_ADD_ENTRY_PAYTYPE.value, financeTable.storedEntries.length);
-        displayPopup(false);
-    // }
-}
-
-/* ---------------------------- Apagar Lançamento --------------------------- */
-
-document.getElementById("button-del-entry").addEventListener("click", function()
-{
-    if (financeTable.selectedEntry !== null)
-    { 
-        displayPopup(true, 2); // janela de eliminar lançamento
-    }
-    else
-    {
-        displayAlert("Ação Incorreta", "deve ser selecionado um lançamento para que seja possível exclui-lo")
-    }
-})
-
-document.getElementById("button-confirm-del").addEventListener("click", function()
-{
-    financeTable.removeEntry();
-    displayPopup(false);
-})
-
-/* --------------------------- Editar Lançamentos --------------------------- */
-
-document.getElementById("button-edit-entry").addEventListener("click", function() {displayEditWindow()})
-
-document.getElementById("button-confirm-edit").addEventListener("click", function() {
-    saveEditedEntry();
-})
-
-function displayEditWindow()
-{
-    displayPopup(false, 1)
-    displayPopup(true, 1)
-    PopUp_UpdateEditWindow(true);
-}
-
-/* ---------------------------- Filtrar Elementos --------------------------- */
-
-document.getElementById("button-filter-entry").addEventListener("click", function() {
-    let filterContainer = document.getElementById("filter-container");
-    filterContainer.classList.toggle("d-none")
-})
-
-/* ------------------------- Detalhe de Lançamentos ------------------------- */
-
-document.getElementById("button-show-detail").addEventListener("click", function() {
-    if (financeTable.selectedEntry !== null) {
+// Apagar Lançamento
+BTN_DELETE_ENTRY.addEventListener("click", () => {
+    if (selectedEntry !== null) { 
+        DisplayPopup(true, 2); // janela de eliminar lançamento
     } else {
-        displayAlert("Ação Incorreta", "deve ser selecionado um lançamento para que seja possível ver seus detalhes")
+        DisplayAlert("Ação Incorreta", "deve ser selecionado um lançamento para que seja possível exclui-lo")
     }
 })
+
+BTN_CONFIRM_DELETE_ENTRY.addEventListener("click", () => { 
+    table.RemoveEntry();
+    DisplayPopup(false);
+})
+
 
 /* -------------------------------------------------------------------------- */
 /*                                Janela Pop Up                               */
 /* -------------------------------------------------------------------------- */
-
-export function displayPopup(display, windowIndex) {
-    if (display) {
+// Exibir janelas
+export function DisplayPopup(showWindows, windowIndex, resetForm = false) {
+    if (showWindows) {
+        allDiagWindow.forEach(window => { window.classList.add("d-none") })
         blockBgElement.classList.remove("d-none");
         allDiagWindow[windowIndex].classList.remove("d-none");
     } else {
@@ -146,55 +96,71 @@ export function displayPopup(display, windowIndex) {
     }
 
     // reset forms
-    document.getElementById("add-entry-form").reset();
+    if (resetForm) {
+        document.getElementById("add-entry-form").reset();
+    }
 
     // remove alert boxes
     let alertBox = document.querySelector(".alert-box");
     if (alertBox != null) { alertBox.remove(); }
-
-    // remove custom context menu
-    let contextMenu = document.querySelector(".context-menu");
-    if (contextMenu != null) { contextMenu.remove(); }
 }
 
-function PopUp_UpdateEditWindow(showBox) {
-    let entry = financeTable.selectedEntry.children;
-    let isTrue = (entry.item(1).innerText === 'Entrada');
-    let dateStr = entry.item(3).innerText.replace(/\D/g, '');
+async function SaveEditedEntry() {
+    DisplayPopup(false);
+    
+    let isTrue = (IN_EDIT_ENTRY_TYPE.value === 'ENTRADA');
+    
+    let id = selectedEntry.querySelector('.entry-id').innerText;
+    let name = IN_EDIT_ENTRY_NAME.value;
+    let entryType = (isTrue ? "ENTRADA" : "SAIDA");
+    let value = parseFloat(String(IN_EDIT_ENTRY_PRICE.value).replace(',','.'));
+    let payType = OP_EDIT_ENTRY_PAYTYPE.value;
+    let payDate = IN_EDIT_ENTRY_DATE.value;
 
-    let day = parseInt(dateStr.slice(0, 2));
-    let month = (parseInt(dateStr.slice(2, 4)) - 1);
-    let year = parseInt(dateStr.slice(4, 8));
+    console.log(entryType);
 
+    await table.UpdateEntry(id, name, entryType, payDate, value, payType);
+    await table.LoadAllEntries();
+
+    RefreshTotalProfit();
+}
+
+// Editar dados
+function DisplayEditWindow() {
+    // Exibir janela de edição
+    DisplayPopup(true, 1)
+
+    // - Carregar dados do lançamento
+    // nome
+    let name = selectedEntry.querySelector('.entry-name').innerText;
+
+    // // dia de pagamento
+    // let payDay = selectedEntry.querySelector('.entry-pay-date').innerText;
+    // let parsedDATE = Date.parse(payDay).toLocaleString()
+
+    
     let dateFromEntry = new Date();
-    dateFromEntry.setDate(day)
-    dateFromEntry.setMonth(month)
-    dateFromEntry.setFullYear(year);
+    let entryDate = selectedEntry.querySelector('.entry-pay-date').innerText.split('/');
+    dateFromEntry.setDate(parseInt(entryDate[0]));
+    dateFromEntry.setMonth(parseInt(entryDate[1] - 1));
+    dateFromEntry.setFullYear(parseInt(entryDate[2]));
 
-    IN_EDIT_ENTRY_NAME.value = entry.item(0).innerText;
+    // valor do pagamento
+    let value = MoneyToFloat(selectedEntry.querySelector('.value').innerText);
+    
+    // tipo de pagamento
+    let isTrue = (selectedEntry.querySelector('.entry-type').innerText === 'ENTRADA');
+    let type = (isTrue ? "ENTRADA" : "SAIDA");
+
+    // forma de pagamento
+    let paymentType = selectedEntry.querySelector('.entry-pay-type').innerText;
+
+    // Colocar os valores nos inputs da janela
+    IN_EDIT_ENTRY_NAME.value = name;
     IN_EDIT_ENTRY_DATE.valueAsDate = dateFromEntry;
-    IN_EDIT_ENTRY_PRICE.value = toNumberFormat(entry.item(5).innerText  );
-    IN_EDIT_ENTRY_TYPE.value = (isTrue ? "true" : "false");;
-    OP_EDIT_ENTRY_PAYTYPE.value = entry.item(8).innerText;
-}
-
-function saveEditedEntry() {
-    displayPopup(false);
-
-    let isTrue = (IN_EDIT_ENTRY_TYPE.value === 'true');
-    let entry = financeTable.selectedEntry.children;
-
-    entry.item(0).innerText = IN_EDIT_ENTRY_NAME.value;
-    entry.item(1).innerText = (isTrue ? "Entrada" : "Saída");
-    entry.item(3).innerText = IN_EDIT_ENTRY_DATE.value;
-    entry.item(5).innerText = toMoneyFormat(IN_EDIT_ENTRY_PRICE.value);
-    entry.item(7).innerText = accessName;
-    entry.item(8).innerText = OP_EDIT_ENTRY_PAYTYPE.value;
-
-    financeTable.selectedEntry.classList.add(isTrue ? "entry-credit" : "entry-debt");
-    financeTable.selectedEntry.classList.remove(isTrue ? "entry-debt" : "entry-credit");
-
-    updateProfitCounter();
+    IN_EDIT_ENTRY_PRICE.value = value
+    IN_EDIT_ENTRY_TYPE.value = type
+    OP_EDIT_ENTRY_PAYTYPE.value = paymentType
 }
 
 /* ------------------------- Detalhes do Lançamento ------------------------- */
@@ -208,7 +174,7 @@ export function PopUp_UpdateDetailWindow() {
     const DETAIL_CREATED_BY = document.getElementById("det-created-by");
     const DETAIL_EDITED_BY = document.getElementById("det-edited-by");
 
-    let entry = financeTable.selectedEntry.children;
+    let entry = selectedEntry.children;
 
     const PAYTYPE = ["Dinheiro", "Cartão de Débito", "Cartão de Crédito", "Pix"]
 
@@ -229,33 +195,26 @@ export function PopUp_UpdateDetailWindow() {
 }
 
 cancelDiagBox.forEach(button => {
-    button.addEventListener("click", function() { displayPopup(false); })
+    button.addEventListener("click", function() { DisplayPopup(false); })
 });
 
 blockBgElement.addEventListener("click", function() {
-    displayPopup(false);
+    DisplayPopup(false);
 })
 
 /* -------------------------------------------------------------------------- */
 /*                               Mensagem Alerta                              */
 /* -------------------------------------------------------------------------- */
-
 let el_alert = document.querySelector(".alert-box");
 let el_alertTitle = document.getElementById("alert-title");
 let el_alertMsg = document.getElementById("alert-message");
 
-function displayAlert(title, message) {
-    if (el_alert != null) {
+function DisplayAlert(title, message) {
+    // Se já existe, apagar para criar um novo
+    if (el_alert != null)
         el_alert.remove();
-    }
 
-    createAlert();
-    el_alertTitle.innerText = title;
-    el_alertMsg.innerText = message;
-}
-
-function createAlert()
-{
+    // Criar elemento
     el_alert = document.createElement("div")
     el_alert.classList.add("alert-box");
 
@@ -263,6 +222,7 @@ function createAlert()
     el_alertHeader.classList.add("d-flex");
 
     el_alertTitle = document.createElement("p");
+    el_alertTitle.innerText = title;
     el_alertTitle.id = "alert-title";
 
     let el_alertSpan = document.createElement("span");
@@ -271,11 +231,12 @@ function createAlert()
     let el_alertButton = document.createElement("button");
     el_alertButton.classList.add("fa-solid");
     el_alertButton.classList.add("fa-xmark");
-    el_alertButton.addEventListener("click", closeAlert());
+    el_alertButton.addEventListener("click", CloseAlert());
 
     let el_alertHR = document.createElement("hr");
 
     el_alertMsg = document.createElement("p");
+    el_alertMsg.innerHTML = message;
     el_alertMsg.id = "alert-message";
 
     el_alertHeader.appendChild(el_alertTitle);
@@ -289,208 +250,118 @@ function createAlert()
     document.body.appendChild(el_alert);
 }
 
-function closeAlert() {
+function CloseAlert() {
     return function () {
         const alertBox = this.closest(".alert-box");
-        if (alertBox != null) { alertBox.remove(); }
+        alertBox.remove();
     }
 }
-
 
 // || OUTROS ---------------------
 
 // Calcular Valor Total
 let entryValueList;
 
-export function updateProfitCounter() {
-    let listLength = JSON.parse(localStorage.getItem("entryList")).length;
-    let tableLength = document.querySelector("tbody").childNodes.length;
-
-    if (listLength == tableLength)
-    {
-        updateTotalProfit();
-        updateWorkerTotalProfit(0, "joão pedro");
-        updateWorkerTotalProfit(1, "lúcio xavier");
-    }
-}
-
-function updateTotalProfit() {
-    const EL_TOTAL_PROFIT = document.getElementById("total-profits");
+export function RefreshTotalProfit() {
+    let allEntries = document.querySelectorAll('.value');
     let sum = 0;
-
-    // atualizar valores presentes na tabela
-    entryValueList = document.querySelectorAll(".value");
-
-    // Remover Cifrão e trocar virgulas por pontos
-    entryValueList.forEach((rowValue) => {
-        if (rowValue !== null) {
-            let replaceComma = rowValue.textContent.replace(',', '.');
-            let removeSign = replaceComma.slice(2);
-            let isDebt = rowValue.closest("tr").classList.contains("entry-debt");
-            sum += (isDebt ? -parseFloat(removeSign) : parseFloat(removeSign));
-        }
-    });
-
-    //"R$"
-    if (sum < 0) { EL_TOTAL_PROFIT.classList.add("red-text"); } else { EL_TOTAL_PROFIT.classList.remove("red-text");}
-    EL_TOTAL_PROFIT.innerText = toMoneyFormat(sum);
-}
-
-function updateWorkerTotalProfit(worker_id, worker_name) {
-    const EL_WORKER_PROFIT = document.getElementById("total-profits-worker-" + worker_id);
-    let sum = 0;
-
-    // atualizar valores presentes na tabela
-    let entryCreatedByList = document.querySelectorAll(".created-by")
-    let entryList = new Array;
-    for (let index = 0; index < entryCreatedByList.length; index++) {
-        if (entryCreatedByList[index].innerText == worker_name) {
-            entryList.push(entryCreatedByList[index].closest("tr"))
-        }
-    }
-
-    let entryListValue = new Array;
-    for (let index = 0; index < entryList.length; index++) {
-        entryListValue.push(entryList[index].querySelector(".value"))
-    }
-
-    // Remover Cifrão e trocar virgulas por pontos
-    entryListValue.forEach((rowValue) => {
-        if (rowValue !== null) {
-            let replaceComma = rowValue.textContent.replace(',', '.');
-            let removeSign = replaceComma.slice(2);
-            let isDebt = rowValue.closest("tr").classList.contains("entry-debt");
-            sum += (isDebt ? -parseFloat(removeSign) : parseFloat(removeSign));
-        }
-    });
-
-    // //"R$"
-    if (sum < 0) { EL_WORKER_PROFIT.classList.add("red-text"); } else { EL_WORKER_PROFIT.classList.remove("red-text");}
-    EL_WORKER_PROFIT.innerText = toMoneyFormat(sum);
-}
-
-function updateAvailableDate() {    
-
-    const date = new Date();
-
-    let date_today = date.getDate();
-    let date_month = date.getMonth() + 1;
-    let date_year = date.getFullYear();
-    let currentDate = `${date_today}/${date_month}/${date_year}`;
-
-    // for (let index = (date_year - 5); index <= (date_year + 5); index++) {
-    //     EL_ADD_ENTRY_YEAR.appendChild(createOption(index));
-    // }
-
-    // for (let index = 0; index <= 12; index++) {
-    //     EL_ADD_ENTRY_MONTH.appendChild(createOption(index));
-    // }
-
-    // for (let index = 0; index <= 31; index++) {
-    //     EL_ADD_ENTRY_DAY.appendChild(createOption(index));
-    // }
-
     
+    allEntries.forEach(entry => {
+        // limpar a string até retornar uma float
+        let value = MoneyToFloat(entry.textContent)
+
+        // Verificar se é debito
+        let isDebt = entry.closest("tr").classList.contains("entry-debt");
+
+        sum += (isDebt ? -value : value);
+    });
+
+    // Colorir o texto de acordo com a situação da conta
+    if (sum < 0) {
+        EL_TOTAL_PROFIT.classList.add("red-text"); 
+    } else {
+        EL_TOTAL_PROFIT.classList.remove("red-text");
+    }
+
+    EL_TOTAL_PROFIT.innerText = FloatToMoney(sum);
 }
 
-function createOption(value) {
-    let el_option = document.createElement("option")
-    let fullNumber = ((value <= 9)? "0" + value : value )
-    el_option.value = value;
-    el_option.innerText = fullNumber;
+function RefreshTotalProfit_worker(worker_id, worker_name) {
+    let el_workerProfit = document.getElementById("total-profits-worker-" + worker_id + 2);
+    let sum = 0;
 
-    return el_option;
+    // obter lançamentos especificos do trabalhador informado
+    let myEntryList = [];
+
+    let createByList = document.querySelectorAll(".created-by")
+    createByList.forEach(by => {
+        if (by.innerText == worker_name) {
+            entryList.push(by.closest("tr").querySelector(".value")) // obter valor do lançamento
+        }
+    });
+
+    // Remover Cifrão e trocar virgulas por pontos
+    myEntryList.forEach(entry => {
+        // Filtrar
+        let value = MoneyToFloat(entry.textContent)
+        let isDebt = entry.closest("tr").classList.contains("entry-debt");
+
+        sum += (isDebt ? -value : value);
+    });
+
+    // Formatar texto de acordo com o valor
+    if (sum < 0) {
+        el_workerProfit.classList.add("red-text");
+    } else {
+        el_workerProfit.classList.remove("red-text");
+    }
+
+    el_workerProfit.innerText = FloatToMoney(sum);
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                   Outros                                   */
+/*                            Confirmação de Dados                            */
 /* -------------------------------------------------------------------------- */
-
+// Confirmar se os dados estão corretos para serem enviados para a base de dados
+function checklist_addNewEntry() {
+    if (entryNameInputValue.value == "") {
+        DisplayAlert("Informações Incompletas", "Deve ser preenchido o <span>nome do lançamento</span> para que seja possível cria-lo")
+    } 
+    else if (entryDateInputValue.value == "") { 
+        DisplayAlert("Informações Incompletas", "Deve ser escolhido um <span>dia válido</span> para que seja possível cria-lo") 
+    } 
+    else if (OP_ADD_ENTRY_PAYTYPE.value == "0") { 
+        DisplayAlert("Informações Incompletas", "Deve ser escolhido a <span>forma de pagamento</span> do lançamento para que seja possível cria-lo") 
+    } 
+    else if (IN_ENTRY_TYPE.value == "0") { 
+        DisplayAlert("Informações Incompletas", "Deve ser escolhido o <span>tipo de pagamento</span> do lançamento para que seja possível cria-lo") 
+    } else {
+        table.SaveEntry(entryNameInputValue.value, IN_ENTRY_TYPE.value, today, entryDateInputValue.value,
+            accessName, entryValueInputValue.value, OP_ADD_ENTRY_PAYTYPE.value);
+        DisplayPopup(false);
+    }
+}
 /* ------------------------------ Usuário Ativo ----------------------------- */
 
 document.getElementById("active-user-name").innerText = accessName;
 
-/* ---------------- Menu de Contexto, botão direito do mouse ---------------- */
-
-export function showContextMenu(positionX, positionY)
-{
-    let el_contextMenu = document.querySelector(".context-menu");
-    if (el_contextMenu != null) { el_contextMenu.remove(); }
-
-    createContextMenu(positionX, positionY);
-}
-
-function createContextMenu(positionX, positionY)
-{
-    let el_contextMenu = document.createElement("div")
-    el_contextMenu.classList.add("context-menu");
-    el_contextMenu.style.setProperty('--mouseX', positionX + 'px');
-    el_contextMenu.style.setProperty('--mouseY', positionY + 'px');
-
-    let el_editButton = document.createElement("a");
-    el_editButton.innerText = "Editar";
-    el_editButton.addEventListener("click", (event) => 
-    {
-        event.preventDefault();
-        displayEditWindow();
-    })
-
-    let el_detailButton = document.createElement("a");
-    el_detailButton.innerText = "Detalhes";
-    el_detailButton.addEventListener("click", financeTable.showDetailDoubleClick())
-
-    el_contextMenu.appendChild(el_editButton);
-    el_contextMenu.appendChild(el_detailButton);
-
-    document.body.appendChild(el_contextMenu);
-}
-
-/* -------------------------- Conversão de Formatos ------------------------- */
-
-function toNumberFormat(value) {
-    let removeSigns = value.slice(2);
-    let number = parseFloat(removeSigns, 10); //console.log(number);
-    let addDecimal = number.toFixed(2); //console.log(addDecimal);
-    let replaceDot = addDecimal.replace('.', ','); //console.log(replaceDot);
-
-    return replaceDot;
-}
-
-function twoNumberFormat(value) {
-    if (value <= 9) {
-        return "0" + value;
-    } else {
-        return value;
-    }
-}
-
-export function toMoneyFormat(value) {
-    let convertToString = "" + value;
-    let number = parseFloat(convertToString, 10); //console.log(number);
-    let addDecimal = number.toFixed(2); //console.log(addDecimal);
-    let replaceDot = addDecimal.replace('.', ','); //console.log(replaceDot);
-
-    let result = convertToString;
-
-    for (let index = addDecimal.length - 2; index >= 0; index--) {
-        if (index % 3 === 0) {
-            let splitSta = result.slice(0, index);
-            let splitEnd = result.slice(addDecimal.length - index);
-            result = "" + splitSta + "." + splitEnd;
-            // console.log(index);
-            // console.log("divided by 3");
-            // console.log(splitSta);
-            // console.log(splitEnd);
-            // console.log(addDecimal);
-        }
-    }
-
-    return "R$" + replaceDot;
-}
-
 /* -------------------------------------------------------------------------- */
-/*                                  Executar                                  */
+/*                           Conversões de formatos                           */
 /* -------------------------------------------------------------------------- */
+function MoneyToFloat(value) {
+    // limpar a string até retornar uma float
+    let newValue = value.replace(',', '.');
+    newValue = newValue.replace('R$', '');
+    newValue = parseFloat(newValue);
+    
+    return newValue;
+}
 
-financeTable.loadSavedEntries();
-updateAvailableDate();
+export function FloatToMoney(value) {
+    let stringValue = String(value) // converter numero para string
+    stringValue = parseFloat(stringValue, 10); // converter corretamente
+    stringValue = stringValue.toFixed(2); // adicionar decimais
+    stringValue = stringValue.replace('.', ','); // ponto para virgula
+
+    return `R$ ${stringValue}`;
+}

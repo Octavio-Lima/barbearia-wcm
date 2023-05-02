@@ -6,7 +6,7 @@ let apiURL = "http://localhost:5018/" // URL Local
 // Barbeiros
 let elBarberList = document.querySelectorAll(".barber");
 let selectedBarber = 0;
-let shopId = 1;
+let shopId = Cookies.get("shopId")
 
 // Janela de Agendamento
 let currentWindowIndex;
@@ -811,7 +811,7 @@ document.getElementById("btn-finish-schedule").addEventListener('click', functio
     if (scheduleSelected[1] == "30") {scheduleMinute = 2 } else
     if (scheduleSelected[1] == "45") {scheduleMinute = 3 }
 
-    API_CreateClient(clientName, scheduleBeginsAt, scheduleMinute, data_minute, date_serviceL, data_totalPrice, clientPhone, clientEmail, clientInstagram, date, selectedBarber, 1);
+    API_CreateClient(clientName, scheduleBeginsAt, scheduleMinute, data_minute, date_serviceL, data_totalPrice, clientPhone, clientEmail, clientInstagram, date, selectedBarber);
     // DisplayWindow(false, false);
 })
 
@@ -860,7 +860,7 @@ function ClearClientForms() {
 /*                                 AREA TESTE                                 */
 /* -------------------------------------------------------------------------- */
 
-async function API_CreateClient(Name, ScheduleStart, ScheduleMinute, ScheduleDuration, Service, Value, Phone, Email, Instagram, Date, BarberID, ShopID) {
+async function API_CreateClient(Name, ScheduleStart, ScheduleMinute, ScheduleDuration, Service, Value, Phone, Email, Instagram, Date, BarberID) {
     let jsonRequest = JSON.stringify({
         id: 0,
         name: Name,
@@ -873,7 +873,7 @@ async function API_CreateClient(Name, ScheduleStart, ScheduleMinute, ScheduleDur
         email: Email,
         instagram: Instagram,
         date: Date,
-        shopID: ShopID,
+        shopID: shopId,
         barberID: BarberID
     }, null);
 
@@ -884,7 +884,7 @@ async function API_CreateClient(Name, ScheduleStart, ScheduleMinute, ScheduleDur
 async function LoadServiceList(date) {
     var scheduleList = await LoadScheduleTableData(date);
     scheduleList.forEach(schedule => {
-        AddToDisableList(schedule.scheduleStart, schedule.scheduleMinute, schedule.scheduleEnd);
+        AddToDisableList(schedule.horaInicio, schedule.minuto, schedule.duracao);
     });
 }
 

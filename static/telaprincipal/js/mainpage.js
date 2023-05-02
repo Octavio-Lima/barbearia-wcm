@@ -1,7 +1,7 @@
 const EL_WORKER_NAME = document.getElementById('worker-name');
 const EL_WORKER_JOB = document.getElementById('worker-job');
 
-let access = localStorage.getItem("accessType");
+let access = Cookies.get("accessType").toUpperCase();
 
 // EL_WORKER_NAME.innerHTML = localStorage.getItem("accessName");
 // EL_WORKER_JOB.innerHTML = localStorage.getItem("accessType");

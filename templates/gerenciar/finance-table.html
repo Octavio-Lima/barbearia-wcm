@@ -19,7 +19,8 @@
     <link rel="stylesheet" href="{% static 'gerenciar/financeTable.css' %}">
     <script src="{% static 'gerenciar/finance-page.js' %}" type="module" defer></script>
     <script src="{% static 'gerenciar/finance-table.js' %}" type="module" defer></script>
-    <script src="../js/fixBodyVH.js" type="module" defer></script>
+    {% comment %} <script src="../js/fixBodyVH.js" type="module" defer></script> {% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,12 +32,15 @@
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- <script src="https://code.jquery.com/jquery-3.6.3.js"
+    {% comment %} <script src="https://code.jquery.com/jquery-3.6.3.js"
         integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-        crossorigin="anonymous"></script> -->
+        crossorigin="anonymous"></script> {% endcomment %}
 </head>
 
 <body>
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="yvPEOr45z7agt3GsfhObJEMUllc28KSziUcInkKtqEo494wMu8U6MpNYhyFNPZew">
+
     <header>
         <div class="pt-3 px-3">
             <a href="./manage.html"><i class="fa fa-house"></i></a>
@@ -45,8 +49,8 @@
             <div class="mt-3">
                 <button type="button" class="btn-header" id="button-add-entry">Adicionar</button>
                 <button type="button" class="btn-header" id="button-del-entry">Remover</button>
-                <button type="button" class="btn-header" id="button-filter-entry">Filtrar</button>
-                <button type="button" class="btn-header d-none" id="button-show-detail">Detalhes</button>
+                {% comment %} <button type="button" class="btn-header" id="button-filter-entry">Filtrar</button>
+                <button type="button" class="btn-header d-none" id="button-show-detail">Detalhes</button> {% endcomment %}
                 <!-- <button type="button" class="btn-header d-block d-md-none mt-1" id="button-show-detail">Detalhes</button> -->
             </div>
         </div>
@@ -152,7 +156,7 @@
     <div class="pop-up-group">
 
         <!-- Popup Adicionar Novo Lançamento -->
-        <div class="pop-up d-none" id="add-entry-diag-box">
+        <div class="pop-up d-none" id="add-entry-diag-box" name="pop_add-entry">
             <h3>ADICIONAR NOVO LANÇAMENTO</h3>
             <form action="#" id="add-entry-form">
                 
@@ -197,8 +201,8 @@
                 <label for="entry-type">TIPO:</label>
                 <select name="entry-type" id="entry-type">
                     <option value='0'>SELECIONAR</option>
-                    <option value='true'>ENTRADA</option>
-                    <option value='false'>SAÍDA</option>
+                    <option value='ENTRADA'>ENTRADA</option>
+                    <option value='SAIDA'>SAÍDA</option>
                 </select>
             </form>
             <button class="diag-box-button confirm-button" id="confirm-add-entry-button">Adicionar</button>
@@ -206,7 +210,7 @@
         </div>
 
         <!-- Popup Editar Lançamento -->
-        <div class="pop-up d-none" id="edit-entry-diag-box">
+        <div class="pop-up d-none" id="edit-entry-diag-box" name="pop_edit-entry">
             <h3>Editar Lançamento</h3>
             <form action="#" class="edit-entry-form">
                 <label for="entry-name">nome do lançamento:</label>
@@ -241,15 +245,15 @@
                 <input type="text" name="" id="edit-entry-price" class="text-input"><br>
                 <label for="entry-type">Pagamento:</label>
                 <select name="pay-type" id="edit-pay-type">
-                    <option value='0'>Dinheiro</option>
-                    <option value='1'>C. Débito</option>
-                    <option value='2'>C. Crédito</option>
-                    <option value='3'>Pix</option>
+                    <option value='DINHEIRO'>Dinheiro</option>
+                    <option value='DEBITO'>C. Débito</option>
+                    <option value='CREDITO'>C. Crédito</option>
+                    <option value='PIX'>Pix</option>
                 </select>
                 <label for="entry-type">Tipo:</label>
                 <select name="entry-type" id="edit-entry-type">
-                    <option value='true'>Entrada</option>
-                    <option value='false'>Saida</option>
+                    <option value='ENTRADA'>ENTRADA</option>
+                    <option value='SAIDA'>SAÍDA</option>
                 </select>
             </form>
             <button class="diag-box-button confirm-button" id="button-confirm-edit">Salvar</button>
@@ -257,14 +261,14 @@
         </div>
 
         <!-- Popup Apagar Lançamento -->
-        <div class="pop-up d-none">
+        <div class="pop-up d-none" name="pop_delete-entry">
             <h5>DESEJA APAGAR O LANÇAMENTO SELECIONADO?</h5>
             <button class="diag-box-button" id="button-confirm-del">APAGAR</button>
             <button class="diag-box-button cancel-button">CANCELAR</button>
         </div>
 
         <!-- Detalhes do lançamento -->
-        <div class="pop-up d-none" id="detail-popup">
+        <div class="pop-up d-none" id="detail-popup" name="pop_detail-entry">
             <h3>Detalhes do Lançamento</h3>
             <h2>Nome/Cliente: <p id="det-name"></p>
             </h2>

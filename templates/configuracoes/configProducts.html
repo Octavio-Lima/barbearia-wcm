@@ -7,7 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script src="../js/configure-products.js" defer></script> -->
+    
+    <!-- Scripts -->
+    <script src="{% static '/configuracoes/configure-products.js' %}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,6 +23,9 @@
 
 </head>
 <body>
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="yvPEOr45z7agt3GsfhObJEMUllc28KSziUcInkKtqEo494wMu8U6MpNYhyFNPZew">
+
     <div class="container-fluid">
         <div class="row">
             <side class="col-3">
@@ -54,22 +60,6 @@
                             </tr>
                         </thead>
                         <tbody id="service-table">
-                            <tr class="row">
-                                <td class="col"><input type="text"></td>
-                                <td class="col-3"><input type="text"></td>
-                                <td class="col-3">
-                                    <Select>
-                                        <option>15 minutos</option>
-                                        <option>30 minutos</option>
-                                        <option>45 minutos</option>
-                                        <option>1 hora</option>
-                                        <option>1 hora e 15 minutos</option>
-                                        <option>1 hora e 30 minutos</option>
-                                        <option>1 hora e 45 minutos</option>
-                                        <option>2 horas</option>
-                                    </Select>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
