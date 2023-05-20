@@ -1,13 +1,9 @@
-import {displayModal} from "./modal.js";
-
 const LOGIN_BUTTON = document.getElementById("login-button");
-LOGIN_BUTTON.addEventListener("click", (event) => {CheckCredentials(event)});
 
-const USER_LIST = document.getElementById("user-list");
-const FORGOT_PASSWORD = document.getElementById("forgot-password-link");
-FORGOT_PASSWORD.addEventListener("click", (event) => {ShowUserList()});
+// Autenticar o usuario
+LOGIN_BUTTON.addEventListener("click", (event) => {
+    event.preventDefault();
 
-async function CheckCredentials() { 
     const user_input = document.getElementById("user");
     const pass_input = document.getElementById("pass");
 
@@ -19,9 +15,7 @@ async function CheckCredentials() {
         id: 0
     });
 
-    let url = "http://localhost:5018/api/Authenticate"
-
-    const response = await fetch (url, {
+    const response = await fetch ('/api/Authenticate', {
         method:"POST",
         mode: "cors",
         cache: "no-cache",
@@ -54,8 +48,4 @@ async function CheckCredentials() {
         let warningMessage = document.querySelector("#warning-message");
         warningMessage.classList.remove("d-none");
     }
-}
-
-function ShowUserList() {
-    displayModal("Acessos de Teste", "Usuario: gerencia / Senha: 111 / Gerenciador \r\nUsuario: joao / Senha: 123 / Gerenciador, Barbeiro \r\nUsuario: lucio / Senha: 321 / Barbeiro");
 }

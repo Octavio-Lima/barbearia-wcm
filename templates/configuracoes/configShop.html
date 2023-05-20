@@ -8,8 +8,9 @@
     <title>Document</title>
 
     <!-- Scripts -->
-    <script src="{% static '/configuracoes/configure-shop.js' %}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js" defer></script>
+    <script src="{% static '/geral/js/request.js' %}" type="module" defer></script>
+    <script src="{% static '/configuracoes/configure-shop.js' %}" type="module" defer></script>
     
     <!-- Styles -->
     <link rel="stylesheet" href="{% static '/configuracoes/configProducts.css' %}">
@@ -24,9 +25,7 @@
 
 </head>
 <body>
-
-    <input type="hidden" name="csrfmiddlewaretoken" value="yvPEOr45z7agt3GsfhObJEMUllc28KSziUcInkKtqEo494wMu8U6MpNYhyFNPZew">
-
+    {% csrf_token %}
     <header>
         <a href="{% url 'Mainpage' %}"><h5>Retornar</h5></a>
         <h1>Configurar Produtos</h1>

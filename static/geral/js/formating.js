@@ -11,22 +11,6 @@ export function numberToPrice(value)
     return moneyFormat;
 }
 
-export function addClassArray(element, className)
-{
-    element.forEach(_element =>
-    {
-        _element.classList.add(className);
-    })
-}
-
-export function removeClassArray(element, className)
-{
-    element.forEach(_element =>
-    {
-        _element.classList.remove(className);
-    })
-}
-
 export function valueToTime(value)
 {
     let time = "" + ((value * 15) / 60);

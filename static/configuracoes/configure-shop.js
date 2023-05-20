@@ -1,13 +1,12 @@
+import { MakeRequest } from "/static/geral/js/request.js";
+
 // Variaveis
 let serviceTable = document.getElementById("service-table")
 let hasUpdatedTable = false
 
 let btn_SaveChanges = document.querySelector("#btn_save-to-database")
-
-let OpensAt = 0;
-let ClosesAt = 0;
-let WorkDays = [1,1,1,1,1,1,1];
-let FirstWorkDay = 0;
+let shop_workDays = {'sun': true, 'mon': true, 'tue': true, 
+    'wed': true, 'thu': true, 'fri': true, 'sat': true}
 
 let inp_opensAt = document.querySelector("#start-work")
 let inp_closesAt = document.querySelector("#end-work")
@@ -16,7 +15,7 @@ let rad_FirstWorkDay = document.querySelector("#first-day-radio").querySelectorA
 
 let dayNames = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"]
 
-let shopId = Cookies.get("shopId")
+let shop_id = Cookies.get("shopId")
 
 /* -------------------------------------------------------------------------- */
 /*               Preencher Select Com As Barbearias Cadastradas               */
@@ -25,7 +24,7 @@ GetShopList()
 
 async function GetShopList() {
     // Obter nome da barbearia
-    let params = '?shopId=' + shopId
+    let params = '?shopId=' + shop_id
     let shopName = await MakeRequest('/ajax/shop' + params, 'get')
     
     let shopName_el = document.querySelector('#shop-name')
@@ -37,133 +36,94 @@ async function GetShopList() {
     LoadSettings()
 }
 
-async function LoadSettings(ShopID) {
+async function LoadSettings() {
     // Limpar a Tabela
     hasUpdatedTable = true
 
     // Obter lista de Serviços do Banco de Dados
-    params = '?ShopID=' + shopId
+    let params = '?shopId=' + shop_id
     let shopConfig = await MakeRequest('/ajax/shop/config' + params, 'get')
 
-    let OpensAt = shopConfig.AbreAs;
-    let ClosesAt = shopConfig.FechaAs;
+    // quando a barbearia fecha e abre
+    let shop_opensAt = shopConfig.opensAt;
+    let shop_closesAt = shopConfig.closesAt;
 
-    // Carregar quais dias a Barbearia abre ou não
-    // Se não está presente na configuração da Barbearia, o dia será desabilitado
-    WorkDays = [1,1,1,1,1,1,1]
-    if (!shopConfig.DiasDeTrabalho.includes("dom"))
-        WorkDays[0] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("seg"))
-        WorkDays[1] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("ter"))
-        WorkDays[2] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("qua"))
-        WorkDays[3] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("qui"))
-        WorkDays[4] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("sex"))
-        WorkDays[5] = 0
-    if (!shopConfig.DiasDeTrabalho.includes("sab"))
-        WorkDays[6] = 0
-
-    // Qual é o primeiro dia da semana a ser exibido no calendario
-    switch (shopConfig.PrimeiroDiaDaSemana) {
-        default:
-            FirstWorkDay = 0;
-            break;
-        case "seg":
-            FirstWorkDay = 1;
-            break;
-        case "ter":
-            FirstWorkDay = 2;
-            break;
-        case "qua":
-            FirstWorkDay = 3;
-            break;
-        case "qui":
-            FirstWorkDay = 4;
-            break;
-        case "sex":
-            FirstWorkDay = 5;
-            break;
-        case "sab":
-            FirstWorkDay = 6;
-            break;
+    // Obter quais dias a barbearia abre ou não
+    for (const [key] of Object.entries(shop_workDays)) {
+        if (!shopConfig.workDays.includes(key)) {
+            shop_workDays[key] = false;
+        }
     }
 
+    // Qual é o primeiro dia da semana a ser exibido no calendario
+    let shop_firstWeekDay = GetFirstWorkDayNumber(shopConfig.firstWeekDay);
+
     // Alterar o valor da caixa para o valor obtido do banco de dados
-    inp_opensAt.value = OpensAt
-    inp_closesAt.value = ClosesAt
-    rad_FirstWorkDay[FirstWorkDay].checked = true
-    for (let day = 0; day < chk_WorkDays.length; day++) {
-        chk_WorkDays[day].checked = WorkDays[day]
+    inp_opensAt.value = shop_opensAt
+    inp_closesAt.value = shop_closesAt
+
+    // radio de primeiro dia da semana
+    rad_FirstWorkDay[shop_firstWeekDay].checked = true
+    
+    // checkbox de dias de trabalho
+    let dayIndex = 0;
+    for (const [key, value] of Object.entries(shop_workDays)) {
+        chk_WorkDays[dayIndex].checked = value;
+        dayIndex++;
     }
 }
 
 // Salvar alterações para a base de dados
-btn_SaveChanges.addEventListener("click", async function() {
+btn_SaveChanges.addEventListener("click", async () => {
     if (!hasUpdatedTable) 
         return
-        
-    let AbreAs = new Date('2023-03-31T' + inp_opensAt.value + 'Z')
-    let FechaAs = new Date('2023-03-31T' + inp_closesAt.value + 'Z')
-    let DiasDeTrabalho = ""
-    let DiasDeTrabalhoArray = []
-    let PrimeiroDiaDaSemana = ""
-    for (let index = 0; index < rad_FirstWorkDay.length; index++) {
-        if (rad_FirstWorkDay[index].checked == true)
-        {
-            PrimeiroDiaDaSemana = dayNames[index]
-            break
+    
+    // horarios
+    let opensAt = new Date('2023-03-31T' + inp_opensAt.value + 'Z')
+    let closesAt = new Date('2023-03-31T' + inp_closesAt.value + 'Z')
+
+    // Dias de trabalho
+    let workDays = [];
+    let index = 0;
+    for (const [key] of Object.entries(shop_workDays)) {
+        if (chk_WorkDays[index].checked) {
+            workDays.push(key)
         }
+        index++;
     }
 
-    if (chk_WorkDays[0].checked)
-        DiasDeTrabalhoArray.push("dom")
-    if (chk_WorkDays[1].checked)
-        DiasDeTrabalhoArray.push("seg")
-    if (chk_WorkDays[2].checked)
-        DiasDeTrabalhoArray.push("ter")
-    if (chk_WorkDays[3].checked)
-        DiasDeTrabalhoArray.push("qua")
-    if (chk_WorkDays[4].checked)
-        DiasDeTrabalhoArray.push("qui")
-    if (chk_WorkDays[5].checked)
-        DiasDeTrabalhoArray.push("sex")
-    if (chk_WorkDays[6].checked)
-        DiasDeTrabalhoArray.push("sab")
+    workDays = workDays.toString()
 
-    DiasDeTrabalho = DiasDeTrabalhoArray.toString()
+    // Primeiro dia da semana
+    let firstWorkDay = 'asd';
+    let fwdIndex = 0;
+    for (const [key] of Object.entries(shop_workDays)) {
+        if (rad_FirstWorkDay[fwdIndex].checked == true) {
+            firstWorkDay = key;
+            break;
+        }
+        fwdIndex++;
+    }
 
-    console.log(shopId, AbreAs, FechaAs, DiasDeTrabalho, PrimeiroDiaDaSemana);
-
+    // Enviar requisição
     let jsonRequest = JSON.stringify({
-        ShopID: shopId,
-        AbreAs: AbreAs,
-        FechaAs: FechaAs,
-        DiasDeTrabalho: DiasDeTrabalho,
-        PrimeiroDiaDaSemana: PrimeiroDiaDaSemana
+        shopId: shop_id,
+        opensAt: opensAt,
+        closesAt: closesAt,
+        workDays: workDays,
+        firstWeekDay: firstWorkDay
     })
 
     await MakeRequest('/ajax/shop/config', 'put', jsonRequest)
 })
 
-async function MakeRequest(url, method, body) {
-    let headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json'
-    }
-
-    if (method == 'post' || method == 'put') {
-        const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value
-        headers['X-CSRFToken'] = csrf
-    }
-
-    const response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: body
-    });
-    
-    return await response.json()
+// Obtem qual o index do dia da semana
+function GetFirstWorkDayNumber(dayName) {
+    let index = 0;
+    for (const [key] of Object.entries(shop_workDays)) {
+        if (dayName == key) {
+            return index;
+        }
+        index++;
+    };
 }
