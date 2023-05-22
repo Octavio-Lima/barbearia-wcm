@@ -1,5 +1,5 @@
 /* Gerencia as Janelas do agendamento do cliente */
-import { schedule_day, UpdateCalendar, UpdateServiceTable,
+import { schedule_date, UpdateCalendar, UpdateServiceTable,
     UpdateSchedule, isNextMonth, UpdateClientSummaryInfo } from "/static/cadastrar-cliente/client-scheduler.js";
 import { shop_barberList } from "/static/cadastrar-cliente/main.js";
 
@@ -57,16 +57,16 @@ export function DisplayModal(isVisible = true, clearAllForms = false) {
     
     // Apagar toda informação dos formulários
     if (clearAllForms) {
-        // ClearClientForms()
+        ClearClientForms();
     }
 }
 
 /* ----------------------------- Botões da Modal ---------------------------- */
 // Botão de ir para a próxima janela (botão de confirmação)
-let confirmButtons = document.querySelectorAll(".btn-confirm");
-confirmButtons.forEach(button => {
+const CONFIRM_BUTTON_LIST = document.querySelectorAll(".btn-confirm");
+CONFIRM_BUTTON_LIST.forEach(button => {
     button.addEventListener("click", () => {
-        let index = button.id.replace(/\D/g, '');
+        let index = button.getAttribute('data-modalIndex').replace(/\D/g, '');
         GoToWindowIndex(index);
     })
 });
@@ -103,7 +103,8 @@ function CheckWindowRequirements(windowIndex) {
 
 /* ------- Seção de conferir se o formulário preenche os requerimentos ------ */
 function CheckCalendar(index) {
-    if (schedule_day >= 1 && schedule_day <= 31) {
+    let day = schedule_date.getDate();
+    if (day >= 1 && day <= 31) {
         return true;
     }
 
@@ -135,7 +136,7 @@ function CheckSelectedServices(index) {
     //     return true;
     // }
     return true;
-    warningMsg[index].classList.remove("d-none");
+    // warningMsg[index].classList.remove("d-none");
 }
 
 function CheckScheduling(index) {
@@ -144,7 +145,7 @@ function CheckScheduling(index) {
     // }
     return true;
     
-    warningMsg[index].classList.remove("d-none");
+    // warningMsg[index].classList.remove("d-none");
 }
 
 // Atualizar as informações de cada janela

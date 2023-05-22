@@ -44,17 +44,14 @@ class ajaxShopConfig(View):
 
         return JsonResponse({'': ''})
 
-
 class ajaxBarberConfig(View): 
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         shopId = request.GET['shopId']
         barberId = request.GET['barberId']
-        user = BarberUserSetting.objects.filter(shopId=shopId, barberId=barberId).values()
+        userConfig = list(BarberUserSetting.objects.filter(shopId=shopId, barberId=barberId).values())
 
-        print(user)
-
-        userConfig = list(user)
+        print(userConfig)
         return JsonResponse(userConfig[0], safe=False)
     
     def put(self, request):
@@ -62,13 +59,11 @@ class ajaxBarberConfig(View):
 
         print(service)
 
-        BarberUserSetting.objects.filter(shopId=service['shopID'], BarbeiroId=service['barberID']).update(
-            shopId = service['shopID'],
-            Serviços = service['serviceList']
+        BarberUserSetting.objects.filter(shopId=service['shopId'], barberId=service['barberId']).update(
+            services = service['services']
         )
 
         return JsonResponse({'': ''})
-
 
 class ajaxProductConfig(View): 
     def get(self, request):
@@ -91,12 +86,11 @@ class ajaxProductConfig(View):
 
         return JsonResponse({'': ''})
 
-
 class ajaxClients(View): 
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         date = request.GET['date']
-        schedules = Cliente.objects.filter(dia=date).values()
+        schedules = Cliente.objects.filter(date=date).values()
 
         scheduleList = list(schedules)
         return JsonResponse(scheduleList, safe=False)
@@ -121,7 +115,6 @@ class ajaxClients(View):
         newClient.save()
 
         return JsonResponse({'asd': 123})
-
 
 class ajaxShopName(View): 
     def get(self, request):

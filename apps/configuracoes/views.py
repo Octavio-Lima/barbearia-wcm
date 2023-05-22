@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
+from apps.cadastros.models import User
+from apps.configuracoes.models import Shop
 
 # Create your views here.
 def configShop(request):
@@ -7,8 +9,15 @@ def configShop(request):
     return HttpResponse(template.render(None, request))
 
 def configService(request):
-    template = loader.get_template('configuracoes/configService.html')    
-    return HttpResponse(template.render())
+    shopId = request.COOKIES.get('shopId')
+
+    # Obter informações da barbearia
+    barberList = list(User.objects.filter(shopId=shopId).values())
+    shopName = list(Shop.objects.filter(field_id=shopId).values())
+
+    context = { 'barberList': barberList, 'shopName': shopName[0]['shopName'] }
+    template = loader.get_template('configuracoes/configService.html')   
+    return HttpResponse(template.render(context, request))
 
 def configProducts(request):
     template = loader.get_template('configuracoes/configProducts.html')    

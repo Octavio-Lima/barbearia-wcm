@@ -27,10 +27,10 @@ async function LoadShopConfig() {
 
     // Apropriadamente formatar o horario que a barbearia abre e fecha
     shop_opensAt = shopConfig.opensAt.split(":");
-    shop_opensAt = shop_opensAt[0];
+    shop_opensAt = parseInt(shop_opensAt[0]);
     
     shop_closesAt = shopConfig.closesAt.split(":");
-    shop_closesAt = shop_closesAt[0];
+    shop_closesAt = parseInt(shop_closesAt[0]);
 
     // Obter quais dias a barbearia abre ou não
     for (const [key] of Object.entries(shop_workDays)) {

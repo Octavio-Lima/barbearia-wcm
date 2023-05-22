@@ -1,17 +1,14 @@
 /* Gerenciado das Sub-Modais, como o 
 calendario, lista de serviços, etc */ 
-import * as format from "../geral/js/formating.js"; // text and number formating
+import * as Format from "../geral/js/formating.js";
 import { selectedBarber, shop_id, shop_workDays, shop_opensAt, shop_closesAt, shop_firstWeekDayNumber } from "/static/cadastrar-cliente/main.js"; // text and number formating
-import { MakeRequest } from "/static/geral/js/request.js" ;
+import { MakeRequest } from "/static/geral/js/request.js";
 
 // * Calendario
 export let isNextMonth = false;
 let hasShiftedCalendar = false;
-let shiftCalendarColumn = 0; // 0 = domingo, 1 = segunda, 2 = ...
-let dateTitle; // Titulo que possui uma data (30 junho, 2023)
 
 const DATE = new Date();
-const CURRENT_YEAR = DATE.getFullYear();
 
 const PREV_MONTH = document.querySelector("#current-month");
 const NEXT_MONTH = document.querySelector("#next-month");
@@ -19,8 +16,15 @@ const CALENDAR_DAY_LIST = document.querySelectorAll(".calendar-day");
 const MONTH_NAMES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", 
 "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"]
 
+// * Tela de informações do cliente
+const INPUT_INSTAGRAM = document.querySelector("#input-client-instagram");
+const INPUT_PHONE = document.querySelector("#input-client-phone");
+const INPUT_NAME = document.querySelector("#input-client-name");
+const INPUT_EMAIL = document.querySelector("#input-client-email");
+
 // * Tela de Serviço
 let serviceList = [];
+const TIME = new Format.Time();
 
 // * Janela de Agendamento de Horario
 let scheduleEntryList;
@@ -28,23 +32,25 @@ let disabledScheduleEntryList = []
 let hasUpdatedScheduleTable = false;
 
 // * Dados do Agendamneto
-export let schedule_day = 0;
-let schedule_month;
-let schedule_year;
-let schedule_name;
-let schedule_phone;
-let schedule_email;
-let schedule_instagram;
-let schedule_services;
-let schedule_time = "";
-let schedule_duration = 0;
+export let schedule_date = new Date();
+let schedule_clientName = '';
+let schedule_phone = '';
+let schedule_email = '';
+let schedule_instagram = '';
+let schedule_services = [];
+let schedule_time = '';
+let schedule_duration = '';
 let schedule_totalPrice = 0;
+let schedule_dateTitle = '';
+
+// * Botões de confirmar informação da sub-modal
+const CONFIRM_USER_INFO = document.querySelector('#confirm-user-info');
+const CONFIRM_SCHEDULE = document.querySelector("#btn-finish-schedule")
 
 /* -------------------------------------------------------------------------- */
-/*                                 Sub-Modais                                 */
+/*                                 Calendario                                 */
 /* -------------------------------------------------------------------------- */
-/* ------------------------------- Calendario ------------------------------- */
-// Seleção do dia
+// Função de selecionar dia no calendario
 CALENDAR_DAY_LIST.forEach(day => {
     day.addEventListener("click", () => {
         // desmarcar todos os dias, e marcar como selecionado o dia correto
@@ -52,88 +58,123 @@ CALENDAR_DAY_LIST.forEach(day => {
         day.classList.add("selected-day");
     
         // Gravar o dia, mês e ano selecionado
-        schedule_day = parseInt(day.innerText, 10);
-        schedule_month = GetMonth(isNextMonth);
-        schedule_year = GetMonthYear();
+        schedule_date.setDate(parseInt(day.innerText, 10));
+        schedule_date.setMonth(GetMonth(isNextMonth));
+        schedule_date.setFullYear(GetMonthYear());
+
+        // Definir titulo usado nas demais submodais
+        schedule_dateTitle = `${schedule_date.getDate()} ${MONTH_NAMES[schedule_date.getMonth()]}, ${schedule_date.getFullYear()}`;
     })
 });
 
-// Botões de Selecionar Meses
+// Botões de Selecionar Meses no calendario
 PREV_MONTH.addEventListener('click', () => { UpdateCalendar(false); })
 NEXT_MONTH.addEventListener('click', () => { UpdateCalendar(true); })
 
 /* -------------------------- Funções do Calendario ------------------------- */
 // Atualizar todas as informações do calendario como o header e dias disponiveis
 export function UpdateCalendar(showNextMonth) {
-    // Corrigir a ordem do calendario
-    shiftCalendarColumn = shop_firstWeekDayNumber;
-    ShiftCalendarDays();
+    isNextMonth = showNextMonth;
 
-    // Header do Calendario
-    let calendarTitle = document.querySelector("#month-name");
-    let month = GetMonth(showNextMonth);
+    // Cabeçalho do Calendario
+    let month = MONTH_NAMES[GetMonth(isNextMonth)];
     let year = GetMonthYear();
-    
-    calendarTitle.innerText = MONTH_NAMES[month] + ", " + year;
-    
-    // Dias do calendario
-    let difference = shiftCalendarColumn - 7;
-    let firstMonthDay = GetMonthFirstDay(showNextMonth) - shiftCalendarColumn;
-    let lastMonthDay = GetMonthLastDay(showNextMonth);
+    document.querySelector("#month-name").innerText = `${month}, ${year}`;
 
-    // Calculo que altera qual é o primeiro dia da semana no calendario
-    let shiftedFirstMonthDay = ((firstMonthDay < 0) ? (firstMonthDay + (shiftCalendarColumn - difference)) : firstMonthDay);
+    if (!hasShiftedCalendar) {
+        // Corrigir a ordem do calendario
+        ShiftCalendarHeader();
     
-    // Aplicar a alteração de ordem dos dias
-    for (let daySlot = 0; daySlot < 42; daySlot++) {
-        if (daySlot < shiftedFirstMonthDay) {
-            CALENDAR_DAY_LIST[daySlot].innerText = "";
-        }
-        if (daySlot >= shiftedFirstMonthDay) {
-            CALENDAR_DAY_LIST[daySlot].innerText = daySlot - shiftedFirstMonthDay + 1;
-        }
-        if (daySlot > lastMonthDay + shiftedFirstMonthDay - 1) {
-            CALENDAR_DAY_LIST[daySlot].innerText = "";
+        // Preencher dias no calendario
+        FillCalendarDays();
+
+        // Desabilitar dias de folga
+        let index = 0;
+        for (const [key] of Object.entries(shop_workDays)) {
+            if (shop_workDays[key] == false) {
+                DisableBreakDays(index)
+            } 
+            index++;
         }
     }
 
-    // Desabilitar dias de folga
-    let index = 0;
-    for (const [key] of Object.entries(shop_workDays)) {
-        if (shop_workDays[key] == false) {
-            DisableBreakDays(index)
-        } 
-        index++;
-    }
-
-    // Disponibilidade dos dias
-    if (showNextMonth) {
+    // Disponibilidade dos dias baseado no mês
+    if (isNextMonth) {
         // o mês adiante deve ser possível selecionar todos os dias
         EnableAllDays();
-        isNextMonth = true;
         PREV_MONTH.classList.remove("hide-arrow");
         NEXT_MONTH.classList.add("hide-arrow");
     } else {
         // o mês atual deve ser possível selecionar a partir do dia atual
         DisablePastDays();
-        isNextMonth = false;
         PREV_MONTH.classList.add("hide-arrow");
         NEXT_MONTH.classList.remove("hide-arrow");
     }
 }
 
+// Preenche dias no calendario
+function FillCalendarDays() {
+    let monthFirstDay = GetMonthFirstDay(isNextMonth) - shop_firstWeekDayNumber;
+    let monthLastDay = GetMonthLastDay(isNextMonth);
+
+    // Calculo que altera qual é o primeiro dia da semana no calendario
+    let difference = shop_firstWeekDayNumber - 7;
+    let shiftedFirstDay = monthFirstDay + (shop_firstWeekDayNumber - difference);
+    let correctFirstDay = ((monthFirstDay < 0) ? shiftedFirstDay : monthFirstDay);
+    
+    // Renumerar os dias no calendario para os numeros corretos
+    for (let day = 0; day < 42; day++) {
+        if (day >= correctFirstDay) {
+            CALENDAR_DAY_LIST[day].innerText = day - correctFirstDay + 1;
+        }
+        if (day < correctFirstDay || day > monthLastDay + correctFirstDay - 1) {
+            CALENDAR_DAY_LIST[day].innerText = "";
+        }
+    }
+}
+
+// Muda a ordem do cabeçalho do calendario, muda qual o primeiro dia da semana
+function ShiftCalendarHeader() {
+    const CALENDAR_HEADERS = document.querySelectorAll(".calendar-header")
+    let correctHeader = []
+
+    // obter header do calendario original
+    for (let day = 0; day < 7; day++) { 
+        correctHeader[day] = CALENDAR_HEADERS[day];
+    }
+
+    // reordernar para a ordem correta
+    const correctOrder = correctHeader.splice(0, shop_firstWeekDayNumber);
+    for (let i = 0; i < correctOrder.length; i++) {
+        correctHeader.push(correctOrder[i]);
+    }
+
+    // Redefinir para a ordem nova no header
+    const DAY_NAME = ['Dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']
+    CALENDAR_HEADERS.forEach((day, index) => {
+        let correctIndex = index + shop_firstWeekDayNumber;
+
+        if (correctIndex > 6) {
+            day.innerText = DAY_NAME[correctIndex - 7];
+        } else {
+            day.innerText = DAY_NAME[correctIndex];
+        }
+    });
+}
+
 function DisablePastDays() {
     // desmarcar o dia seleciondo 
     CALENDAR_DAY_LIST.forEach(day => { day.classList.remove('selected-day'); })
-    schedule_day = 0;
+    schedule_date.setDate(0);
 
-    /* calculo complicado !!!
-    calcula os dias anteriores a serem desabilitados*/ 
-    let underflow = (GetMonthFirstDay(false) - shiftCalendarColumn) < 0;
-    let today = ((DATE.getDate() - 1) + GetMonthFirstDay(false) - shiftCalendarColumn);
-    let correctIndex = (underflow ? today + 7 : today)
-    for (let daySlot = 0; daySlot < correctIndex; daySlot++) {
-        CALENDAR_DAY_LIST[daySlot].classList.add("disabled-day");
+    // * calculo complicado
+    // * calcula os dias anteriores a serem desabilitados
+    let underflow = (GetMonthFirstDay(false) - shop_firstWeekDayNumber) < 0;
+    let today = ((DATE.getDate() - 1) + GetMonthFirstDay(false) - shop_firstWeekDayNumber);
+    let correctIndex = (underflow ? (today + 7) : today)
+
+    for (let day = 0; day < correctIndex; day++) {
+        CALENDAR_DAY_LIST[day].classList.add("disabled-day");
     }
 }
 
@@ -144,80 +185,44 @@ function EnableAllDays() {
         day.classList.remove('disabled-day'); 
     })
 
-    // desmarcar o dia selecionado
-    schedule_day = 0;
+    // desmarcar o dia seleciondo 
+    CALENDAR_DAY_LIST.forEach(day => { day.classList.remove('selected-day'); })
+    schedule_date.setDate(0);
 }
 
 // Desabilita dias de folga
 function DisableBreakDays(day) {
     for (let column = 0; column < 6; column++) {
-        let columnSlot = -shiftCalendarColumn + day + (column * 7);
+        let columnSlot = -shop_firstWeekDayNumber + day + (column * 7);
+
         if (columnSlot < 0) {
             CALENDAR_DAY_LIST[columnSlot + 7].classList.add("unavailable-day");
         } else {
             CALENDAR_DAY_LIST[columnSlot].classList.add("unavailable-day");
         }
     }
-
-    // desmarcar todos os dias selecionados
-    CALENDAR_DAY_LIST.forEach(day => { day.classList.remove("selected-day"); });
-}
-
-// Muda a ordem do dia do calendario, muda qual o primeiro dia da semana
-function ShiftCalendarDays() {
-    if (hasShiftedCalendar) {
-        return;
-    }
-
-    const EL_CALENDAR_DAY_HEADER = document.querySelectorAll(".calendar-header")
-
-    // Muda o header do calendario para que o primeiro dia da semana seja o dia correto
-    // obter header do calendario original
-    let headerColumn = new Array();
-    for (let column_ = 0; column_ < 7; column_++) { 
-        headerColumn[column_] = EL_CALENDAR_DAY_HEADER[column_];
-    }
-
-    // criado header correto
-    const column = headerColumn.splice(0, shiftCalendarColumn);
-    for (let i = 0; i < column.length; i++) {
-        headerColumn.push(column[i]);
-    }
-
-    // aplicar nomes corretos ao cabeçario do calendario
-    EL_CALENDAR_DAY_HEADER.forEach((day, index) => {
-        let dayName = ['Dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']
-        let correctIndex = index + shiftCalendarColumn;
-
-        if (correctIndex > 6) {
-            day.innerText = dayName[correctIndex - 7];
-        }
-        else {
-            day.innerText = dayName[correctIndex];
-        }
-    });
 }
 
 // Funções de datas
 function GetMonthFirstDay(getNextMonthsFirstDay) {
     // Se o mês que vem for janeiro, deve usar o ano novo
-    let year = (GetMonth(true) == 0 ? CURRENT_YEAR + 1 : CURRENT_YEAR);
+    let year = (GetMonth(true) == 0 ? DATE.getFullYear() + 1 : DATE.getFullYear());
 
     if (getNextMonthsFirstDay) {
         return new Date(year, GetMonth(true), 1).getDay();
     } else {
-        return new Date(CURRENT_YEAR, GetMonth(false), 1).getDay();
+        return new Date(DATE.getFullYear(), GetMonth(false), 1).getDay();
     }
 }
 
 function GetMonthLastDay(getNextMonthsTotalDay) {
     // Se o mês que vem for janeiro, deve usar o ano novo
-    let year = (GetMonth(true) == 0 ? CURRENT_YEAR + 1 : CURRENT_YEAR);
+    let year = (GetMonth(true) == 0 ? DATE.getFullYear() + 1 : DATE.getFullYear());
 
     if (getNextMonthsTotalDay) {
         return new Date(year, GetMonth(true) + 1, 0).getDate();
     } else {
-        return new Date(CURRENT_YEAR, GetMonth(false) + 1, 0).getDate();
+        return new Date(DATE.getFullYear(), GetMonth(false) + 1, 0).getDate();
     }
 }
 
@@ -234,16 +239,13 @@ function GetMonth(returnNextMonth) {
 
 function GetMonthYear() {
     // Se o próximo mês for janeiro, deve retornar o ano seguinte
-    return (GetMonth(true) == 0 ? CURRENT_YEAR + 1 : CURRENT_YEAR);
+    return (GetMonth(true) == 0 ? DATE.getFullYear() + 1 : DATE.getFullYear());
 }
 
 /* -------------------------------------------------------------------------- */
 /*                           INFORMAÇÕES DO CLIENTE                           */
 /* -------------------------------------------------------------------------- */
 /* ---------------------- Corrigir Inputs em tempo real --------------------- */
-const INPUT_INSTAGRAM = document.querySelector("#input-client-instagram");
-const INPUT_PHONE = document.querySelector("#input-client-phone");
-
 // corrigir input do numero de celular
 INPUT_PHONE.addEventListener("keydown", (event) => {
     let value = INPUT_PHONE.value;
@@ -278,7 +280,6 @@ INPUT_PHONE.addEventListener("keydown", (event) => {
     }
 
     INPUT_PHONE.value = value;
-    schedule_phone = value.replace(/\D/g, '');
 })
 
 // corrigir input do instagram
@@ -291,57 +292,72 @@ INPUT_INSTAGRAM.addEventListener("keyup", () => {
     INPUT_INSTAGRAM.value = input;
 })
 
+// Salvar informações das inputs
+CONFIRM_USER_INFO.addEventListener("click", () => {
+    schedule_clientName = INPUT_NAME.value;
+    schedule_phone = INPUT_PHONE.value.replace(/\D/g, '');
+    schedule_email = INPUT_EMAIL.value;
+    schedule_instagram = INPUT_INSTAGRAM.value;
+})
+
 /* -------------------------------------------------------------------------- */
 /*                              LISTA DE SERVIÇOS                             */
 /* -------------------------------------------------------------------------- */
-let chosenServiceList = new Array();
 const EL_TOTAL_TIME = document.getElementById("total-time");
 const EL_TOTAL_PRICE = document.getElementById("total-price");
-chosenServiceList.length = 0 /*service_list.length original was 0*/;
 
-function ManageServiceList(entry) {
-    let entry_id = parseInt(entry.id, 10);
+// ! Apagar essa váriavel, está sendo usada temporariamente para substituir a variavel de tempo total
+let totalDuration = 0;
+
+function SelectServiceEntry(entry) {
+    let serviceEntry_duration = parseInt(entry.querySelector('[data-duration]').getAttribute('data-duration'));
+    let serviceEntry_value = parseInt(entry.querySelector('[data-value]').getAttribute('data-value'));
+    let serviceEntry_id = parseInt(entry.id, 10);
     
+    console.log(serviceEntry_duration);
+
     if (entry.classList.contains("selected")) {
-        // Quando é des-selecionado
+        // Remove o serviço selecionado
         entry.classList.remove("selected");
-        chosenServiceList[entry_id] = undefined;
+        let entryToRemove = schedule_services.indexOf(serviceList[serviceEntry_id]);
+        schedule_services.splice(entryToRemove, 1);
 
-        schedule_duration -= serviceList[entry_id].duration;
-        schedule_totalPrice -= serviceList[entry_id].value;
+        // Subtrai tempo de duração e valor
+        totalDuration -= serviceEntry_duration;
+        schedule_totalPrice -= serviceEntry_value;
     } else {
-        // Quando é selecionado
+        // Seleciona o serviço selecionado
         entry.classList.add("selected");
-        chosenServiceList[entry_id] = 'selected';
+        schedule_services.push(serviceList[serviceEntry_id]);
 
-        schedule_duration += serviceList[entry_id].duration;
-        schedule_totalPrice += serviceList[entry_id].value;
+        // Adiciona tempo de duração e valor
+        totalDuration += serviceEntry_duration;
+        schedule_totalPrice += serviceEntry_value;
     }
+
+    // Tempo total
+    schedule_duration = Format.ToTime(totalDuration, ":");
     
     // Atualizar a soma de tempo e valor total
-    EL_TOTAL_TIME.innerHTML = format.valueToTime(schedule_duration);
-    EL_TOTAL_PRICE.innerHTML = format.numberToPrice(schedule_totalPrice);
-}
-
-function updateServiceTitle() {
+    EL_TOTAL_TIME.innerHTML = Format.ToTime(totalDuration);
+    EL_TOTAL_PRICE.innerHTML = Format.ToCurrency(schedule_totalPrice);
 }
 
 // Atualizar a Tabela de serviços e produtos
 export async function UpdateServiceTable() {
     // Atualiza o titulo da tela de serviço
     const service_title = document.querySelector("#service-title");
-    dateTitle = schedule_day + " " + MONTH_NAMES[schedule_month] + ", " + schedule_year;
-    service_title.innerText = dateTitle;
+    service_title.innerText = schedule_dateTitle;
 
     const table = document.querySelector("#service-table");
 
     // Resetar Dados
-    schedule_duration = 0
-    schedule_totalPrice = 0
+    schedule_duration = "";
+    schedule_totalPrice = 0;
     serviceList = []
     
-    EL_TOTAL_TIME.innerHTML = format.valueToTime(schedule_duration);
-    EL_TOTAL_PRICE.innerHTML = format.numberToPrice(schedule_totalPrice);
+    EL_TOTAL_TIME.innerHTML = Format.ToTime(schedule_duration);
+    EL_TOTAL_PRICE.innerHTML = Format.ToCurrency(schedule_totalPrice);
 
     // Limpar tabela
     table.innerHTML = '';
@@ -368,7 +384,7 @@ export async function UpdateServiceTable() {
 
     // Criar lista de produtos
     productList.forEach(product => {
-        table.appendChild(CreateServiceElement(product.name, product.value, entryId, 0))
+        table.appendChild(CreateServiceElement(product.name, product.value, entryId, ''))
 
         // * adicionar duração ao produto para que o calculo fique correto
         product['duration'] = 0;
@@ -377,26 +393,29 @@ export async function UpdateServiceTable() {
     });
 }
 
-function CreateServiceElement(service, price, id, time) {
+function CreateServiceElement(name, value, id, duration) {
     let tableRow = document.createElement("tr");
-    tableRow.addEventListener("click", () => { ManageServiceList(tableRow); })
+    tableRow.addEventListener("click", () => { SelectServiceEntry(tableRow); })
     tableRow.classList.add("service-entry");
     tableRow.id = id;
 
     let serviceName = document.createElement("td");
     serviceName.classList.add("service-name");
-    serviceName.innerHTML = service;
     serviceName.classList.add("col-3");
+    serviceName.innerHTML = name;
+    serviceName.setAttribute('data-name', name)
     
     let servicePrice = document.createElement("td");
     servicePrice.classList.add("service-price");
-    servicePrice.innerHTML = format.numberToPrice(price);
     servicePrice.classList.add("col-1");
+    servicePrice.innerHTML = Format.ToCurrency(parseInt(value));
+    servicePrice.setAttribute('data-value', value)
 
     let serviceTime = document.createElement("td");
     serviceTime.classList.add("service-time");
-    serviceTime.innerHTML = format.valueToTime(time);
     serviceTime.classList.add("col-1");
+    serviceTime.innerHTML = duration.replace(':', 'H ');
+    serviceTime.setAttribute('data-duration', duration)
 
     tableRow.appendChild(serviceName);
     tableRow.appendChild(servicePrice);
@@ -408,15 +427,6 @@ function CreateServiceElement(service, price, id, time) {
 /* -------------------------------------------------------------------------- */
 /*                            Horarios Disponiveis                            */
 /* -------------------------------------------------------------------------- */
-function SelectScheduleEntry (entry) {
-    if (!entry.classList.contains("unavailable")) {
-        scheduleEntryList.forEach(schedule => { schedule.classList.remove("unavailable") });
-        scheduleEntryList.forEach(schedule => { schedule.classList.remove("selected") });
-        entry.classList.add("selected");
-        schedule_time = entry.firstChild.innerHTML;
-    }
-}
-
 // Atualiza a lista de horario assim que a janela for aberta
 export async function UpdateSchedule() {
     // Criar horarios na tabela
@@ -438,7 +448,7 @@ export async function UpdateSchedule() {
 
     // Definir titulo da janela. Dia, mês e ano
     const SCHEDULE_TITLE = document.querySelector("#schedule-title");
-    SCHEDULE_TITLE.innerText = dateTitle;
+    SCHEDULE_TITLE.innerText = schedule_dateTitle;
     
     // Limpa a tabela de marcações, e mostra todos os horarios disponiveis
     scheduleEntryList.forEach(schedule => {
@@ -451,11 +461,11 @@ export async function UpdateSchedule() {
     disabledScheduleEntryList.length = 0;
     
     // carregar lista de agenda disponivel
-    let date = schedule_year + '-' + format.DoubleDigitsInt(schedule_month + 1) + '-' + format.DoubleDigitsInt(schedule_day);  
+    let date = `${schedule_date.getFullYear()}-${Format.PadNumber(schedule_date.getMonth() + 1)}-${Format.PadNumber(schedule_date.getDate())}`;
     let params = '?date=' + date
-    scheduleEntryList = await MakeRequest('/ajax/clients' + params, 'get')
+    let RENAME_THIS_LIST_AS_SOON_AS_POSSIBLE = await MakeRequest('/ajax/clients' + params, 'get')
 
-    scheduleEntryList.forEach(schedule => {
+    RENAME_THIS_LIST_AS_SOON_AS_POSSIBLE.forEach(schedule => {
         AddToDisableList(schedule.horaInicio, schedule.minuto, schedule.duracao);
     });
 
@@ -486,13 +496,30 @@ export async function UpdateSchedule() {
     }
 }
 
+// Quando é clicado em um horario na lista de horarios
+function SelectScheduleEntry (entry) {
+    if (!entry.classList.contains("unavailable")) {
+        // Desmarcar outros horarios
+        scheduleEntryList.forEach(schedule => { 
+            schedule.classList.remove("unavailable"); 
+            schedule.classList.remove("selected")
+        });
+
+        // Selecionar
+        entry.classList.add("selected");
+        schedule_time = entry.querySelector(".entry-time").innerHTML;
+    }
+}
+
+// Criar horario da tabela de horarios
 function CreateScheduleTime(time, minute) {
     let entry = document.createElement("tr");
     entry.classList.add("schedule-entry");
     entry.addEventListener("click", () => { SelectScheduleEntry(entry) })
     
     let sch_time = document.createElement("td");
-    sch_time.innerText = (format.DoubleDigitsInt(time) + ":" + format.DoubleDigitsInt(minute));
+    sch_time.innerText = (Format.PadNumber(time) + ":" + Format.PadNumber(minute));
+    sch_time.classList.add("entry-time");
     sch_time.classList.add("col-1");
     entry.append(sch_time);
     
@@ -552,100 +579,61 @@ function AddToDisableList(startHour, startMinute, scheduleLength) {
 /*                      Resumo das Informações do Cliente                     */
 /* -------------------------------------------------------------------------- */
 export function UpdateClientSummaryInfo() {
-    const EL_SUM_CLIENT_DATE = document.querySelector("#summary-client-date");
-    const EL_SUM_CLIENT_SERVICES = document.getElementById("summary-info-service");
-    let summary = document.getElementById("summary-schedule");
+    const SCHEDULE_DATE = document.querySelector("#summary-client-date");
+    const SCHEDULE_SERVICES = document.querySelector("#summary-info-service");
+    const SCHEDULE_SUMMARY = document.querySelector("#summary-schedule");
     
-    EL_SUM_CLIENT_DATE.innerHTML = dateTitle;
-    EL_SUM_CLIENT_SERVICES.innerText = filterSelectedServices(true);
-    summary.innerText = (schedule_time.replace(':', 'H') + " - " + format.valueToTime(schedule_duration));
+    // Definir a lista de serviços
+    let serviceText = '';
+    schedule_services.forEach(service => { serviceText += service.name + "\n"; });
+
+    SCHEDULE_DATE.innerHTML = schedule_dateTitle;
+    SCHEDULE_SUMMARY.innerText = `${schedule_time.replace(':', 'H')} - ${Format.ToTime(schedule_duration)}`;
+    SCHEDULE_SERVICES.innerText = serviceText;
 }
 
-document.getElementById("btn-finish-schedule").addEventListener('click', function() {
-    let date = '';
-    date += schedule_year + '-';
-    date += format.DoubleDigitsInt(schedule_month + 1) + '-';
-    date += format.DoubleDigitsInt(schedule_day);
+CONFIRM_SCHEDULE.addEventListener('click', () => {
+    // Preparar para agendar no banco de dados
+    let jsonRequest = JSON.stringify({
+        shopId: shop_id,
+        barberID: selectedBarber,
+        name: schedule_clientName,
+        phone: schedule_phone,
+        email: schedule_email,
+        instagram: schedule_instagram,
+        services: schedule_services,
+        date: schedule_date,
+        schedule: schedule_time,
+        duration: schedule_duration,
+        toPay: schedule_totalPrice
+    }, null, 4);
 
-    let date_serviceL = '';
-    date_serviceL = filterSelectedServices(false);
-
-    let scheduleSelected = schedule_time.split(':');
-    let scheduleBeginsAt = parseFloat(scheduleSelected[0]);
-    let scheduleMinute = 0;
-    if (scheduleSelected[1] == "00" || scheduleSelected[1] == "0" || scheduleSelected[1] == "60") {scheduleMinute = 0 } else
-    if (scheduleSelected[1] == "15") {scheduleMinute = 1 } else
-    if (scheduleSelected[1] == "30") {scheduleMinute = 2 } else
-    if (scheduleSelected[1] == "45") {scheduleMinute = 3 }
-
-    API_CreateClient(schedule_name, scheduleBeginsAt, scheduleMinute, schedule_duration, date_serviceL, schedule_totalPrice, schedule_phone, schedule_email, schedule_instagram, date, selectedBarber);
+    console.log(jsonRequest);
+    // MakeRequest('/ajax/clients/', 'post', jsonRequest);
     // DisplayModal(false, true);
 })
 
-function filterSelectedServices(removeComma) {
-    let service = new Array;
-    
-    for (let index = 0; index < serviceList.length; index++) {
-        if (chosenServiceList[index] != undefined) {
-            service.push(serviceList[index][0]);
-        }
-    }
-
-    if (removeComma) {
-        let serviceText = '';
-        serviceText = service.toString().replace(/,/g, '\n');
-        return serviceText;
-    } else {
-        let serviceText = '';
-        serviceText = service.toString().replace(/,/g, ',')
-        return serviceText;
-    }
-}
-
 //  || Utilidades    ---------------------------------------------------------------------------
 export function ClearClientForms() {
-    const IN_CLIENT_NAME = document.querySelector("#input-client-name");
-    const IN_CLIENT_EMAIL = document.querySelector("#input-client-email");
-
-    schedule_day = 0;
-    schedule_month = GetMonth(false);
-    schedule_year = CURRENT_YEAR;
-    schedule_name = '';
+    // Anular todos os dados do agendamento
+    schedule_date.setDate(0);
+    schedule_clientName = '';
     schedule_phone = '';
     schedule_email = '';
     schedule_instagram = '';
+    schedule_services.length = 0;
     schedule_time = '';
+    schedule_duration = '';
+    schedule_totalPrice = 0;
+    schedule_dateTitle = '';
     
-    IN_CLIENT_NAME.value = '';
+    // Resetar inputs dos dados do cliente
+    INPUT_NAME.value = '';
     INPUT_PHONE.value = '';
-    IN_CLIENT_EMAIL.value = '';
+    INPUT_EMAIL.value = '';
     INPUT_INSTAGRAM.value = '';
 
-    format.addClassArray(warningMsg, "d-none");
-    format.removeClassArray(CALENDAR_DAY_LIST, "selected-day");
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 AREA TESTE                                 */
-/* -------------------------------------------------------------------------- */
-
-async function API_CreateClient(Name, ScheduleStart, ScheduleMinute, ScheduleDuration, Service, Value, Phone, Email, Instagram, Date, BarberID) {
-    let jsonRequest = JSON.stringify({
-        id: 0,
-        name: Name,
-        scheduleStart: ScheduleStart,
-        scheduleMinute: ScheduleMinute,
-        scheduleDuration: ScheduleDuration,
-        service: Service,
-        value: Value,
-        phone: Phone,
-        email: Email,
-        instagram: Instagram,
-        date: Date,
-        shopID: shopId,
-        barberID: BarberID
-    }, null);
-
-    console.log(jsonRequest);
-    MakeRequest('/ajax/clients/', 'post', jsonRequest);
+    // Remover avisos, e remover itens selecionados
+    warningMsg.forEach(message => { message.classList.add("d-none"); });
+    CALENDAR_DAY_LIST.forEach(day => { day.classList.remove("selected-day"); });  
 }

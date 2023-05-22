@@ -154,7 +154,7 @@
                     prosseguir.</p>
 
                 <!--  CONFIRM BUTTON  -->
-                <button class="btn-confirm" type="submit" id="btn-confirm-id-1">CONFIRMAR</button>
+                <button class="btn-confirm" type="submit" id="btn-confirm-id-1" data-modalIndex="1">CONFIRMAR</button>
             </pop-up>
 
             <!--  INFORMAÇÕES DO CLIENTE  -->
@@ -174,7 +174,7 @@
 
                 <!--  CONFIRM BUTTON  -->
                 <div class="spacer"></div>
-                <button class="btn-confirm" type="submit" id="btn-confirm-id-2">CONFIRMAR</button>
+                <button class="btn-confirm" type="submit" id="confirm-user-info" data-modalIndex="2">CONFIRMAR</button>
             </pop-up>
 
             <!--  LISTA DE SERVIÇOS E PRODUTOS  -->
@@ -212,7 +212,7 @@
                     prosseguir.</p>
 
                 <!--  CONFIRM BUTTON  -->
-                <button class="btn-confirm" type="submit" id="btn-confirm-id-3">CONFIRMAR</button>
+                <button class="btn-confirm" type="submit" id="btn-confirm-id-3" data-modalIndex="3">CONFIRMAR</button>
             </pop-up>
 
             <!--  AGENDAR HORARIO  -->
@@ -233,13 +233,13 @@
                 </p>
 
                 <!--  CONFIRM BUTTON  -->
-                <button class="btn-confirm" type="submit" id="btn-confirm-id-4">CONFIRMAR</button>
+                <button class="btn-confirm" type="submit" id="btn-confirm-id-4" data-modalIndex="4">CONFIRMAR</button>
             </pop-up>
 
-            <!--  RESUMO, INFORMAÇÕES DO CLIENTE  -->
+            <!-- RESUMO, INFORMAÇÕES DO CLIENTE  -->
             <pop-up class="d-none" id="overview-window">
-                <img src="" id="client-img" alt="Cliente" />
-                <!-- <img src="./resources/icons/checkmark.jpg" id="client-img" alt="Cliente" /> -->
+                <!-- ! Trocar para uma imagem com um simbolo de pronto -->
+                <img src="{% static '/geral/profilePictures/worker2.jpg'%}" id="client-img" alt="Cliente" />
                 <div id="client-info-overview">
                 </div>
                 <h4 class="title-underline" id="summary-client-date">DIA MES, ANO</h4>
@@ -249,7 +249,7 @@
                 </div>
 
                 <!--  CONFIRM BUTTON  -->
-                <button class="btn-confirm" id="btn-finish-schedule" type="submit">Confirmar Agendamento</button>
+                <button class="btn-confirm" id="btn-finish-schedule" type="submit" data-modalIndex="5">Confirmar Agendamento</button>
             </pop-up>
         </main-pop-up>
         
