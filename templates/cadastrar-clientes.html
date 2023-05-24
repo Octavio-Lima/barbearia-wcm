@@ -19,15 +19,13 @@
         crossorigin="anonymous"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule-box.css' %}"> <!-- Schedule Box CSS -->
-    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule.css' %}"> <!-- Maing Page CSS -->
+    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule-box.css' %}">
+    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule.css' %}">
 
     <!-- Scripts -->
-    {% comment %} <script src="{% static 'geral/js/formating.js' %}" type="module" defer></script> {% endcomment %}
     <script src="{% static 'cadastrar-cliente/main.js' %}" type="module" defer></script>
     <script src="{% static 'cadastrar-cliente/client-scheduler.js' %}" type="module" defer></script>
-    {% comment %} <script src="{% static 'geral/js/fixBodyVH.js' %}" type="module" defer></script> {% endcomment %}
-
+    <!-- <script src="{% static 'geral/js/fixBodyVH.js' %}" type="module" defer></script> -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
     <!-- Fontes -->
@@ -51,14 +49,12 @@
 
         <main>
             <div id="barber-list-container">
-                <!-- <!-- <div class="barber">
-                    <img src="./resources/images/worker/worker0.jpg" class="worker-img" alt="Barbeiro" />
-                    <h3 class="worker-name">JOÃO PEDRO</h3>
-                </div> -->
-                {% comment %} <div class="barber">
-                    <img src="{% static 'geral/profilePictures/worker2.jpg' %}" class="worker-img" alt="Barbeiro" />
-                    <h3 class="worker-name">LÚCIO</h3>
-                </div> {% endcomment %}
+                {% for barber in barberList %}
+                <div class="barber" id="{{ barber.id }}">
+                    <img src="/static/geral/profilePictures/worker{{ barber.id }}.jpg" class="worker-img" alt="Barbeiro"/>
+                    <h3 class="worker-name">{{ barber.name }}</h3>
+                </div>
+                {% endfor %}
             </div>
             <div class="menu-button-group">
                 <a draggable="false" class="menu-button" href="https://g.co/kgs/ZuPVoq" target="_blank">LOCALIZAÇÃO</a>
@@ -245,7 +241,7 @@
                 <h4 class="title-underline" id="summary-client-date">DIA MES, ANO</h4>
                 <h4 class="title-underline" id="summary-schedule">18H00 - 19H00</h4>
                 <div class="selected-service-list">
-                    <p id="summary-info-service">Procedimento</p>
+                    <p id="summary-info-service" class="d-none"></p>
                 </div>
 
                 <!--  CONFIRM BUTTON  -->

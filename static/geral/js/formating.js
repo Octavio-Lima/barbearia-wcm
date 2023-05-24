@@ -1,34 +1,16 @@
 // Se um int for menor que 10, deverá retornar ex: 05
 export function PadNumber(number = 0) {
-    return (number < 10 ? '0' : '') + number;
+    if (number < 0) {
+        return (number > -10 ? '0' : '') + number*-1;
+    } else {
+        return (number < 10 ? '0' : '') + number;
+    }
 }
 
 export function ToCurrency(value = 0) {
     let moneyFormat = `R$ ${value.toFixed(2)}`;
     moneyFormat = moneyFormat.replace('.', ',');
     return moneyFormat;
-}
-
-export function ToTime(value, timeSeparator = "H ") {
-    let time = ((value * 15) / 60).toString();
-    let splitValue = time.split('.');
-    let minutes = 0;
-    let hour = parseInt(splitValue[0]);
-
-    hour = (hour <= 9 ? PadNumber(hour) : hour);
-    minutes = 60 * (parseFloat("0." + splitValue[1]));
-    
-    if (splitValue.length > 1) {
-        // let convertExtraMinuteToHour = ("" + (parseFloat(minutes) / 60));
-        // let splitMinuteFromHour = convertExtraMinuteToHour.split('.');
-        // splitValue[0] = (parseFloat(splitValue[0]) + parseFloat(splitMinuteFromHour[0]));
-        // minutes = splitMinuteFromHour[1]
-        // console.log(splitMinuteFromHour[1]);
-    } else {
-        minutes = "00"
-    }
-
-    return `${hour}${timeSeparator}${minutes}`;
 }
 
 export function ToMinutes(time) {
@@ -47,10 +29,16 @@ export class Time {
         
         // obter argumentos
         for (let i = 0; i < arguments.length; i++) {
-            let time = arguments[i].split(':');
-    
-            totalMinutes += parseInt(time[0] * 60);
-            totalMinutes += parseInt(time[1]);
+            let time = arguments[i].toString().split(':');
+
+            if (time == null || time == "") {
+                totalMinutes += 0;
+            } else if (time.length == 1) {
+                totalMinutes += parseInt(time[0]);
+            } else {   
+                totalMinutes += parseInt(time[0] * 60);
+                totalMinutes += parseInt(time[1]);
+            }
         }
     
         // Nova hora
@@ -65,10 +53,27 @@ export class Time {
         
         // obter argumentos
         for (let i = 0; i < arguments.length; i++) {
-            let time = arguments[i].split(':');
-    
-            totalMinutes -= parseInt(time[0] * 60);
-            totalMinutes -= parseInt(time[1]);
+            let time = arguments[i].toString().split(':');
+            
+            if (i == 0) { // para o primeiro valor, tem que ter o valor original como base
+                if (time == null || time == "") {
+                    totalMinutes += 0;
+                } else if (time.length == 1) {
+                    totalMinutes += parseInt(time[0]);
+                } else {
+                    totalMinutes += parseInt(time[0] * 60);
+                    totalMinutes += parseInt(time[1]);
+                }
+            } else {
+                if (time == null || time == "") {
+                    totalMinutes -= 0;
+                } else if (time.length == 1) {
+                    totalMinutes -= parseInt(time[0]);
+                } else {
+                    totalMinutes -= parseInt(time[0] * 60);
+                    totalMinutes -= parseInt(time[1]);
+                }
+            }
         }
     
         // Nova hora

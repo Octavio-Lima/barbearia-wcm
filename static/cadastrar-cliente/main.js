@@ -4,7 +4,7 @@ import { DisplayModal } from "/static/cadastrar-cliente/scheduler-windows.js";
 
 // * configurações da barbearia
 export let shop_id = Cookies.get("shopId");
-export let shop_barberList;
+export let shop_barberList = document.querySelectorAll(".barber");;
 export let shop_opensAt = 0;
 export let shop_closesAt = 0;
 export let shop_firstWeekDayNumber;
@@ -17,7 +17,6 @@ export let selectedBarber = 0;
 
 // Inicializar
 await LoadShopConfig()
-await CreateBarberList();
 
 /* ------------------------------ Configurações ----------------------------- */
 async function LoadShopConfig() {
@@ -52,57 +51,20 @@ async function LoadShopConfig() {
 }
 
 /* --------------------------- Lista de Barbeiros --------------------------- */
-async function CreateBarberList() {
-    let param = '?shopId=' + shop_id
-    let barberList = await MakeRequest('/ajax/users' + param, 'get')
-    
-    // Mostrar na página que os barbeiros não foram encontrados
-    if (barberList == null) {
-        document.querySelector(".title-agendamento").text("Não foi possível carregar lista de barbeiros :(")
-        return
-    }
-    
-    // criar cada barbeiro na página
-    barberList.forEach(barber => { 
-        NewBarberElement(barber.name, barber.id);
-    });
-    
-    // obter todos os barbeiros da página
-    shop_barberList = document.querySelectorAll(".barber");
-}
-
-function NewBarberElement(barberName = '', id) {
-    let BARBER = document.createElement('div');
-    BARBER.classList.add('barber');
-    BARBER.setAttribute('id', id);
-
-    const BARBER_IMG = document.createElement('img');
-    BARBER_IMG.setAttribute('src', '/static/geral/profilePictures/worker' + id + '.jpg');
-    BARBER_IMG.setAttribute('alt', 'Barbeiro');
-    BARBER_IMG.classList.add('worker-img');
-    BARBER.append(BARBER_IMG);
-    
-    const BARBER_NAME = document.createElement('h3')
-    BARBER_NAME.classList.add('worker-name')
-    BARBER_NAME.innerText = barberName.toUpperCase()
-    BARBER.append(BARBER_NAME)
-
+shop_barberList.forEach(barber => {
     // evento de quando for clicado no barbeiro
-    BARBER.addEventListener("click", () => {
+    barber.addEventListener("click", () => {
         // selecionar barbeiro e abrir modal de agendamento
-        selectedBarber = id;
+        selectedBarber = barber.id;
         DisplayModal();
         
         // Desativar estilos dos outros barbeiros selecionados e ativar estilo do barbeiro selecionado
-        shop_barberList.forEach(barber => {
-            barber.classList.remove("selected-worker")
-            barber.querySelector(".worker-name").classList.remove("text-glow")
+        shop_barberList.forEach(otherBarbers => {
+            otherBarbers.classList.remove("selected-worker")
+            otherBarbers.querySelector(".worker-name").classList.remove("text-glow")
         });
 
-        BARBER.classList.add("selected-worker");
-        BARBER_NAME.classList.add("text-glow");
-    })
-    
-    // anexar ao container de lista de barbeiros
-    document.getElementById("barber-list-container").append(BARBER);
-}
+        barber.classList.add("selected-worker");
+        barber.querySelector(".worker-name").classList.add("text-glow");
+    });
+});

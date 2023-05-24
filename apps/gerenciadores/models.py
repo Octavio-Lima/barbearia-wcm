@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Cliente(models.Model):
     shopId = models.IntegerField()
-    barberID = models.IntegerField()
+    barberId = models.IntegerField()
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     email = models.CharField(max_length=255)
@@ -11,7 +11,7 @@ class Cliente(models.Model):
     services = models.TextField()
     date = models.DateField()
     schedule = models.TimeField(default='00:00')
-    duration = models.IntegerField()
+    duration = models.CharField(max_length=5)
     toPay = models.FloatField()
 
     def __str__(self):

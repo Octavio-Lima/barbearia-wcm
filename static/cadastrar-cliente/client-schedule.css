@@ -4,6 +4,7 @@
 
 * {
     font-family: 'Antonio', sans-serif;
+    font-display: swap;
     user-select: none;
     margin: 0; padding: 0; border: 0;
 }

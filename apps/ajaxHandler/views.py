@@ -97,20 +97,20 @@ class ajaxClients(View):
     
     def post(self, request):
         client = json.loads(self.request.body)
-        print(client)
+        
+        date = datetime.strptime(client['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
 
-        newClient = Cliente( shopID = client['shopID'],
-            barberID = client['barberID'],
-            nome = client['name'],
-            celular = client['phone'],
+        newClient = Cliente(shopId = client['shopId'],
+            barberId = client['barberId'],
+            name = client['name'],
+            phone = client['phone'],
             email = client['email'],
             instagram = client['instagram'],
-            servicos = client['service'],
-            dia = client['date'],
-            horaInicio = client['scheduleStart'],
-            minuto = client['scheduleMinute'],
-            duracao = client['scheduleDuration'],
-            valorPagar = client['value'])
+            services = client['services'],
+            date = date.date(),
+            schedule = client['schedule'],
+            duration = client['duration'],
+            toPay = client['toPay'])
         
         newClient.save()
 

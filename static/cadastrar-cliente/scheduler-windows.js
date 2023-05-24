@@ -1,5 +1,5 @@
 /* Gerencia as Janelas do agendamento do cliente */
-import { schedule_date, UpdateCalendar, UpdateServiceTable,
+import { schedule_day, UpdateCalendar, UpdateServiceTable, schedule_services, schedule_time,
     UpdateSchedule, isNextMonth, UpdateClientSummaryInfo } from "/static/cadastrar-cliente/client-scheduler.js";
 import { shop_barberList } from "/static/cadastrar-cliente/main.js";
 
@@ -16,7 +16,7 @@ const SUB_MODAL_LIST = [ // Agrupar todas as janelas em uma array só
     document.querySelector("#overview-window")
 ]
 
-let currentSubModal;
+let currentSubModal = 0;
 const warningMsg = document.querySelectorAll(".warning-msg")
 
 /* ----------------------------- Modal Principal ---------------------------- */
@@ -67,7 +67,11 @@ const CONFIRM_BUTTON_LIST = document.querySelectorAll(".btn-confirm");
 CONFIRM_BUTTON_LIST.forEach(button => {
     button.addEventListener("click", () => {
         let index = button.getAttribute('data-modalIndex').replace(/\D/g, '');
-        GoToWindowIndex(index);
+
+        // Se não for o botão de confirmar agendamento
+        if (button.id != 'btn-finish-schedule') {
+            GoToWindowIndex(index);
+        }
     })
 });
 
@@ -79,7 +83,7 @@ CLOSE_WINDOW_OVERLAY.addEventListener("click", function () {
 /* ------------------------------- Sub Modais ------------------------------- */
 // Acessar página informada da janela 
 function GoToWindowIndex(index, ignoreRequirements = false) {
-    if (CheckWindowRequirements(currentSubModal) || ignoreRequirements) {
+    if (CheckWindowRequirements() || ignoreRequirements) {
         // esconder todas os avisos e submodais
         SUB_MODAL_LIST.forEach(page => { page.classList.add('d-none'); })
         warningMsg.forEach(message => { message.classList.add('d-none'); })
@@ -92,26 +96,25 @@ function GoToWindowIndex(index, ignoreRequirements = false) {
 }
 
 // Checar se o cliente pode prosseguir para a próxima página
-function CheckWindowRequirements(windowIndex) {
-    if (windowIndex == 0) { if (CheckCalendar(windowIndex)) { return true; } }  // conferir calendario
-    if (windowIndex == 1) { if (CheckClientForm(windowIndex)) { return true; } } // conferir formulario do cliente
-    if (windowIndex == 2) { if (CheckSelectedServices(windowIndex)) { return true; } }  // conferir selecionamento do serviço / produto
-    if (windowIndex == 3) { if (CheckScheduling(windowIndex)) { return true; } } // conferir agendamento de horario
+function CheckWindowRequirements() {
+    if (currentSubModal == 0) { if (CheckCalendar()) { return true; } }  // conferir calendario
+    if (currentSubModal == 1) { if (CheckClientForm(currentSubModal)) { return true; } } // conferir formulario do cliente
+    if (currentSubModal == 2) { if (CheckSelectedServices(currentSubModal)) { return true; } }  // conferir selecionamento do serviço / produto
+    if (currentSubModal == 3) { if (CheckScheduling(currentSubModal)) { return true; } } // conferir agendamento de horario
     
     return false;
 }
 
 /* ------- Seção de conferir se o formulário preenche os requerimentos ------ */
-function CheckCalendar(index) {
-    let day = schedule_date.getDate();
-    if (day >= 1 && day <= 31) {
+function CheckCalendar() {
+    if (schedule_day >= 1 && schedule_day <= 31) {
         return true;
     }
 
-    warningMsg[index].classList.remove("d-none");
+    warningMsg[currentSubModal].classList.remove("d-none");
 }
 
-function CheckClientForm(index) {
+function CheckClientForm() {
 
     let clientName = document.querySelector("#input-client-name").value;
     let clientInstagram = document.querySelector("#input-client-instagram").value;
@@ -122,7 +125,7 @@ function CheckClientForm(index) {
         return true;
     }
     
-    warningMsg[index].classList.remove("d-none");
+    warningMsg[currentSubModal].classList.remove("d-none");
 }
 
 function CheckEmail(email) {
@@ -131,21 +134,20 @@ function CheckEmail(email) {
     }
 }
 
-function CheckSelectedServices(index) {
-    // if (clientName) {
-    //     return true;
-    // }
-    return true;
-    // warningMsg[index].classList.remove("d-none");
+function CheckSelectedServices() {
+    if (schedule_services.length > 0) {
+        return true;
+    }
+
+    warningMsg[currentSubModal].classList.remove("d-none");
 }
 
 function CheckScheduling(index) {
-    // if (data_time) {
-    //     return true;
-    // }
-    return true;
+    if (schedule_time != '' && schedule_time != null) {
+        return true;
+    }
     
-    // warningMsg[index].classList.remove("d-none");
+    warningMsg[index].classList.remove("d-none");
 }
 
 // Atualizar as informações de cada janela
