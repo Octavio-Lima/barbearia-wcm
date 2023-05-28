@@ -1,0 +1,274 @@
+:root {
+    --user-theme: dark;
+}
+
+* {
+    font-family: 'Antonio', sans-serif;
+    text-transform: uppercase;
+    user-select: none;
+    /* background-color: #0f03; */
+
+}
+
+body {
+    background-color: #ECF0F3;
+    background-size: cover;
+}
+
+/* --------------------------- Container Principal -------------------------- */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    
+    /* background-color: red; */
+    margin: 0 auto;
+    padding: 4rem 2rem 0;
+
+    min-height: 100vh;
+    width: 355px;
+    max-width: 100%;
+}
+
+/* --------------------------------- Header --------------------------------- */
+header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2rem;
+}
+
+/*  ||  PROFILE STYLE  ||  */
+#user-img {
+    --image-size: 60px;
+    width: var(--image-size); height: var(--image-size);
+    clip-path: circle(calc(var(--image-size) / 2) at center);
+}
+
+#worker-name {
+    /* Nome do trabalhador */
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+    margin-left: 0.8rem;
+}
+
+#worker-job {
+    /* Função do funcionario */
+    font-size: 0.8rem;
+    color: #989899;
+    margin: 0;
+    margin-left: 0.8rem;
+}
+
+/* ----------------------------- Lista de Links ----------------------------- */
+
+.link-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* width: 230px;
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: blue; */
+}
+
+select-link {
+    width: 100%;
+    display: flexbox;
+    height: 54px;
+    margin: 10px 0;
+
+    display: flex;
+}
+
+.link-img {
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+
+    color: #6e6e6e;
+    text-align: center;
+
+    display: inline-flex;
+
+    margin: auto 0 auto 0.5rem;
+    padding: 0;
+    line-height: 0;
+}
+
+.link {
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    text-decoration: none;
+
+    width: 100%;
+    padding: 0 0;
+    margin: auto 15px;
+}
+
+.link:hover {
+    color: #15c;
+}
+
+hr {
+    border: 1px #000 solid;
+    width: 70%;
+    margin: 0;
+    margin-left: 2rem;
+}
+
+/* Se for o ultimo da lista, esconder a linha */
+.link-container hr:last-child {
+    display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                             Cadastrar Clientes                             */
+/* -------------------------------------------------------------------------- */
+input {
+    width: 100%;
+    margin: 5px 0;
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+
+.category-title {
+    color: #000;
+    font-size: 1rem;
+
+    width: 100%;
+    /* border-top: 2px solid #0000;
+  border-bottom: 2px solid #999; */
+    padding: 30px 0;
+    margin: auto 10px;
+}
+
+
+/* Fluxo de caixa */
+
+.total-price {
+    border-top: #999 dotted 2px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Agendamentos                                */
+/* -------------------------------------------------------------------------- */
+#schedule-list {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 62vh;
+    overflow-x: scroll;
+}
+
+.schedule-entry {
+    display: flex;
+    flex-direction: row;
+
+    font-size: 18px;
+    max-height: 70px;
+}
+
+.schedule-entry:not(.top):not(.middle) {
+    margin-bottom: 15px;
+}
+
+.schedule-entry h3 {
+    width: 40px;
+    text-align: center;
+}
+
+.row-client-detail p {
+    font-size: 12px;
+    color: #fff;
+}
+
+.row-busy-top {
+    background-color: #15c;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+.row-busy {
+    background-color: #15c;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+.row-busy-bottom {
+    background-color: #15c;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    min-width: 70%;
+    padding: 5px 10px 0px;
+
+    color: #ECF0F3;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Outros                                   */
+/* -------------------------------------------------------------------------- */
+
+.flex-space {
+    flex-grow: 1;
+}
+
+#dark-mode {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    display: flex;
+    align-items: center;
+}
+
+#dark-mode label {
+    margin: 0 6px 3px -3px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Media Queries                               */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {    
+    body {
+        background-color: #131313;
+    }
+    
+    /* --------------------------------- Header --------------------------------- */    
+    #worker-name {
+        color: #ddd;
+    }
+    
+    #worker-job {
+        color: #aaa;
+    }
+    
+    /* ----------------------------- Lista de Links ----------------------------- */    
+    .link-img {
+        color: #ddd;
+    }
+    
+    .link {
+        color: #ddd;
+    }
+    
+    .link:hover {
+        color: #15c;
+    }
+    
+    hr {
+        border-color: #ddd;
+    } 
+}

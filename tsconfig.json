@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": true,
+    "moduleResolution":"classic",
+    "watch": true
+  },
+  "include": ["./static"],
+  "exclude": ["./static/admin"]
+}

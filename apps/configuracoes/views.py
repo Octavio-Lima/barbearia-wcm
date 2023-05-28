@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from apps.cadastros.models import User
+from apps.area_barbeiro.models import Usuario
 from apps.configuracoes.models import Shop
 
 # Create your views here.
@@ -12,7 +12,7 @@ def configService(request):
     shopId = request.COOKIES.get('shopId')
 
     # Obter informações da barbearia
-    barberList = list(User.objects.filter(shopId=shopId).values())
+    barberList = list(Usuario.objects.filter(shopId=shopId).values())
     shopName = list(Shop.objects.filter(field_id=shopId).values())
 
     context = { 'barberList': barberList, 'shopName': shopName[0]['shopName'] }

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import JsonResponse
-from apps.cadastros.models import User, BarberUserSetting
+from apps.area_barbeiro.models import Usuario, BarberUserSetting
 from apps.configuracoes.models import ShopSetting, ShopProduct, Shop
 from apps.gerenciadores.models import Cliente, Lancamento
 import json
@@ -12,7 +12,7 @@ class ajaxUser(View):
     def get(self, request):
         # Procurar usuario pelo ID da barbearia
         shopId = request.GET['shopId']
-        users = User.objects.filter(shopId=shopId, accessType__icontains='BARBEIRO').values()
+        users = Usuario.objects.filter(shopId=shopId, accessType__icontains='BARBEIRO').values()
 
         # Enviar como lista
         userList = list(users)

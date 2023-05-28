@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'apps.ajaxHandler',
     'apps.gerenciar',
     'apps.gerenciadores',
+    'apps.area_cliente',
+    'apps.area_barbeiro'
 ]
 
 MIDDLEWARE = [

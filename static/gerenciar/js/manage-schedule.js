@@ -1,66 +1,53 @@
 // import * as modal from "./modals.js";
+import { MakeRequest } from "../../geral/js/request";
 // let apiURL = "https://cb9b-179-106-79-130.sa.ngrok.io/" // URL de teste NGROK
-let apiURL = "http://localhost:5018/" // URL Local
-let shopId = Cookies.get("shopId")
-
-let shopOpensAt = 0
-let shopClosesAt = 24
-const SCHEDULE_TABLE = document.querySelector("#schedule-list")
-let tableDate
-
-let entriesList = [];
+let apiURL = "http://localhost:5018/"; // URL Local
+let shopId = Cookies.get("shopId");
+let shopOpensAt = 0;
+let shopClosesAt = 24;
+const SCHEDULE_TABLE = document.querySelector("#schedule-list");
+let tableDate;
+let entriesList;
 let scheduleList = [];
-
-const INP_DATE = document.querySelector("#schedule-date")
-
+const DATE = document.querySelector("#schedule-date");
 /* ------------------------------- Inicializar ------------------------------ */
 async function Initialize() {
-    await ShopConfigurationSetup(shopId) // Configurações da Barbearia
-
+    await ShopConfigurationSetup(); // Configurações da Barbearia
     for (let i = shopOpensAt; i < shopClosesAt; i++) {
-        CreateEntry(i, 0)
-        CreateEntry(i, 1)
-        CreateEntry(i, 2)
-        CreateEntry(i, 3)
-        updateEntryList()
+        CreateEntry(i, 0);
+        CreateEntry(i, 1);
+        CreateEntry(i, 2);
+        CreateEntry(i, 3);
+        updateEntryList();
     }
-
-    ClearTableInfo()
-
+    ClearTableInfo();
     // Definir o dia inicial da tabela
-    let newDate = new Date()
-    tableDate = newDate.getFullYear() + "-" + 
-        (newDate.getMonth() + 1).toString().padStart(2, '0') + "-" + 
-        newDate.getDate().toString().padStart(2, '0')
-    INP_DATE.value = tableDate
-
+    let newDate = new Date();
+    tableDate = newDate.getFullYear() + "-" +
+        (newDate.getMonth() + 1).toString().padStart(2, '0') + "-" +
+        newDate.getDate().toString().padStart(2, '0');
+    DATE.value = tableDate;
     // carregar lista de agenda disponivel
     UpdateScheduleTable();
 }
-
 /* -------------------------------------------------------------------------- */
 /*                              Obter Infomações                              */
 /* -------------------------------------------------------------------------- */
-
 /* ------------------- Carregar Configurações da Barbearia ------------------ */
-async function ShopConfigurationSetup(ShopID) {
+async function ShopConfigurationSetup() {
     // Obter lista de Serviços do Banco de Dados
-    let params = '?ShopID=' + shopId
-    let shopConfig = await MakeRequest('/ajax/shop/config' + params, 'get')
-
+    let params = '?ShopID=' + shopId;
+    let shopConfig = await MakeRequest('/ajax/shop/config' + params, 'get');
     let opensAt = shopConfig.AbreAs.split(':');
     shopOpensAt = opensAt[0];
-    
     let closesAt = shopConfig.FechaAs.split(':');
     shopClosesAt = closesAt[0];
 }
-
-async function GetShopSettings(ShopID) {    
+async function GetShopSettings(ShopID) {
     let url = "http://localhost:5018/api/Configuration/GetShopConfiguration";
     let jsonRequest = JSON.stringify({
         shopID: ShopID,
     });
-
     const response = await fetch(url, {
         method: "POST",
         mode: "cors",
@@ -73,12 +60,10 @@ async function GetShopSettings(ShopID) {
         referrerPolicy: "no-referrer",
         body: jsonRequest
     });
-    
     let bodyResponse = await response.text();
     let jsonResponse = JSON.parse(bodyResponse);
-    return jsonResponse
+    return jsonResponse;
 }
-
 /* --------------------------- Crianção de Horario -------------------------- */
 function CreateEntry(hour, minute) {
     let entry = document.createElement("div");
@@ -92,9 +77,8 @@ function CreateEntry(hour, minute) {
     let EL_INSTA = document.createElement("p");
     let EL_SPACER = document.createElement("p");
     let EL_SPACERTWO = document.createElement("p");
-
-    entry.addEventListener("dblclick", (e) => { modal.displayModal(EL_CLIENT.innerText); })
-
+    // Modal que estava testando
+    // entry.addEventListener("dblclick", () => { modal.displayModal(EL_CLIENT.innerText); })
     entry.classList.add("schedule-entry");
     time.classList.add("time");
     description.classList.add("container-entry-details");
@@ -105,154 +89,115 @@ function CreateEntry(hour, minute) {
     bottomRow.classList.add("detail-container");
     bottomRow.classList.add("info-bottom");
     EL_SPACER.classList.add("flex-grow-1");
-
-    time.innerText = formatTimeString(hour) + ":" + formatTimeString((15 * minute));
-    
+    time.innerText = formatTimeString(hour) + ":" + formatTimeString(15 * minute);
     topRow.appendChild(EL_SERVICE);
     topRow.appendChild(EL_CLIENT);
-    
     bottomRow.appendChild(EL_INSTA);
     bottomRow.appendChild(EL_SPACER);
     bottomRow.appendChild(EL_PHONE);
-
     entry.appendChild(time);
     description.appendChild(topRow);
     description.appendChild(bottomRow);
     entry.appendChild(description);
-
     SCHEDULE_TABLE.appendChild(entry);
 }
-
 /* -------------------------------------------------------------------------- */
 /*                                 Inicializar                                */
 /* -------------------------------------------------------------------------- */
-await Initialize()
-
+await Initialize();
 function AddEntryInfo(startHour, startMinute, scheduleLength, service, client, phone, insta) {
     let correctIndex = ((startHour * 4) + startMinute) - (shopOpensAt * 4);
     let entries = [];
-
     for (let i = 0; i < scheduleLength; i++) {
-        let j = correctIndex + i
+        let j = correctIndex + i;
         entries[i] = entriesList[j].children;
     }
-
     // let entry = entriesList[correctIndex].children;
     let entryDescription = entries[0].item(1).children;
     let descriptionTop = entryDescription.item(0).children;
     let descriptionBot = entryDescription.item(1).children;
-
     let el_name = descriptionTop.item(0);
     let el_service = descriptionTop.item(1);
     let el_phone = descriptionBot.item(0);
     let el_insta = descriptionBot.item(2);
-
     for (let i = 0; i < scheduleLength; i++) {
-        if (i == 0) { 
+        if (i == 0) {
             entries[i].item(1).classList.add("row-busy-top");
-            entries[i].item(0).parentElement.classList.add("top"); 
-        } else if (i == scheduleLength - 1) { 
+            entries[i].item(0).parentElement.classList.add("top");
+        }
+        else if (i == scheduleLength - 1) {
             entries[i].item(1).classList.add("row-busy-bottom");
             entries[i].item(0).parentElement.classList.add("base");
-        } else { 
+        }
+        else {
             entries[i].item(1).classList.add("row-busy");
-            /*console.log("middle")*/;
+            /*console.log("middle")*/ ;
             entries[i].item(0).parentElement.classList.add("middle");
-            entries[i].item(0).parentElement.children.item(0).classList.add("hidden"); 
+            entries[i].item(0).parentElement.children.item(0).classList.add("hidden");
         }
     }
-
     el_name.innerHTML = client + "&nbsp;";
     el_service.innerText = "(" + service + ")";
     el_phone.innerText = phone;
     el_insta.innerText = insta;
-
     // entry.item(3).innerText = service;
     // el_client.innerText = client;
     // el_phone.innerText = phone;
     // el_insta.innerText = insta;
 }
-
 function ClearTableInfo() {
     let entries = [];
     entriesList.forEach(entry => {
         let scheduleEntry = entry.children;
-
         let entryDescription = scheduleEntry.item(1).children;
         let descriptionTop = entryDescription.item(0).children;
         let descriptionBot = entryDescription.item(1).children;
-    
         let el_name = descriptionTop.item(0);
         let el_service = descriptionTop.item(1);
         let el_phone = descriptionBot.item(0);
         let el_insta = descriptionBot.item(2);
-        
         el_name.innerHTML = "";
         el_service.innerText = "";
         el_phone.innerText = "";
         el_insta.innerText = "";
-
         scheduleEntry.item(1).classList.remove("row-busy-top");
         scheduleEntry.item(1).classList.remove("row-busy-bottom");
         scheduleEntry.item(1).classList.remove("row-busy");
         scheduleEntry.item(0).parentElement.classList.remove("top");
         scheduleEntry.item(0).parentElement.classList.remove("base");
         scheduleEntry.item(0).parentElement.classList.remove("middle");
-        scheduleEntry.item(0).parentElement.children.item(0).classList.remove("hidden"); 
+        scheduleEntry.item(0).parentElement.children.item(0).classList.remove("hidden");
     });
 }
-
 /* ---------------------------- Atualizar Tabela ---------------------------- */
-INP_DATE.addEventListener("change", async function() {
-    await ShopConfigurationSetup(shopId) // Configurações da Barbearia
-    ClearTableInfo()
-
-    UpdateScheduleTable()
-})
-
+DATE.addEventListener("change", async function () {
+    await ShopConfigurationSetup(); // Configurações da Barbearia
+    ClearTableInfo();
+    UpdateScheduleTable();
+});
 async function UpdateScheduleTable() {
     // carregar lista de agenda disponivel
-    let params = '?date=' + INP_DATE.value
-    let scheduleList = await MakeRequest('/ajax/clients' + params, 'get')
-
+    let params = '?date=' + DATE.value;
+    let scheduleList = await MakeRequest('/ajax/clients' + params, 'get');
     console.log(scheduleList);
-
     // Adicionar Agendamentos a lista de horarios preenchidos
-    scheduleList.forEach(entry => {
+    scheduleList.forEach((entry) => {
         // console.log(entry);
         AddEntryInfo(entry.horaInicio, entry.minuto, entry.duracao, "corte de cabelo", entry.nome, entry.celular, entry.instagram);
     });
 }
-
-
-
 // || Extra
-
-function formatTimeString(n) {
-    let value = parseInt(n)
-    if (value <= 9) { return "0" + value; } else { return value }
+function formatTimeString(value) {
+    if (value <= 9) {
+        return `0${value}`;
+    }
+    else {
+        return value.toString();
+    }
 }
-
 function updateEntryList() {
-    entriesList = document.querySelectorAll(".schedule-entry");
-}
-
-async function MakeRequest(url, method, body) {
-    let headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json'
-    }
-
-    if (method == 'post' || method == 'put' || method == 'delete') {
-        const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value
-        headers['X-CSRFToken'] = csrf
-    }
-
-    const response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: body
+    let entriesElementList = document.querySelectorAll(".schedule-entry");
+    entriesElementList.forEach(element => {
+        entriesList.push(element);
     });
-    
-    return await response.json()
 }

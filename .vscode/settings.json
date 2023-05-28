@@ -1,0 +1,45 @@
+{
+    "hidefiles.configurationType": "local",
+    "hidefiles.globalConfig": {
+        "profiles": [
+            {
+                "name": "Default",
+                "detail": "",
+                "description": "Test",
+                "hidden": [
+                    ".vscode/",
+                    ".idea/",
+                    ".venv/",
+                    ".gitignore",
+                    "db.sqlite3",
+                    "node_modules/",
+                    "README.md",
+                    "requeriments.txt"
+                ]
+            },
+            {
+                "name": "Strict",
+                "detail": "Hide everything not immediately required",
+                "hidden": [
+                    "$Default"
+                ]
+            }
+        ]
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        ".vscode/": true,
+        ".idea/": true,
+        ".venv/": true,
+        ".gitignore": true,
+        "db.sqlite3": true,
+        "node_modules/": true,
+        "README.md": true,
+        "requeriments.txt": true
+    },
+    "hidefiles.selectedProfile": "Default"
+}

@@ -1,0 +1,38 @@
+[
+    {
+        "nome": "CADASTRAR CLIENTE",
+        "link": "Cadastrar Clientes",
+        "icone": "fa-regular fa-user",
+        "acessaSeFor": ["barbeiro"]
+    },
+    {
+        "nome": "AGENDAMENTOS",
+        "link": "Agendamentos",
+        "icone": "fa-regular fa-calendar",
+        "acessaSeFor": ["barbeiro", "gerenciador"]
+    },
+    {
+        "nome": "FLUXO DE CAIXA",
+        "link": "Fluxo de Caixa",
+        "icone": "fa-regular fa-dollar-sign",
+        "acessaSeFor": ["gerenciador"]
+    },
+    {
+        "nome": "ESTOQUE DE PRODUTOS",
+        "link": "configProducts",
+        "icone": "fa-solid fa-table-list",
+        "acessaSeFor": ["gerenciador"]
+    },
+    {
+        "nome": "SERVIÇOS PRESTADOS",
+        "link": "configService",
+        "icone": "fa-solid fa-table-list",
+        "acessaSeFor": ["gerenciador"]
+    },
+    {
+        "nome": "Configurações",
+        "link": "configShop",
+        "icone": "fa-solid fa-gear",
+        "acessaSeFor": ["gerenciador"]
+    }
+]
