@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.template import loader
-from apps.area_barbeiro.models import Usuario 
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from apps.area_barbeiro.models import Profile 
 import json
 
 # Create your views here.
@@ -12,7 +14,8 @@ def RegisterNewClient(request):
 
 def AvailableBarbers(shopId):
     # Procurar usuario pelo ID da barbearia
-    availableBarbers = list(Usuario.objects.filter(shopId=shopId).values())
+    availableBarbers = list(Profile.objects.filter(shopId=shopId).values())
+    print(availableBarbers)
 
     # Se validar, preparar lista
     if (len(availableBarbers) == 0):
@@ -22,7 +25,12 @@ def AvailableBarbers(shopId):
     barberList = []
 
     for barber in availableBarbers:
-        validBarber = {"name": barber["name"], "id": barber["id"]}
+        userNames = list(User.objects.filter(id=barber['user_id']).values())[0]
+        print(userNames)
+        validBarber = {"name": f'{userNames["first_name"]} {userNames["last_name"]}', "id": barber["user_id"]}
         barberList.append(validBarber)
 
     return barberList
+
+def RedirectToRegister(request):
+    return redirect('Cadastrar Clientes')

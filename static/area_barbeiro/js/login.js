@@ -1,4 +1,4 @@
-import { MakeRequest } from "../../geral/js/request.js";
+import { MakeRequest } from "../../geral/js/utility.js";
 const FORM = document.getElementById("login-form");
 // Autenticar o usuario
 FORM.addEventListener("submit", async (event) => {
@@ -6,7 +6,6 @@ FORM.addEventListener("submit", async (event) => {
     // Enviar para ser processado
     const data = new URLSearchParams(new FormData(FORM)).toString();
     const request = await MakeRequest('/nomebarbearia/acessar/', 'post', data, true);
-    console.log(request.status);
     // Se for aceito, redirecionar para a tela principal do barbeiro
     if (request.ok) {
         window.location.replace('/nomebarbearia/');

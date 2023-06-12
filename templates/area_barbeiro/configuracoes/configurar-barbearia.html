@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
+    <title>Configuração da Barbearia</title>
+
+    <!-- Estilo e Scripts -->
+    <script src="{% static '/area_barbeiro/js/configuracoes/configurar_barbearia.js' %}" type="module" defer></script>
+    <link rel="stylesheet" href="{% static '/area_barbeiro/css/configuracoes/configuracao.css' %}">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
+    rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="grid-container">
+        <aside>
+            <a id="brand-name" href="{% url 'tela-principal' %}">
+                <img src="{% static 'favicon.png' %}" alt="">
+                <h5>{{ shopName }}</h5>
+            </a>
+            <div class="ps-1 pe-3">                
+                {% for link in listaLinks %}
+                <a href="{% url link.link %}" class="sidebar-shortcut">
+                    <i class="{{link.icone}} m-auto"></i> - {{link.nome}}
+                </a>
+                <hr>
+                {% endfor %}
+            </div>
+        </aside>
+        <main>
+            <form id="configuration-form">
+                {% csrf_token %}
+                <label for="start-work">Abre As:</label>
+                <input type="time" name="opensAt" id="start-work">
+                
+                <label for="end-work">Fecha As:</label>
+                <input type="time" name="closesAt" id="end-work">
+                
+                <label for="day-work-select">Dias de Trabalho:</label>
+                <div class="d-flex" id="day-work-select">
+                    <div class="chk-box">
+                        <p>D</p>
+                        <input type="checkbox" name="sun">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="checkbox" name="mon">
+                    </div>
+                    <div class="chk-box">
+                        <p>T</p>
+                        <input type="checkbox" name="tue">
+                    </div>
+                    <div class="chk-box">
+                        <p>Q</p>
+                        <input type="checkbox" name="wed">
+                    </div>
+                    <div class="chk-box">
+                        <p>Q</p>
+                        <input type="checkbox" name="thu">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="checkbox" name="fri">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="checkbox" name="sat">
+                    </div>
+                </div>
+
+                <label for="first-day-radio">Primeiro Dia da Semana:</label>
+                <div id="first-day-radio">
+                    <div class="chk-box">
+                        <p>D</p>
+                        <input type="radio" name="firstDay" value="sun">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="radio" name="firstDay" value="mon">
+                    </div>
+                    <div class="chk-box">
+                        <p>T</p>
+                        <input type="radio" name="firstDay" value="tue">                                
+                    </div>
+                    <div class="chk-box">
+                        <p>Q</p>
+                        <input type="radio" name="firstDay" value="wed">
+                    </div>
+                    <div class="chk-box">
+                        <p>Q</p>
+                        <input type="radio" name="firstDay" value="thu">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="radio" name="firstDay" value="fri">
+                    </div>
+                    <div class="chk-box">
+                        <p>S</p>
+                        <input type="radio" name="firstDay" value="sat">
+                    </div>
+                </div>
+
+                <input type="submit" value="Salvar Alterações">
+            </form>
+        </main>
+    </div>
+</body>
+</html>

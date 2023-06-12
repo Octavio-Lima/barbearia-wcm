@@ -75,12 +75,15 @@ header {
 }
 
 select-link {
+    transform-origin: left;
     width: 100%;
     display: flexbox;
     height: 54px;
     margin: 10px 0;
 
+    cursor: pointer;
     display: flex;
+    transition: .2s;
 }
 
 .link-img {
@@ -216,6 +219,12 @@ h3 {
     color: #ECF0F3;
 }
 
+select-link:hover {
+    transform-origin: left;
+    transform: scale(110%);
+    transition: .2s;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   Outros                                   */
 /* -------------------------------------------------------------------------- */
@@ -235,6 +244,12 @@ h3 {
 
 #dark-mode label {
     margin: 0 6px 3px -3px;
+}
+
+#logout {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
 }
 
 /* -------------------------------------------------------------------------- */

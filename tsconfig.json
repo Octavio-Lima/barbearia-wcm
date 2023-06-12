@@ -6,7 +6,6 @@
     "target": "ESNext",
     "allowJs": true,
     "moduleResolution":"classic",
-    "watch": true
   },
   "include": ["./static"],
   "exclude": ["./static/admin"]

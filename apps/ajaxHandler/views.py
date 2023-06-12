@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import JsonResponse
-from apps.area_barbeiro.models import Usuario, BarberUserSetting
-from apps.configuracoes.models import ShopSetting, ShopProduct, Shop
-from apps.gerenciadores.models import Cliente, Lancamento
+from apps.area_barbeiro.models import Profile, BarberUserSetting
+from apps.area_barbeiro.models import Shop
+from apps.area_barbeiro.models import Client, Payment
+from apps.ajaxHandler.forms import ShopSettingsForm
+
 import json
 from datetime import datetime
 
@@ -12,7 +14,7 @@ class ajaxUser(View):
     def get(self, request):
         # Procurar usuario pelo ID da barbearia
         shopId = request.GET['shopId']
-        users = Usuario.objects.filter(shopId=shopId, accessType__icontains='BARBEIRO').values()
+        users = Profile.objects.filter(shopId=shopId, accessType__icontains='BARBEIRO').values()
 
         # Enviar como lista
         userList = list(users)
@@ -25,31 +27,47 @@ class ajaxShopConfig(View):
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         shopId = request.GET['shopId']
-        shop = ShopSetting.objects.filter(shopId=shopId).values()
+        shop = Shop.objects.filter(id=shopId).values()
 
         shopConfig = list(shop)
         return JsonResponse(shopConfig[0], safe=False)
     
-    def put(self, request):
-        config = json.loads(self.request.body)
+    def post(self, request):
+        form = ShopSettingsForm(request.POST)
+        valid = form.is_valid()
 
-        opensAt = datetime.strptime(config["opensAt"], '%Y-%m-%dT%H:%M:%S.%fZ').time()
-        closesAt = datetime.strptime(config["closesAt"], '%Y-%m-%dT%H:%M:%S.%fZ').time()
+        if valid:   
+            data = form.cleaned_data
 
-        ShopSetting.objects.filter(shopId=config['shopId']).update(
-            opensAt = opensAt,
-            closesAt = closesAt,
-            workDays = config['workDays'],
-            firstWeekDay = config['firstWeekDay'])
+            # Obter informações do formulario
+            opensAt = data['opensAt']
+            closesAt = data['closesAt']
+            firstWeekDay = data['firstDay']
 
-        return JsonResponse({'': ''})
+            # Dias em que a barbearia abre
+            workDays = ''
+            if eval(data['sun']) == True: workDays += 'sun,'
+            if eval(data['mon']) == True: workDays += 'mon,'
+            if eval(data['tue']) == True: workDays += 'tue,'
+            if eval(data['wed']) == True: workDays += 'wed,'
+            if eval(data['thu']) == True: workDays += 'thu,'
+            if eval(data['fri']) == True: workDays += 'fri,'
+            if eval(data['sat']) == True: workDays += 'sat'
+
+            shopId = request.COOKIES.get('shopId')
+            Shop.objects.filter(id=shopId).update(
+                opensAt = opensAt,
+                closesAt = closesAt,
+                firstWeekDay = firstWeekDay,
+                workDays = workDays)
+
+            return JsonResponse({'': ''})
 
 class ajaxBarberConfig(View): 
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
-        shopId = request.GET['shopId']
         barberId = request.GET['barberId']
-        userConfig = list(BarberUserSetting.objects.filter(shopId=shopId, barberId=barberId).values())
+        userConfig = list(BarberUserSetting.objects.filter(barberId=barberId).values())
 
         print(userConfig)
         return JsonResponse(userConfig[0], safe=False)
@@ -69,19 +87,17 @@ class ajaxProductConfig(View):
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         shopId = request.GET['shopId']
-        product = ShopProduct.objects.filter(shopId=shopId).values()
+        product = Shop.objects.filter(id=shopId).values()
 
         productList = list(product)
         return JsonResponse(productList[0], safe=False)
     
     def put(self, request):
-        product = json.loads(self.request.body)
+        productList = json.loads(self.request.body)
+        shopId = request.COOKIES.get('shopId')
 
-        print(product)
-
-        ShopProduct.objects.filter(shopId=product['shopId']).update(
-            shopId = product['shopId'],
-            Produtos = product['Produtos']
+        Shop.objects.filter(id=shopId).update(
+            products = json.dumps(productList)
         )
 
         return JsonResponse({'': ''})
@@ -150,7 +166,7 @@ class ajaxFinancial(View):
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         shopId = request.GET['shopId']
-        entries = Lancamento.objects.filter(id_barbearia=shopId).values()
+        entries = Payment.objects.filter(id_barbearia=shopId).values()
 
         entriesList = list(entries)
         return JsonResponse(entriesList, safe=False)
@@ -158,7 +174,7 @@ class ajaxFinancial(View):
     def post(self, request):
         entry = json.loads(self.request.body)
 
-        newEntry = Lancamento(nome = entry['nome'],
+        newEntry = Payment(nome = entry['nome'],
             tipo = entry['tipo'],
             diaCriado = entry['diaCriado'],
             diaPago = entry['diaPago'],
@@ -175,7 +191,7 @@ class ajaxFinancial(View):
     def delete(self, request):
         entryId = request.GET['id']
         shopId = request.GET['shopId']
-        Lancamento.objects.filter(id_barbearia=shopId, id=entryId).delete()
+        Payment.objects.filter(id_barbearia=shopId, id=entryId).delete()
 
         return JsonResponse({'': ''})
     
@@ -185,7 +201,7 @@ class ajaxFinancial(View):
         date = datetime.strptime(entry["diaPago"], '%Y-%m-%d').date()
         print(date)
 
-        Lancamento.objects.filter(id_barbearia=entry['id_barbearia'], id=entry['id']).update(
+        Payment.objects.filter(id_barbearia=entry['id_barbearia'], id=entry['id']).update(
             nome = entry['nome'],
             tipo = entry['tipo'],
             diaPago = entry['diaPago'],

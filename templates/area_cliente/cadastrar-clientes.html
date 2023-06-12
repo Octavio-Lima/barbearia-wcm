@@ -7,8 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
-
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}"/>
     <title>Portela`s Barbearia - Agendar</title>
 
     <!-- Bootstrap -->
@@ -19,27 +18,22 @@
         crossorigin="anonymous"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule-box.css' %}">
-    <link rel="stylesheet" href="{% static '/cadastrar-cliente/client-schedule.css' %}">
+    <link rel="stylesheet" href="/static/area_cliente/css/cadastrar-cliente/cadastrar-cliente-dialogo.css">
+    <link rel="stylesheet" href="/static/area_cliente/css/cadastrar-cliente/cadastrar-cliente.css">
 
     <!-- Scripts -->
-    <script src="{% static 'cadastrar-cliente/main.js' %}" type="module" defer></script>
-    <script src="{% static 'cadastrar-cliente/client-scheduler.js' %}" type="module" defer></script>
-    <!-- <script src="{% static 'geral/js/fixBodyVH.js' %}" type="module" defer></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="/static/area_cliente/js/cadastrar-cliente/cadastrar-cliente.js" type="module" defer></script>
+    <script src="/static/area_cliente/js/cadastrar-cliente/cadastrar-cliente-agendar.js" type="module" defer></script>
 
     <!-- Fontes -->
+    <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
         rel="stylesheet">
-    <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-
     {% csrf_token %}
-
     <div class="main-container">
         <header>
             <img src="{% static 'geral/logo/logo1.svg' %}" alt="Barbearia Logo" id="brand-logo" />
@@ -58,9 +52,11 @@
             </div>
             <div class="menu-button-group">
                 <a draggable="false" class="menu-button" href="https://g.co/kgs/ZuPVoq" target="_blank">LOCALIZAÇÃO</a>
-                <a draggable="false" class="menu-button" href="https://g.page/r/CRlyE4HO9XUpEBM/review" target="_blank">AVALIE NOSSO
-                    SERVIÇO</a>
+                <a draggable="false" class="menu-button" href="https://g.page/r/CRlyE4HO9XUpEBM/review" target="_blank">AVALIE NOSSO SERVIÇO</a>
                 <a draggable="false" class="menu-button" href="/html/about-us.html">SOBRE NÓS</a>
+                {% if user.is_authenticated %}
+                <a draggable="false" class="menu-button" href="{% url 'tela-principal' %}">Voltar</a>
+                {% endif %}
             </div>
         </main>
 

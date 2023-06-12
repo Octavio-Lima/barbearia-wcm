@@ -27,13 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.cadastros',
-    'apps.telaprincipal',
-    'apps.configuracoes',
-    'apps.cadastrarcliente',
     'apps.ajaxHandler',
-    'apps.gerenciar',
-    'apps.gerenciadores',
     'apps.area_cliente',
     'apps.area_barbeiro'
 ]
