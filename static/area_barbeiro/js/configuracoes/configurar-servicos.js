@@ -1,4 +1,4 @@
-import { GetCookie, MakeRequest, NumberToCurrency } from "../../../geral/js/utility.js";
+import { CurrencyToNumber, GetCookie, MakeRequest, NumberToCurrency } from "../../../geral/js/utility.js";
 const SHOP_ID = GetCookie("shopId");
 const SERVICE_TABLE = document.getElementById("service-table");
 const SELECT_BARBER = document.querySelector("#barber-select");
@@ -18,6 +18,7 @@ async function LoadBarberServices(barberId) {
         SERVICE_TABLE.innerHTML = '';
     // Criar lista de serviços na tabela
     let DataBaseServiceList = JSON.parse(request.services);
+    console.log(DataBaseServiceList);
     DataBaseServiceList.forEach((service) => {
         let newService = new Service(service.service, service.value, service.duration);
         SERVICE_TABLE?.append(newService.element);
@@ -26,15 +27,16 @@ async function LoadBarberServices(barberId) {
 /* -------------------------------------------------------------------------- */
 /*                               Salvar Serviços                              */
 /* -------------------------------------------------------------------------- */
-async function Upload() {
-    // Criar lista de serviços a serem salvos
-    let newServiceList;
-    let tableEntries = SERVICE_TABLE?.querySelectorAll('.service-entry');
-    tableEntries?.forEach(entry => {
+async function UpdateServiceList() {
+    // Obter todos os items de serviços a serem salvos
+    let serviceEntries = SERVICE_TABLE?.querySelectorAll('.service-entry');
+    // Criar uma lista com os serviços a serem salvos
+    let newServiceList = [];
+    serviceEntries?.forEach(entry => {
         const name = entry?.querySelector('.service_name')?.value;
         const value = entry?.querySelector('.service_value')?.value;
         const duration = entry?.querySelector('.service_duration')?.value;
-        const newEntry = { 'name': name, 'value': value, 'duration': duration };
+        const newEntry = { 'service': name, 'value': CurrencyToNumber(value), 'duration': duration };
         if (newServiceList)
             newServiceList.push(newEntry);
     });
@@ -48,9 +50,7 @@ async function Upload() {
 }
 // Salvar alterações para a base de dados
 let SAVE_CHANGES = document.getElementById("btn_save-to-database");
-SAVE_CHANGES?.addEventListener("click", function () {
-    Upload();
-});
+SAVE_CHANGES?.addEventListener("click", function () { UpdateServiceList(); });
 /* -------------------------------------------------------------------------- */
 /*                                 Inicializar                                */
 /* -------------------------------------------------------------------------- */
@@ -121,7 +121,7 @@ HIDE_MODAL?.addEventListener("click", () => { MODAL_NEW_ENTRY?.classList.toggle(
 const NEW_ENTRY_FORM = document.getElementById("new-entry-form");
 const NEW_ENTRY_NAME = document.getElementById("inp_new-entry-name");
 const NEW_ENTRY_VALUE = document.getElementById("inp_new-entry-value");
-const NEW_ENTRY_DURATION = document.getElementById("inp_new-entry-length");
+const NEW_ENTRY_DURATION = document.getElementById("inp_new-entry-duration");
 NEW_ENTRY_FORM?.addEventListener("submit", (event) => {
     event.preventDefault();
     MODAL_NEW_ENTRY?.classList.toggle("d-none");

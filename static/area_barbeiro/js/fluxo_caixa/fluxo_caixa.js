@@ -1,6 +1,5 @@
 import * as table from "./fluxo_caixa_tabela.js";
 import { CurrencyToNumber, NumberToCurrency } from "../../../geral/js/utility.js";
-/* #region  Variaveis */
 const IN_EDIT_ENTRY_NAME = document.getElementById("edit-entry-name");
 const IN_EDIT_ENTRY_DATE = document.getElementById("edit-entry-date");
 const IN_EDIT_ENTRY_PRICE = document.getElementById("edit-entry-price");
@@ -10,22 +9,56 @@ const entryNameInputValue = document.querySelector("#input-entry-name");
 const entryDateInputValue = document.querySelector("#entry-date");
 const entryValueInputValue = document.querySelector("#entry-value");
 const IN_ENTRY_TYPE = document.querySelector("#entry-type");
-const date = new Date();
-let date_today = String(date.getDate()).padStart(2, "0");
-let date_month = String(date.getMonth() + 1).padStart(2, "0");
-let date_year = String(date.getFullYear());
-let today = `${date_today}/${date_month}/${date_year}`;
-/* #endregion */
-// Carregar lançamentos da tabela
-table.LoadAllEntries();
+/* ---------- Inicializar carregando todos os lançamentos na tabela --------- */
+(function () {
+    table.LoadAllEntries();
+})();
+/* ---------------------------- Botões Principais --------------------------- */
+// Botão de adicionar lançamento
+const BTN_ADD_NEW_ENTRY = document.querySelector('#button-add-entry');
+BTN_ADD_NEW_ENTRY?.addEventListener("click", () => { DisplayModal(true, "adicionar"); });
+// Botão de eliminar lançamento
+const BTN_DELETE_ENTRY = document.querySelector("#button-del-entry");
+BTN_DELETE_ENTRY?.addEventListener("click", () => {
+    if (table.selectedEntry !== null) {
+        DisplayModal(true, "remover"); // janela de eliminar lançamento
+    }
+    else {
+        DisplayAlert("Ação Incorreta", "deve ser selecionado um lançamento para que seja possível exclui-lo");
+    }
+});
+/* ------------------------------ Confirmações ------------------------------ */
+// Confirmar se os dados estão corretos para serem enviados para a base de dados
+const NEW_ENTRY_FORM = document.getElementById("add-entry-form");
+NEW_ENTRY_FORM?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    table.SaveEntry(NEW_ENTRY_FORM);
+    /* DisplayModal(false); */
+});
+// - Remover Lançamento
+const BTN_CONFIRM_DELETE_ENTRY = document.querySelector("#button-confirm-del");
+BTN_CONFIRM_DELETE_ENTRY.addEventListener("click", () => {
+    table.RemoveEntry();
+    DisplayModal(false);
+});
 /* #region  Modal Principal */
-export function DisplayModal(visible, subModalIndex, resetForms = false) {
+export function DisplayModal(visible = true, subModalIndex, resetForms = false) {
     const MODAL_WINDOWS = document.querySelectorAll(".pop-up");
     if (visible) {
         BLOCK_BACKGROUND?.classList.remove("d-none");
         MODAL_WINDOWS.forEach(window => { window.classList.add("d-none"); });
-        if (subModalIndex != null)
-            MODAL_WINDOWS[subModalIndex].classList.remove("d-none");
+        if (subModalIndex != null) {
+            if (subModalIndex == "adicionar")
+                MODAL_WINDOWS[0].classList.remove("d-none");
+            else if (subModalIndex == "editar")
+                MODAL_WINDOWS[1].classList.remove("d-none");
+            else if (subModalIndex == "remover")
+                MODAL_WINDOWS[2].classList.remove("d-none");
+            else if (subModalIndex == "detalhes")
+                MODAL_WINDOWS[3].classList.remove("d-none");
+            else
+                MODAL_WINDOWS[0].classList.remove("d-none");
+        }
     }
     else {
         BLOCK_BACKGROUND?.classList.add("d-none");
@@ -50,41 +83,12 @@ cancelDiagBox.forEach(button => { button.addEventListener("click", () => { Displ
 /* #endregion */
 /* #region  Janelas da Modal */
 /* ------------------------ Adicionar Novo Lançamento ----------------------- */
-// Botão de abrir a modal de adicionar lançamento
-const BTN_ADD_NEW_ENTRY = document.querySelector('#button-add-entry');
-BTN_ADD_NEW_ENTRY?.addEventListener("click", () => { DisplayModal(true, 0); });
-// Confirmar se os dados estão corretos para serem enviados para a base de dados
-const NEW_ENTRY_FORM = document.getElementById("add-entry-form");
-NEW_ENTRY_FORM?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    checklist_addNewEntry();
-});
-function checklist_addNewEntry() {
-    // const OP_ADD_ENTRY_PAYTYPE = document.getElementById("pay-type") as HTMLInputElement | null;
-    // table.SaveEntry(entryNameInputValue.value, IN_ENTRY_TYPE.value, today, entryDateInputValue.value, /*accessName*/'', entryValueInputValue.value, OP_ADD_ENTRY_PAYTYPE?.value);
-    // DisplayModal(false);
-}
-// - Remover Lançamento
-const BTN_DELETE_ENTRY = document.querySelector("#button-del-entry");
-const BTN_CONFIRM_DELETE_ENTRY = document.querySelector("#button-confirm-del");
-BTN_DELETE_ENTRY.addEventListener("click", () => {
-    if (table.selectedEntry !== null) {
-        DisplayModal(true, 2); // janela de eliminar lançamento
-    }
-    else {
-        DisplayAlert("Ação Incorreta", "deve ser selecionado um lançamento para que seja possível exclui-lo");
-    }
-});
-BTN_CONFIRM_DELETE_ENTRY.addEventListener("click", () => {
-    table.RemoveEntry();
-    DisplayModal(false);
-});
 // - Editar Lançamento
 const BTN_EDIT_ENTRY = document.querySelector("#button-edit-entry");
 BTN_EDIT_ENTRY.addEventListener("click", () => { DisplayEditWindow(); });
 function DisplayEditWindow() {
     // Exibir janela de edição
-    DisplayModal(true, 1);
+    DisplayModal(true, "editar");
     // - Carregar dados do lançamento
     // nome
     let nameElement = table.selectedEntry?.querySelector('.entry-name');

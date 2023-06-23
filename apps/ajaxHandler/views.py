@@ -74,10 +74,8 @@ class ajaxBarberConfig(View):
     
     def put(self, request):
         service = json.loads(self.request.body)
-
         print(service)
-
-        BarberUserSetting.objects.filter(shopId=service['shopId'], barberId=service['barberId']).update(
+        BarberUserSetting.objects.filter(barberId=service['barberId']).update(
             services = service['services']
         )
 
@@ -106,7 +104,7 @@ class ajaxClients(View):
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         date = request.GET['date']
-        schedules = Cliente.objects.filter(date=date).values()
+        schedules = Client.objects.filter(date=date).values()
 
         scheduleList = list(schedules)
         return JsonResponse(scheduleList, safe=False)
@@ -116,7 +114,7 @@ class ajaxClients(View):
         
         date = datetime.strptime(client['date'], '%Y-%m-%dT%H:%M:%S.%fZ')
 
-        newClient = Cliente(shopId = client['shopId'],
+        newClient = Client(shopId = client['shopId'],
             barberId = client['barberId'],
             name = client['name'],
             phone = client['phone'],
@@ -166,7 +164,7 @@ class ajaxFinancial(View):
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         shopId = request.GET['shopId']
-        entries = Payment.objects.filter(id_barbearia=shopId).values()
+        entries = Payment.objects.filter(shopId=shopId).values()
 
         entriesList = list(entries)
         return JsonResponse(entriesList, safe=False)

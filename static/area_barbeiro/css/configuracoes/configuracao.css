@@ -10,30 +10,14 @@ body {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 300px auto;
+    grid-template-columns: 56px auto;
     height: 100vh;
+    transition: .5s;
 }
 
-aside {
-    background-color: #111 !important;
-    padding: .4rem;
-}
-
-aside a {
-    transform-origin: left;
-    color: #eee;
-    text-decoration: none;
-    display: block;
-    padding: 1rem 0;
-}
-
-aside a:first-child {
-    padding-top: 0;
-}
-
-aside hr {
-    border-top: 1px solid #fff;
-    margin: 0;
+#main {
+    transition: margin-left .5s;
+    padding: 1rem;
 }
 
 main hr {
@@ -79,9 +63,6 @@ main hr {
 }
 
 /* #region  Formulario */
-form {
-    padding: 1rem;
-}
 
 form label,
 th {
@@ -131,9 +112,37 @@ table tr {
 table td {
     text-align: left;
 }
+
 /* #endregion */
 /* #region  Configurações Barbearia */
 
+
+
+/* #endregion */
+/* #region  Barra Lateral1 */
+#sidebar {
+    overflow-x: hidden;
+    background-color: #111 !important;
+    padding: .4rem;
+}
+
+#sidebar a {
+    transform-origin: left;
+    color: #eee;
+    text-decoration: none;
+    display: block;
+    padding: 1rem 0;
+    white-space: nowrap;
+}
+
+#sidebar a:first-child {
+    padding-top: 0;
+}
+
+#sidebar hr {
+    border-top: 1px solid #fff;
+    margin: 0;
+}
 
 
 /* #endregion */

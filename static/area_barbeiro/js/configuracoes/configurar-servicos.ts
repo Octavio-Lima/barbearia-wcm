@@ -1,4 +1,4 @@
-import { GetCookie, MakeRequest, NumberToCurrency } from "../../../geral/js/utility.js";
+import { CurrencyToNumber, GetCookie, MakeRequest, NumberToCurrency } from "../../../geral/js/utility.js";
 
 const SHOP_ID = GetCookie("shopId")
 const SERVICE_TABLE = document.getElementById("service-table")
@@ -22,6 +22,8 @@ async function LoadBarberServices(barberId: string | number) {
 
     // Criar lista de serviços na tabela
     let DataBaseServiceList = JSON.parse(request.services);
+    console.log(DataBaseServiceList);
+    
     DataBaseServiceList.forEach((service: any) => {
         let newService = new Service(service.service, service.value, service.duration)
         SERVICE_TABLE?.append(newService.element)
@@ -31,16 +33,18 @@ async function LoadBarberServices(barberId: string | number) {
 /* -------------------------------------------------------------------------- */
 /*                               Salvar Serviços                              */
 /* -------------------------------------------------------------------------- */
-async function Upload() {
-    // Criar lista de serviços a serem salvos
-    let newServiceList: Array<any> | undefined;
-    let tableEntries = SERVICE_TABLE?.querySelectorAll('.service-entry') as NodeListOf<HTMLInputElement> | null;
-    tableEntries?.forEach(entry => {
+async function UpdateServiceList() {
+    // Obter todos os items de serviços a serem salvos
+    let serviceEntries = SERVICE_TABLE?.querySelectorAll('.service-entry') as NodeListOf<HTMLInputElement> | null;
+    
+    // Criar uma lista com os serviços a serem salvos
+    let newServiceList: Array<any> | undefined = [];
+    serviceEntries?.forEach(entry => {
         const name = (entry?.querySelector('.service_name') as HTMLInputElement)?.value;
         const value = (entry?.querySelector('.service_value') as HTMLInputElement)?.value;
         const duration = (entry?.querySelector('.service_duration') as HTMLInputElement)?.value;
 
-        const newEntry = { 'name': name, 'value': value, 'duration': duration };
+        const newEntry = {'service': name, 'value': CurrencyToNumber(value), 'duration': duration};
         if (newServiceList) newServiceList.push(newEntry)
     });
 
@@ -58,9 +62,7 @@ async function Upload() {
 
 // Salvar alterações para a base de dados
 let SAVE_CHANGES = document.getElementById("btn_save-to-database")
-SAVE_CHANGES?.addEventListener("click", function () {
-    Upload()
-})
+SAVE_CHANGES?.addEventListener("click", function () { UpdateServiceList() })
 
 /* -------------------------------------------------------------------------- */
 /*                                 Inicializar                                */
@@ -143,7 +145,7 @@ HIDE_MODAL?.addEventListener("click", () => { MODAL_NEW_ENTRY?.classList.toggle(
 const NEW_ENTRY_FORM = document.getElementById("new-entry-form")
 const NEW_ENTRY_NAME = document.getElementById("inp_new-entry-name") as HTMLInputElement | null
 const NEW_ENTRY_VALUE = document.getElementById("inp_new-entry-value") as HTMLInputElement | null
-const NEW_ENTRY_DURATION = document.getElementById("inp_new-entry-length") as HTMLInputElement | null
+const NEW_ENTRY_DURATION = document.getElementById("inp_new-entry-duration") as HTMLInputElement | null
 NEW_ENTRY_FORM?.addEventListener("submit", (event) => {
     event.preventDefault();
 

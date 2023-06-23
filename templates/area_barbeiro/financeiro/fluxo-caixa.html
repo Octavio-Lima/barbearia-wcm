@@ -18,7 +18,7 @@
 
     <!-- CSS JS -->
     <link rel="stylesheet" href="{% static 'area_barbeiro/css/fluxo_caixa/fluxo_caixa.css' %}">
-    <script defer src="{% static 'area_barbeiro/js/fluxo_caixa/fluxo_caixa_pagina.js' %}" type="module"></script>
+    <script defer src="{% static 'area_barbeiro/js/fluxo_caixa/fluxo_caixa.js' %}" type="module"></script>
     <script defer src="{% static 'area_barbeiro/js/fluxo_caixa/fluxo_caixa_tabela.js' %}" type="module"></script>
 
     <!-- Fontes -->
@@ -149,6 +149,7 @@
         <div class="pop-up d-none" id="add-entry-diag-box" name="pop_add-entry">
             <h3>ADICIONAR NOVO LANÇAMENTO</h3>
             <form id="add-entry-form">
+                {% csrf_token %}
                 
                 <label for="input-entry-name">NOME DO LANÇAMENTO:</label>
                 <input type="text" name="entry-name" id="input-entry-name" class="text-input" required>
@@ -157,7 +158,7 @@
                 <input type="date" name="entry-date" id="entry-date" class="text-input" required>                     
 
                 <label for="entry-value">VALOR DO LANÇAMENTO:</label>
-                <input type="text" name="" id="entry-value" class="text-input" placeholder="0,00" required>
+                <input type="text" name="entry-value" id="entry-value" class="text-input" placeholder="0,00" required>
 
                 <label for="pay-type">FORMA DE PAGAMENTO:</label>
                 <select name="pay-type" id="pay-type" required>

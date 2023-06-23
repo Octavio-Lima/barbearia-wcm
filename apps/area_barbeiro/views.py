@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -55,7 +55,7 @@ class loginPage(View):
                 return response
         
         # Se não foi validado ou não foi encontrado retornar erro
-        return HttpResponseBadRequest()
+        return JsonResponse({'error': True})
 
 def logoutUser(request):
     logout(request)
@@ -99,6 +99,7 @@ def configService(request):
     userInfo = list(Profile.objects.filter(shopId=shopId).values())
     shopName = list(Shop.objects.filter(id=shopId).values())
 
+
     # Obter informações da barbearia
     accessData = list(Profile.objects.filter(user=request.user).values())[0]
     accessType = (json.loads(accessData['accessType']))['acesso']
@@ -116,6 +117,7 @@ def configService(request):
                     barberList.append({'name': f"{user['username']} {user['last_name']}", 'id': info['user_id']})
 
     context = { 'barberList': barberList, 'shopName': shopName[0]['shopName'], 'listaLinks': pageLinks}
+    print(barberList)
     template = loader.get_template('area_barbeiro/configuracoes/configurar-servicos.html')   
     return HttpResponse(template.render(context, request))
 

@@ -4,8 +4,7 @@ let shopId = GetCookie("shopId");
 let productList = [];
 const PRODUCT_TABLE = document.getElementById("service-table");
 // Obter lista de produtos
-Init();
-async function Init() {
+(async function () {
     // Obter lista de produtos do banco de dados
     let params = `?shopId=${shopId}`;
     let request = await MakeRequest(`/ajax/shop/config/products${params}`, 'get');
@@ -15,18 +14,20 @@ async function Init() {
         let newEntry = new Product(entry.name, entry.value, entry.quantity);
         PRODUCT_TABLE?.appendChild(newEntry.CreateElement());
     });
-}
+})();
 // Salvar alterações
 const SAVE_CHANGES = document.querySelector("#btn_save-to-database");
 SAVE_CHANGES?.addEventListener("click", async () => {
     // Criar lista a ser enviada
     let updatedProductList = [];
     productList.forEach(entry => {
-        updatedProductList.push({
-            "name": entry.input.name?.value,
-            "value": CurrencyToNumber(entry.input.value ? entry.input.value?.value : "0"),
-            "quantity": entry.input.quantity?.value
-        });
+        if (!entry.deleted) {
+            updatedProductList.push({
+                "name": entry.input.name?.value,
+                "value": CurrencyToNumber(entry.input.value ? entry.input.value?.value : "0"),
+                "quantity": entry.input.quantity?.value
+            });
+        }
     });
     // Requisição
     let jsonRequest = JSON.stringify(updatedProductList);
@@ -37,6 +38,7 @@ class Product {
     name = "";
     value = 0;
     quantity = "00:00";
+    deleted = false;
     input = {
         name: null,
         value: null,
@@ -46,6 +48,7 @@ class Product {
         this.name = name;
         this.value = value;
         this.quantity = quantity;
+        this.deleted = false;
         productList.push(this);
     }
     CreateElement() {
@@ -77,7 +80,7 @@ class Product {
         let entryTDDelete = document.createElement("td");
         let entryDelete = document.createElement("button");
         entryDelete.innerText = "X";
-        entryDelete.addEventListener("click", function () { entryRow.remove(); });
+        entryDelete.addEventListener("click", () => { entryRow.remove(); this.deleted = true; });
         entryTDDelete.append(entryDelete);
         entryRow.append(entryTDDelete);
         return entryRow;

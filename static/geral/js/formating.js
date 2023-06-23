@@ -12,12 +12,32 @@ export function ToCurrency(value = 0) {
     moneyFormat = moneyFormat.replace('.', ',');
     return moneyFormat;
 }
-export function ToMinutes(time) {
+export function ToMinutes(time = '00:00') {
     let splitTime = time.split(':');
     let minutes = 0;
     minutes += parseFloat(splitTime[0]) * 60;
     minutes += parseInt(splitTime[1]);
     return minutes;
+}
+// TODO: No momento, o horario em que a barbearia abre só leva em conta as horas, deve ser atualizado para que use os minutos também
+export function TimeToScheduleIndex(time, shop_OpensAt) {
+    const SCHEDULE_PER_HOUR = 4;
+    const HOUR = time.getHours();
+    const MINUTE = time.getMinutes();
+    // Se for definido o horario que a barbearia abre, subtrair o horario de quando abre
+    const INDEX = ((HOUR + (MINUTE / 60)) - (shop_OpensAt != undefined ? shop_OpensAt : 0)) * SCHEDULE_PER_HOUR;
+    return INDEX;
+}
+// Converter um index para tempo
+export function IndexToTime(index, shop_OpensAt) {
+    const SINGLE_SCHEDULE_DURATION = 15; // in minutes
+    const TOTAL_MINUTES = index * SINGLE_SCHEDULE_DURATION;
+    const HOURS = Math.floor(TOTAL_MINUTES / 60);
+    const MINUTES = (TOTAL_MINUTES % 60);
+    // Converter para objeto Date
+    const DATE = new Date();
+    DATE.setHours(HOURS, MINUTES, 0);
+    return DATE;
 }
 export class Time {
     sum(...args) {

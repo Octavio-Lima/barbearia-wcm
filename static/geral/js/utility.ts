@@ -12,7 +12,7 @@ export async function MakeRequest(url: string, method: Methods, body?: string, f
     }
 
     if (method == 'post' || method == 'put' || method == 'delete') {
-        const csrf = (document.querySelector('[name=csrfmiddlewaretoken]')! as HTMLInputElement)?.value;
+        const csrf = (document.querySelector('[name=csrfmiddlewaretoken]') as HTMLInputElement)?.value;
         headers['X-CSRFToken'] = csrf;
     }
 

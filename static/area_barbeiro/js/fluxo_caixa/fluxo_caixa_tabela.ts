@@ -3,13 +3,13 @@
     Ela é especifico da tabela financeira
     já o "Finance page" é a página em geral 
 */
-import { ToCurrency } from "../../../geral/js/formating.js";
+import { PadNumber, ToCurrency } from "../../../geral/js/formating.js";
 import { GetCookie, MakeRequest } from "../../../geral/js/utility.js";
-import * as financePage from "./fluxo_caixa_pagina.js";
+import * as financePage from "./fluxo_caixa.js";
 
-let shop_id = GetCookie("shopId");
-let accessType = GetCookie("accessType");
-let accessName = GetCookie("accessName");
+const SHOP_ID = GetCookie("shopId");
+const ACCESS_TYPE = GetCookie("accessType");
+const USERNAME = GetCookie("accessName");
 
 export let selectedEntry: HTMLElement | null;
 let entryList: Array<Element>;
@@ -115,7 +115,7 @@ export function ReadEntry(id: string, name: string, createType: string, dateCrea
 export function ShowDetailDoubleClick(entry: HTMLElement) {
     return function () {
         // SelectRow(entry);
-        financePage.DisplayModal(true, 3);
+        financePage.DisplayModal(true, "detalhes");
         financePage.PopUp_UpdateDetailWindow();
     }
 }
@@ -124,26 +124,29 @@ export function ShowDetailDoubleClick(entry: HTMLElement) {
 /*                               Gerenciar dados                              */
 /* -------------------------------------------------------------------------- */
 // Salvar no Banco de Dados
-export async function SaveEntry(name: string, createType: string, dateCreated: string, datePayed: string, createBy: string, valor: string, payType: string) {
-    let TipoDeLancamento, DiaCriado
-    TipoDeLancamento = (createType === 'ENTRADA' ? 'ENTRADA' : 'SAÍDA')
+export async function SaveEntry(formElement: HTMLFormElement/*name: string, createType: string, dateCreated: string, datePayed: string, createBy: string, valor: string, payType: string*/) {
+    // Criar o formulario em dados
+    const FORM = new FormData(formElement);
+    
+    // Obter se é entrada ou saida
+    const ENTRY_TYPE = (FORM.get('entry-type') === 'ENTRADA' ? 'ENTRADA' : 'SAÍDA')
+    
+    // Obter dia criado
+    const CREATION_DATE = new Date();
 
-    let DiaCriadoSplit = dateCreated.split('/')
-    DiaCriado = DiaCriadoSplit[2] + '-' + DiaCriadoSplit[1] + '-' + DiaCriadoSplit[0]
-
-    let jsonRequest = JSON.stringify({
-        nome: name,
-        tipo: TipoDeLancamento,
-        diaCriado: DiaCriado,
-        diaPago: datePayed,
-        criadoPor: createBy,
-        valor: parseFloat(valor),
-        formaDePagamento: payType,
-        cliente: "",
-        id_barbearia: shop_id
+    const JSON_REQUEST = JSON.stringify({
+        nome: FORM.get('entry-name'),
+        tipo: ENTRY_TYPE,
+        diaCriado: `${CREATION_DATE.getFullYear()}-${PadNumber(CREATION_DATE.getMonth())}-${PadNumber(CREATION_DATE.getDate())}`,
+        diaPago: FORM.get('entry-date'),
+        criadoPor: (FORM.get('entry-created-by') === null ? '' : FORM.get('entry-created-by')),
+        valor: FORM.get('entry-value'),
+        formaDePagamento: FORM.get('pay-type'),
+        cliente: (FORM.get('entry-client') === null ? '' : FORM.get('entry-client')),
+        id_barbearia: SHOP_ID
     });
 
-    MakeRequest('/ajax/financial/', 'post', jsonRequest);
+    MakeRequest('/ajax/financial/', 'post', JSON_REQUEST);
 }
 
 // Salvar no Banco de Dados
@@ -156,7 +159,7 @@ export async function UpdateEntry(id: number, name: string, createType: string, 
         valor: valor,
         formaDePagamento: payType,
         cliente: "",
-        id_barbearia: shop_id
+        id_barbearia: SHOP_ID
     });
 
     MakeRequest('/ajax/financial/', 'put', jsonRequest);
@@ -167,15 +170,11 @@ export async function LoadAllEntries() {
     const TABLE_BODY = document.querySelector('tbody');
     
     // Obter Lista de Lançamentos da base de dados
-    let params = '?shopId=' + shop_id;
-    let loadEntryList = await MakeRequest('/ajax/financial' + params, 'get')
-        .then((response) => { return response.json(); })
+    const params = '?shopId=' + SHOP_ID;
+    const loadEntryList = await MakeRequest('/ajax/financial' + params, 'get')
 
     // Limpar tabela atual do lado cliente
-    
-    if (TABLE_BODY) while (TABLE_BODY.firstChild) {
-        TABLE_BODY.removeChild(TABLE_BODY.firstChild);
-    }
+    if (TABLE_BODY) TABLE_BODY.innerHTML = '';
 
     // Resetar lista de lançamentos
     entryList = [];
@@ -183,7 +182,7 @@ export async function LoadAllEntries() {
     // Adicionar lançamentos, porém não exibir todos se não for proprietário
     loadEntryList.forEach((entry: any, index: number) => {
         // Se não for gerente, exibir apenas pagamentos do individuo
-        if (!accessType.includes("GERENCIADOR") && entry.createBy != accessName) {
+        if (!ACCESS_TYPE.includes("GERENCIADOR") && entry.createBy != USERNAME) {
             return;
         }
 
@@ -211,7 +210,7 @@ export async function LoadAllEntries() {
 // Remover lançamento da base de dados
 export async function RemoveEntry() {
     let entryToDelete = selectedEntry?.querySelector(".entry-id")?.innerHTML;
-    let params = `'?id=${entryToDelete}&shopId=${shop_id}`;
+    let params = `'?id=${entryToDelete}&shopId=${SHOP_ID}`;
 
     await MakeRequest('/ajax/financial' + params, 'delete')
 

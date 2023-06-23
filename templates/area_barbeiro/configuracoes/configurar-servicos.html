@@ -16,7 +16,7 @@
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
 
-        <!-- Fontes -->
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap" rel="stylesheet">
@@ -59,9 +59,9 @@
                 <table class="w-100">
                     <thead>
                         <tr>
-                            <th>Nome do Produto</th=>
+                            <th>Serviço</th>
                             <th>Preço</th>
-                            <th>Quantidade em Estoque</th>
+                            <th>Duração</th>
                         </tr>
                     </thead>
                     <tbody id="service-table">
@@ -84,16 +84,7 @@
                     <input type="text" name="" id="inp_new-entry-value" class="d-block">
 
                     <label for="inp_new-entry-length">Tempo de duração</label>
-                    <Select id="inp_new-entry-length" class="d-block">
-                        <option value="0">15 minutos</option>
-                        <option value="1">30 minutos</option>
-                        <option value="2">45 minutos</option>
-                        <option value="3">1 hora</option>
-                        <option value="4">1 hora e 15 minutos</option>
-                        <option value="5">1 hora e 30 minutos</option>
-                        <option value="6">1 hora e 45 minutos</option>
-                        <option value="7">2 horas</option>
-                    </Select>
+                    <input type="time" name="" id="inp_new-entry-duration">
 
                     <input type="submit" value="Confirmar">
                     <button id="btn_cancel-entry">Cancelar</button>

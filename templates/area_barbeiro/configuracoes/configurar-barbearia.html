@@ -10,6 +10,7 @@
 
     <!-- Estilo e Scripts -->
     <script src="{% static '/area_barbeiro/js/configuracoes/configurar_barbearia.js' %}" type="module" defer></script>
+    <script src="{% static '/geral/js/sidebar.js' %}" type="module" defer></script>
     <link rel="stylesheet" href="{% static '/area_barbeiro/css/configuracoes/configuracao.css' %}">
     
     <!-- Bootstrap -->
@@ -28,11 +29,12 @@
 </head>
 <body>
     <div class="grid-container">
-        <aside>
+        <aside id='sidebar'>
             <a id="brand-name" href="{% url 'tela-principal' %}">
                 <img src="{% static 'favicon.png' %}" alt="">
-                <h5>{{ shopName }}</h5>
+                {{ shopName }}
             </a>
+            <button id='sidebar-toggle'>aasd</button>
             <div class="ps-1 pe-3">                
                 {% for link in listaLinks %}
                 <a href="{% url link.link %}" class="sidebar-shortcut">
@@ -42,7 +44,9 @@
                 {% endfor %}
             </div>
         </aside>
-        <main>
+        <main id='main'>
+            <button id='sidebar-toggle'>aasd</button>
+            <h3>Configurar Barbearia</h3>
             <form id="configuration-form">
                 {% csrf_token %}
                 <label for="start-work">Abre As:</label>

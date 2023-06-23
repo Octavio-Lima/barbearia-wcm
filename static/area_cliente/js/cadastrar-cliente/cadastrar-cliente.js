@@ -1,6 +1,6 @@
 /* Tela Principal */
 import { GetCookie, MakeRequest } from "../../../geral/js/utility.js";
-import { Modal } from "./cadastrar-cliente-janelas.js";
+import { DisplayModal } from "./cadastrar-cliente-janelas.js";
 // * configurações da barbearia
 export const shop_id = GetCookie("shopId");
 export const shop_barberList = document.querySelectorAll(".barber");
@@ -40,21 +40,21 @@ export let selectedBarber;
         index++;
     }
     ;
-})();
-/* --------------------------- Lista de Barbeiros --------------------------- */
-shop_barberList.forEach(barber => {
-    // evento de quando for clicado no barbeiro
-    barber.addEventListener("click", () => {
-        // selecionar barbeiro e abrir modal de agendamento
-        selectedBarber = parseInt(barber.id);
-        Modal.DisplayModal();
-        // Desativar estilos de todos os barbeiros
-        shop_barberList.forEach(otherBarbers => {
-            otherBarbers.classList.remove("selected-worker");
-            otherBarbers.querySelector(".worker-name")?.classList.remove("text-glow");
+    /* --------------------------- Lista de Barbeiros --------------------------- */
+    shop_barberList.forEach(barber => {
+        // evento de quando for clicado no barbeiro
+        barber.addEventListener("click", () => {
+            // selecionar barbeiro e abrir modal de agendamento
+            selectedBarber = parseInt(barber.id);
+            DisplayModal();
+            // Desativar estilos de todos os barbeiros
+            shop_barberList.forEach(otherBarbers => {
+                otherBarbers.classList.remove("selected-worker");
+                otherBarbers.querySelector(".worker-name")?.classList.remove("text-glow");
+            });
+            // Ativar estilo do barbeiro que foi selecionado
+            barber.classList.add("selected-worker");
+            barber.querySelector(".worker-name")?.classList.add("text-glow");
         });
-        // Ativar estilo do barbeiro que foi selecionado
-        barber.classList.add("selected-worker");
-        barber.querySelector(".worker-name")?.classList.add("text-glow");
     });
-});
+})();

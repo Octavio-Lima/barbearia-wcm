@@ -1,9 +1,9 @@
 /* Gerenciado das Sub-Modais, como o
 calendario, lista de serviços, etc */
 import { MakeRequest } from "../../../geral/js/utility.js";
-import * as Format from "../../../geral/js/formating.js";
 import { selectedBarber, shop_id, shop_workDays, shop_opensAt, shop_closesAt, shop_firstWeekDayNumber } from "./cadastrar-cliente.js"; // text and number formating
-import { Modal, warningMsg } from "./cadastrar-cliente-janelas.js"; // text and number formating
+import { DisplayModal, warningMsg } from "./cadastrar-cliente-janelas.js"; // text and number formating
+import { PadNumber, Time, TimeToScheduleIndex, ToCurrency } from "../../../geral/js/formating.js";
 /* #region  Variáveis */
 // * Calendario
 export let isNextMonth = false;
@@ -20,13 +20,13 @@ const INPUT_PHONE = document.querySelector("#input-client-phone");
 const INPUT_NAME = document.querySelector("#input-client-name");
 const INPUT_EMAIL = document.querySelector("#input-client-email");
 // * Tela de Serviço
-let serviceList;
-const TIME = new Format.Time();
+let serviceList = [];
+const TIME = new Time();
 const SERVICE_TOTAL_TIME = document.getElementById("total-time");
 const SERVICE_TOTAL_PRICE = document.getElementById("total-price");
 // * Janela de Agendamento de Horario
 let scheduleEntryList;
-let scheduleBlockList;
+let scheduleBlockList = [];
 let hasUpdatedScheduleTable = false;
 // * Dados do Agendamneto
 export let schedule_day = 0;
@@ -35,7 +35,7 @@ let schedule_clientName = '';
 let schedule_phone = '';
 let schedule_email = '';
 let schedule_instagram = '';
-export let schedule_services;
+export let schedule_services = [];
 export let schedule_time = '';
 let schedule_duration = '';
 let schedule_totalPrice = 0;
@@ -296,22 +296,22 @@ function SelectServiceEntry(entry) {
     }
     // Atualizar a soma de tempo e valor total
     SERVICE_TOTAL_TIME.innerText = schedule_duration.replace(":", "H ");
-    SERVICE_TOTAL_PRICE.innerText = Format.ToCurrency(schedule_totalPrice);
+    SERVICE_TOTAL_PRICE.innerText = ToCurrency(schedule_totalPrice);
 }
 // Atualizar a Tabela de serviços e produtos
 export async function UpdateServiceTable() {
     // Atualiza o titulo da tela de serviço
     const service_title = document.querySelector("#service-title");
     service_title.innerHTML = schedule_dateTitle;
-    const table = document.querySelector("#service-table");
+    // Limpar tabela
+    const SERVICE_TABLE = document.querySelector("#service-table");
+    SERVICE_TABLE.innerHTML = '';
     // Resetar Dados
     schedule_duration = "00H 00";
     schedule_totalPrice = 0;
     serviceList.length = 0;
     SERVICE_TOTAL_TIME.innerText = schedule_duration;
-    SERVICE_TOTAL_PRICE.innerText = Format.ToCurrency(schedule_totalPrice);
-    // Limpar tabela
-    table.innerHTML = '';
+    SERVICE_TOTAL_PRICE.innerText = ToCurrency(schedule_totalPrice);
     // Lista de Serviço
     // Obter dados
     let params = '?shopId=' + shop_id + '&barberId=' + selectedBarber;
@@ -324,13 +324,13 @@ export async function UpdateServiceTable() {
     let entryId = 0;
     // Criar lista de serviços
     newServiceList.forEach((service) => {
-        table.appendChild(CreateServiceElement(service.name, service.value, entryId, service.duration));
+        SERVICE_TABLE.appendChild(CreateServiceElement(service.service, service.value, entryId, service.duration));
         serviceList.push(service); // lista para calculos
         entryId++;
     });
     // Criar lista de produtos
     productList.forEach((product) => {
-        table.appendChild(CreateServiceElement(product.name, product.value, entryId, ''));
+        SERVICE_TABLE.appendChild(CreateServiceElement(product.name, product.value, entryId, ''));
         // * adicionar duração ao produto para que o calculo fique correto
         product['duration'] = 0;
         serviceList.push(product);
@@ -350,7 +350,7 @@ function CreateServiceElement(name, value, id, duration) {
     let servicePrice = document.createElement("td");
     servicePrice.classList.add("service-price");
     servicePrice.classList.add("col-1");
-    servicePrice.innerText = Format.ToCurrency(parseInt(value));
+    servicePrice.innerText = ToCurrency(parseInt(value));
     servicePrice.setAttribute('data-value', value);
     let serviceTime = document.createElement("td");
     serviceTime.classList.add("service-time");
@@ -384,8 +384,9 @@ export async function UpdateSchedule() {
     }
     // Definir titulo da janela. Dia, mês e ano
     const SCHEDULE_TITLE = document.querySelector("#schedule-title");
-    SCHEDULE_TITLE.innerHTML = schedule_dateTitle;
-    // Limpa a tabela de marcações, e mostra todos os horarios disponiveis
+    if (SCHEDULE_TITLE)
+        SCHEDULE_TITLE.textContent = schedule_dateTitle;
+    // Limpa a tabela de marcações, assim mostrando todos os horarios disponiveis
     scheduleEntryList.forEach(schedule => {
         schedule.classList.remove('unavailable');
         schedule.classList.remove('row-unav');
@@ -394,38 +395,53 @@ export async function UpdateSchedule() {
     // limpar lista de horarios desabilitados
     scheduleBlockList.length = 0;
     // carregar lista de agenda disponivel
-    let date = `${schedule_date.getFullYear()}-${Format.PadNumber(schedule_date.getMonth() + 1)}-${Format.PadNumber(schedule_date.getDate())}`;
-    let params = '?date=' + date;
-    let scheduleList = await MakeRequest('/ajax/clients' + params, 'get');
+    const date = `${schedule_date.getFullYear()}-${PadNumber(schedule_date.getMonth() + 1)}-${PadNumber(schedule_date.getDate())}`;
+    const params = '?date=' + date;
+    const scheduleList = await MakeRequest(`/ajax/clients${params}`, 'get');
     // Preencher lista de horarios a bloquear
     scheduleList.forEach((schedule) => {
-        let newItem = { 'startHour': schedule.horaInicio, 'startMinute': schedule.minuto, 'scheduleLength': schedule.duracao };
+        // Obter quando o horario começa
+        const scheduleStartString = schedule.schedule.split(':');
+        let scheduleStart = new Date;
+        scheduleStart.setHours(parseInt(scheduleStartString[0]), parseInt(scheduleStartString[1]), 0);
+        // Obter a duração do horario
+        const scheduleDurationString = schedule.duration.split(':');
+        let scheduleDuration = new Date;
+        scheduleDuration.setHours(parseInt(scheduleDurationString[0]), parseInt(scheduleDurationString[1]), 0);
+        // Adicionar na lista de objetos bloqueados
+        let newItem = { start: scheduleStart, duration: scheduleDuration };
         scheduleBlockList.push(newItem);
     });
-    // Bloquear os horarios já agendados
-    scheduleBlockList.forEach((schedule) => {
+    // Bloquear os horarios da lista de bloqueados
+    scheduleBlockList.forEach((blockedSchedule) => {
         /* Desativa também os horarios anteriores ao horario a ser cancelado
         Isso evita que um horario fique por cima do outro*/
         // calculo que identifica o index do agendamento na tabela
-        let scheduleEnd = (((schedule.startHour * 4) + schedule.startMinute) - (shop_opensAt * 4));
-        let scheduleStart = scheduleEnd - parseInt(schedule_duration) - 1;
-        for (let i = scheduleStart; i < scheduleEnd; i++) {
+        const SCHEDULE_END = TimeToScheduleIndex(blockedSchedule.start, shop_opensAt);
+        const SCHEDULE_START = SCHEDULE_END - parseInt(schedule_duration) - 1;
+        for (let i = SCHEDULE_START; i < SCHEDULE_END; i++) {
             if (i >= 0) {
                 scheduleEntryList[i].classList.add("unavailable");
                 scheduleEntryList[i].classList.add("row-unav");
                 scheduleEntryList[i].classList.add("row-unav-cuz-dumb");
             }
         }
-        // Desativa os horarios normais
-        DisableSchedule(schedule.startHour, schedule.startMinute, schedule.scheduleLength);
+        // Desativar os horarios normais
+        DisableSchedule(blockedSchedule);
     });
     /* Desativa a opção de marcar no fim do dia se o horario agendado
     exceder o horario que a barbearia fecha */
-    let correctClosedHour = ((shop_closesAt - shop_opensAt) * 4);
-    for (let index = correctClosedHour - (parseInt(schedule_duration) - 1); index < correctClosedHour; index++) {
-        scheduleEntryList[index].classList.add("unavailable");
-        scheduleEntryList[index].classList.add("row-unav");
-        scheduleEntryList[index].classList.add("row-unav-cuz-dumb");
+    // ! Hack/ Gambiarra, convertendo uma string de formato 00:00, no futuro trocar o "schedule_duration" de string para Date()
+    const dateHack = new Date();
+    const dateString = schedule_duration.split(':');
+    dateHack.setHours(parseInt(dateString[0]), parseInt(dateString[1]), 0);
+    const SHOP_CLOSES_AT_INDEX = (shop_closesAt - shop_opensAt) * 4;
+    const IMPOSSIBLE_SCHEDULE_START = SHOP_CLOSES_AT_INDEX - (TimeToScheduleIndex(dateHack) - 1);
+    console.log(SHOP_CLOSES_AT_INDEX, IMPOSSIBLE_SCHEDULE_START, dateHack.getTime());
+    for (let schedule = IMPOSSIBLE_SCHEDULE_START; schedule < SHOP_CLOSES_AT_INDEX; schedule++) {
+        scheduleEntryList[schedule].classList.add("unavailable");
+        scheduleEntryList[schedule].classList.add("row-unav");
+        scheduleEntryList[schedule].classList.add("row-unav-cuz-dumb");
     }
 }
 // Quando é clicado em um horario na lista de horarios
@@ -449,7 +465,7 @@ function CreateScheduleTime(time, minute) {
     entry.classList.add("schedule-entry");
     entry.addEventListener("click", () => { SelectScheduleEntry(entry); });
     let sch_time = document.createElement("td");
-    sch_time.innerText = (Format.PadNumber(time) + ":" + Format.PadNumber(minute));
+    sch_time.innerText = (PadNumber(time) + ":" + PadNumber(minute));
     sch_time.classList.add("entry-time");
     sch_time.classList.add("col-1");
     entry.append(sch_time);
@@ -462,26 +478,27 @@ function CreateScheduleTime(time, minute) {
     return entry;
 }
 // Desabilitar horarios
-function DisableSchedule(startHour, startMinute, scheduleLength) {
-    let correctIndex = ((startHour * 4) + startMinute) - (shop_opensAt * 4);
-    let entries = [];
+function DisableSchedule(schedule) {
+    const CORRECT_INDEX = TimeToScheduleIndex(schedule.start, shop_opensAt);
+    const SCHEDULE_DURATION = TimeToScheduleIndex(schedule.duration);
     // evita que numeros errados façam alguma coisa
-    if (correctIndex < 0 || correctIndex > scheduleEntryList.length) {
+    if (CORRECT_INDEX < 0 || CORRECT_INDEX > scheduleEntryList.length)
         return;
-    }
-    // Desmarcar todos os horarios
+    // Deselecionar todos os horarios
     scheduleEntryList.forEach(schedule => {
         schedule.classList.remove("selected");
     });
-    for (let i = 0; i < scheduleLength; i++) {
-        let j = correctIndex + i;
-        entries[i] = scheduleEntryList[j];
+    // Obter os elementos a serem desabilitados
+    let scheduleTableEntries = [];
+    for (let tableEntry = 0; tableEntry < SCHEDULE_DURATION; tableEntry++) {
+        let tableElementIndex = CORRECT_INDEX + tableEntry;
+        scheduleTableEntries[tableEntry] = scheduleEntryList[tableElementIndex];
     }
-    for (let i = 0; i < scheduleLength; i++) {
-        let indexToChance = correctIndex + i;
-        if (indexToChance < scheduleEntryList.length) {
-            scheduleEntryList[indexToChance].classList.add("unavailable");
-            entries[i].classList.add("row-unav");
+    for (let i = 0; i < SCHEDULE_DURATION; i++) {
+        const TABLE_INDEX = CORRECT_INDEX + i;
+        if (TABLE_INDEX < scheduleEntryList.length) {
+            scheduleEntryList[TABLE_INDEX].classList.add("unavailable");
+            scheduleTableEntries[i].classList.add("row-unav");
         }
     }
 }
@@ -520,7 +537,7 @@ CONFIRM_SCHEDULE.addEventListener('click', () => {
     }, null, 4);
     console.log(jsonRequest);
     MakeRequest('/ajax/clients/', 'post', jsonRequest);
-    Modal.DisplayModal(false);
+    DisplayModal(false);
     ClearClientForms();
 });
 //  || Utilidades    ---------------------------------------------------------------------------
@@ -545,4 +562,3 @@ export function ClearClientForms() {
     warningMsg.forEach(message => { message.classList.add("d-none"); });
     CALENDAR_DAY_LIST.forEach(day => { day.classList.remove("selected-day"); });
 }
-/* #endregion */ 

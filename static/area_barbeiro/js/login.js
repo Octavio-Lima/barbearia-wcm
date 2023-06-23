@@ -4,7 +4,8 @@ const FORM = document.getElementById("login-form");
 FORM.addEventListener("submit", async (event) => {
     event.preventDefault();
     // Enviar para ser processado
-    const data = new URLSearchParams(new FormData(FORM)).toString();
+    const formData = new FormData(FORM);
+    const data = new URLSearchParams(formData).toString();
     const request = await MakeRequest('/nomebarbearia/acessar/', 'post', data, true);
     // Se for aceito, redirecionar para a tela principal do barbeiro
     if (request.ok) {

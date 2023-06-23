@@ -43,7 +43,7 @@ class Client(models.Model):
     toPay = models.FloatField()
 
     def __str__(self):
-        return f"{self.nome}"
+        return f"{self.name}"
     
 class Payment(models.Model):
     name = models.CharField(max_length=255)
