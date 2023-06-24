@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -66,9 +67,9 @@ def redefineAccess(request):
     return HttpResponse(template.render())
 
 @login_required(login_url='/nomebarbearia/acessar/')
-def fluxoDeCaixa(request):
-    template = loader.get_template('area_barbeiro/financeiro/fluxo-caixa.html')  
-    return HttpResponse(template.render())
+def fluxo_de_caixa(request):
+    template = 'area_barbeiro/financeiro/fluxo-caixa.html' 
+    return render(request, template)
 
 @login_required(login_url='/nomebarbearia/acessar/')
 def Agendamentos(request):

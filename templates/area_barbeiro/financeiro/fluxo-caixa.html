@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{% static 'geral/favicon/placeholder.png' %}" type="image/x-icon">    
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">    
     <title>Financeiro - Lançamentos</title>
 
     <!-- Bootstrap -->
@@ -32,9 +32,10 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+    {% csrf_token %}
     <header>
         <div class="pt-3 px-3">
-            <a href="./manage.html"><i class="fa fa-house"></i></a>
+            <a href="{% url 'tela-principal' %}"><i class="fa fa-house"></i></a>
             <h1 class="d-inline">FLUXO DE CAIXA</h1>
 
             <div class="mt-3">
@@ -149,7 +150,6 @@
         <div class="pop-up d-none" id="add-entry-diag-box" name="pop_add-entry">
             <h3>ADICIONAR NOVO LANÇAMENTO</h3>
             <form id="add-entry-form">
-                {% csrf_token %}
                 
                 <label for="input-entry-name">NOME DO LANÇAMENTO:</label>
                 <input type="text" name="entry-name" id="input-entry-name" class="text-input" required>

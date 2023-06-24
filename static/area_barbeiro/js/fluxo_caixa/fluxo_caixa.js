@@ -1,5 +1,6 @@
 import * as table from "./fluxo_caixa_tabela.js";
 import { CurrencyToNumber, NumberToCurrency } from "../../../geral/js/utility.js";
+import { BrazilToDefaultDate } from "../../../geral/js/formating.js";
 const IN_EDIT_ENTRY_NAME = document.getElementById("edit-entry-name");
 const IN_EDIT_ENTRY_DATE = document.getElementById("edit-entry-date");
 const IN_EDIT_ENTRY_PRICE = document.getElementById("edit-entry-price");
@@ -37,7 +38,7 @@ NEW_ENTRY_FORM?.addEventListener("submit", (event) => {
 });
 // - Remover Lançamento
 const BTN_CONFIRM_DELETE_ENTRY = document.querySelector("#button-confirm-del");
-BTN_CONFIRM_DELETE_ENTRY.addEventListener("click", () => {
+BTN_CONFIRM_DELETE_ENTRY?.addEventListener("click", () => {
     table.RemoveEntry();
     DisplayModal(false);
 });
@@ -87,62 +88,46 @@ cancelDiagBox.forEach(button => { button.addEventListener("click", () => { Displ
 const BTN_EDIT_ENTRY = document.querySelector("#button-edit-entry");
 BTN_EDIT_ENTRY.addEventListener("click", () => { DisplayEditWindow(); });
 function DisplayEditWindow() {
-    // Exibir janela de edição
-    DisplayModal(true, "editar");
-    // - Carregar dados do lançamento
-    // nome
-    let nameElement = table.selectedEntry?.querySelector('.entry-name');
-    let name = (nameElement ? nameElement.innerHTML : '');
-    // // dia de pagamento
-    // let payDay = table.selectedEntry.querySelector('.entry-pay-date').innerText;
-    // let parsedDATE = Date.parse(payDay).toLocaleString()
-    let dateFromEntry = new Date();
-    let entryDate;
-    if (table.selectedEntry) {
-        entryDate = (table.selectedEntry.querySelector('.entry-pay-date')?.textContent)?.split('/');
-        if (entryDate)
-            dateFromEntry.setDate(parseInt(entryDate[0]));
-        if (entryDate)
-            dateFromEntry.setMonth(parseInt(entryDate[1]) - 1);
-        if (entryDate)
-            dateFromEntry.setFullYear(parseInt(entryDate[2]));
-    }
-    // valor do pagamento
-    let valueElement = table.selectedEntry?.querySelector('.value');
-    let value = (CurrencyToNumber(valueElement ? valueElement.innerHTML : '')).toString();
-    // tipo de pagamento
-    let entryTypeElement = table.selectedEntry?.querySelector('.entry-type');
-    let isTrue = (entryTypeElement?.innerHTML === 'ENTRADA');
-    let type = (isTrue ? "ENTRADA" : "SAIDA");
-    // forma de pagamento
-    let paymentTypeElement = table.selectedEntry?.querySelector('.entry-pay-type');
-    let paymentType = (paymentTypeElement ? paymentTypeElement?.innerHTML : '');
-    // Colocar os valores nos inputs da janela
+    // Carregar elementos com informações do lançamento
+    const ENTRY_NAME = table.selectedEntry?.querySelector('.entry-name');
+    const ENTRY_PAY_DATE = table.selectedEntry?.querySelector('.entry-pay-date');
+    const ENTRY_VALUE = table.selectedEntry?.querySelector('.value');
+    const ENTRY_TYPE = table.selectedEntry?.querySelector('.entry-type');
+    const ENTRY_PAYMENT_TYPE = table.selectedEntry?.querySelector('.entry-pay-type');
+    // Obter valores dos elementos
+    let name = (ENTRY_NAME ? ENTRY_NAME.innerHTML : '');
+    let value = (CurrencyToNumber(ENTRY_VALUE ? ENTRY_VALUE.innerHTML : '')).toString();
+    let type = (ENTRY_TYPE?.innerHTML === 'ENTRADA' ? "ENTRADA" : "SAIDA");
+    let paymentType = (ENTRY_PAYMENT_TYPE ? ENTRY_PAYMENT_TYPE?.innerHTML : '');
+    let date = BrazilToDefaultDate(ENTRY_PAY_DATE ? ENTRY_PAY_DATE.textContent : '');
+    // Definir os valores nos inputs da janela
     IN_EDIT_ENTRY_NAME.value = name;
-    IN_EDIT_ENTRY_DATE.valueAsDate = dateFromEntry;
+    IN_EDIT_ENTRY_DATE.valueAsDate = date;
     IN_EDIT_ENTRY_PRICE.value = value;
     IN_EDIT_ENTRY_TYPE.value = type;
     OP_EDIT_ENTRY_PAYTYPE.value = paymentType;
+    // Exibir janela de edição
+    DisplayModal(true, "editar");
 }
 const BTN_CONFIRM_EDIT_ENTRY = document.querySelector("#button-confirm-edit");
 BTN_CONFIRM_EDIT_ENTRY.addEventListener("click", () => { SaveEditedEntry(); });
 async function SaveEditedEntry() {
-    DisplayModal(false);
-    let isTrue = (IN_EDIT_ENTRY_TYPE.value === 'ENTRADA');
-    let getId = table.selectedEntry?.querySelector('.entry-id')?.textContent;
-    let id = (getId ? parseInt(getId) : NaN);
-    let name = IN_EDIT_ENTRY_NAME.value;
-    let entryType = (isTrue ? "ENTRADA" : "SAIDA");
-    let value = parseFloat(String(IN_EDIT_ENTRY_PRICE.value).replace(',', '.'));
-    let payType = OP_EDIT_ENTRY_PAYTYPE.value;
-    let payDate = IN_EDIT_ENTRY_DATE.value;
-    console.log(entryType);
-    await table.UpdateEntry(id, name, entryType, payDate, value, payType);
+    const ENTRY_ID_ELEMENT = table.selectedEntry?.querySelector('.entry-id')?.textContent;
+    const ENTRY_ID = (ENTRY_ID_ELEMENT ? parseInt(ENTRY_ID_ELEMENT) : NaN);
+    const ENTRY_NAME = IN_EDIT_ENTRY_NAME.value;
+    const ENTRY_VALUE = parseFloat(String(IN_EDIT_ENTRY_PRICE.value).replace(',', '.'));
+    const ENTRY_TYPE = (IN_EDIT_ENTRY_TYPE.value === 'ENTRADA' ? "ENTRADA" : "SAIDA");
+    const ENTRY_PAYMENT_TYPE = OP_EDIT_ENTRY_PAYTYPE.value;
+    const ENTRY_PAY_DATE = IN_EDIT_ENTRY_DATE.value;
+    // Atualizar no banco de dados
+    await table.UpdateEntry(ENTRY_ID, ENTRY_NAME, ENTRY_TYPE, ENTRY_VALUE, ENTRY_PAYMENT_TYPE, ENTRY_PAY_DATE);
     await table.LoadAllEntries();
     RefreshTotalProfit();
+    // DisplayModal(false);
 }
 // - Detalhes do Lançamento
 export function PopUp_UpdateDetailWindow() {
+    // Elementos de Informação
     const DETAIL_NAME = document.getElementById("det-name");
     const DETAIL_TOTAL_VALUE = document.getElementById("det-total-value");
     const DETAIL_PAY_TYPE = document.getElementById("det-pay-type");
@@ -150,30 +135,31 @@ export function PopUp_UpdateDetailWindow() {
     const DETAIL_CREATED_IN = document.getElementById("det-created-in");
     const DETAIL_CREATED_BY = document.getElementById("det-created-by");
     const DETAIL_EDITED_BY = document.getElementById("det-edited-by");
-    let entry = table.selectedEntry?.children;
-    const PAYTYPE = ["Dinheiro", "Cartão de Débito", "Cartão de Crédito", "Pix"];
-    // ! Mudar o "entry.item(n).inner text" para um query selector, 
-    // ! isso irá evitar de pegar dados errados se mudar o layout no DOM
-    if (entry) {
-        if (DETAIL_NAME)
-            DETAIL_NAME.innerText = (entry.item(0) ? entry.item(0)?.innerHTML : '');
-        if (DETAIL_TOTAL_VALUE)
-            DETAIL_TOTAL_VALUE.innerText = (entry.item(5) ? entry.item(5)?.innerHTML : '');
-        if (DETAIL_PAY_TYPE)
-            DETAIL_PAY_TYPE.innerText = (entry.item(8) ? entry.item(8)?.innerHTML : '');
-        if (DETAIL_PAYED_IN)
-            DETAIL_PAYED_IN.innerText = (entry.item(3) ? entry.item(3)?.innerHTML : '');
-        if (DETAIL_CREATED_IN)
-            DETAIL_CREATED_IN.innerText = (entry.item(2) ? entry.item(2)?.innerHTML : '');
-        if (DETAIL_CREATED_BY)
-            DETAIL_CREATED_BY.innerText = (entry.item(4) ? entry.item(4)?.innerHTML : '');
-        if (DETAIL_EDITED_BY)
-            DETAIL_EDITED_BY.innerText = (entry.item(7) ? entry.item(7)?.innerHTML : '');
-    }
-    let hasBeenEdited = (entry?.item(7)?.innerHTML.length > 0);
-    if (hasBeenEdited) {
-        // ! Mudar Parente element para um querry selector,
-        // ! pois se for mudado o layout do DOM essa função irá quebrar
+    // Informação do Lançamento a ser mostrado os detalhes
+    const NAME = table.selectedEntry?.querySelector('.entry-name')?.textContent;
+    const VALUE = table.selectedEntry?.querySelector('.value')?.textContent;
+    const PAY_TYPE = table.selectedEntry?.querySelector('.entry-pay-type')?.textContent;
+    const PAYMENT_DATE = table.selectedEntry?.querySelector('.entry-pay-date')?.textContent;
+    const CREATE_DATE = table.selectedEntry?.querySelector('.entry-create-date')?.textContent;
+    const CREATED_BY = table.selectedEntry?.querySelector('.created-by')?.textContent;
+    const EDITED_BY = table.selectedEntry?.querySelector('.edited-by')?.textContent;
+    // Adicionar detalhes do elemento selecionado
+    if (DETAIL_NAME)
+        DETAIL_NAME.innerText = (NAME ? NAME : '');
+    if (DETAIL_TOTAL_VALUE)
+        DETAIL_TOTAL_VALUE.innerText = (VALUE ? VALUE : '');
+    if (DETAIL_PAY_TYPE)
+        DETAIL_PAY_TYPE.innerText = (PAY_TYPE ? PAY_TYPE : '');
+    if (DETAIL_PAYED_IN)
+        DETAIL_PAYED_IN.innerText = (PAYMENT_DATE ? PAYMENT_DATE : '');
+    if (DETAIL_CREATED_IN)
+        DETAIL_CREATED_IN.innerText = (CREATE_DATE ? CREATE_DATE : '');
+    if (DETAIL_CREATED_BY)
+        DETAIL_CREATED_BY.innerText = (CREATED_BY ? CREATED_BY : '');
+    if (DETAIL_EDITED_BY)
+        DETAIL_EDITED_BY.innerText = (EDITED_BY ? EDITED_BY : '');
+    // Se for um lançamento editado, exibir que já foi editado
+    if (EDITED_BY?.length > 0) {
         if (DETAIL_EDITED_BY)
             DETAIL_EDITED_BY.parentElement?.classList.remove("d-none");
     }

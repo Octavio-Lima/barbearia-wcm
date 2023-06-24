@@ -1,6 +1,6 @@
 // Gerenciar requisições
 type Methods = 'post' | 'put' | 'delete' | 'get';
-export async function MakeRequest(url: string, method: Methods, body?: string, form = false) {
+export async function MakeRequest(url: string, method: Methods, body?: string, form = false): Promise<any> {
     let headers = {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
@@ -16,13 +16,13 @@ export async function MakeRequest(url: string, method: Methods, body?: string, f
         headers['X-CSRFToken'] = csrf;
     }
 
-    const response: Response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: body
-    });
+    const response: Response = await fetch(url, { method: method, headers: headers, body: body });
+    let text = await response.text();
     
-    return response.json();
+    // Conferir se possui json
+    if (text) return JSON.parse(text);
+
+    return null;
 }
 
 // Gerenciar cookies

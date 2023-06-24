@@ -57,7 +57,7 @@ class Payment(models.Model):
     shopId = models.IntegerField()
 
     def __str__(self):
-        return f"{self.nome}"
+        return f"{self.name}"
 
 # endregion
 # region  Barbearias

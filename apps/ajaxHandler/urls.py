@@ -9,5 +9,5 @@ urlpatterns = [
     path('shop/config/', views.ajaxShopConfig.as_view()),
     path('shop/config/products', views.ajaxProductConfig.as_view()),
     path('clients/', views.ajaxClients.as_view()),
-    path('financial/', views.ajaxFinancial.as_view()),
+    path('financial/', views.ajax_financial.as_view()),
 ]

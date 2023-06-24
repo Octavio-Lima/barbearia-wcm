@@ -23,6 +23,25 @@ export function ToMinutes(time: string = '00:00') {
     return minutes;
 }
 
+export function ToBrazilDate(date: Date | string): string {
+    if (typeof date === 'string') {
+        const SPLIT_DATE = date.split('-');
+        return `${PadNumber(parseInt(SPLIT_DATE[2]))}/${PadNumber(parseInt(SPLIT_DATE[1]))}/${parseInt(SPLIT_DATE[0])}`
+    } else {
+        return `${PadNumber(date.getDate())}/${PadNumber(date.getMonth())}/${date.getFullYear()}`
+    }
+}
+
+export function BrazilToDefaultDate(date: string): Date {
+    const DATE = new Date();
+    const SPLIT_DATE = date.split('/');
+    
+    DATE.setFullYear(parseInt(SPLIT_DATE[2]));
+    DATE.setMonth(parseInt(SPLIT_DATE[1]) - 1);
+    DATE.setDate(parseInt(SPLIT_DATE[0]));
+    return DATE;
+}
+
 // TODO: No momento, o horario em que a barbearia abre só leva em conta as horas, deve ser atualizado para que use os minutos também
 export function TimeToScheduleIndex(time: Date, shop_OpensAt?: number): number {
     const SCHEDULE_PER_HOUR = 4;

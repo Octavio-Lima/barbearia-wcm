@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import View
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from apps.area_barbeiro.models import Profile, BarberUserSetting
 from apps.area_barbeiro.models import Shop
 from apps.area_barbeiro.models import Client, Payment
@@ -160,52 +160,50 @@ class ajaxShopName(View):
 
     #     return JsonResponse({'asd': 123})
 
-class ajaxFinancial(View): 
+class ajax_financial(View): 
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
-        shopId = request.GET['shopId']
-        entries = Payment.objects.filter(shopId=shopId).values()
+        shop_id = request.GET['shopId']
+        entries = Payment.objects.filter(shopId=shop_id).values()
 
-        entriesList = list(entries)
-        return JsonResponse(entriesList, safe=False)
+        entries_list = list(entries)
+        return JsonResponse(entries_list, safe=False)
     
     def post(self, request):
-        entry = json.loads(self.request.body)
+        request_entry = json.loads(self.request.body)
 
-        newEntry = Payment(nome = entry['nome'],
-            tipo = entry['tipo'],
-            diaCriado = entry['diaCriado'],
-            diaPago = entry['diaPago'],
-            criadoPor = entry['criadoPor'],
-            valor = entry['valor'],
-            formaDePagamento = entry['formaDePagamento'],
-            cliente = entry['cliente'],
-            id_barbearia = entry['id_barbearia'])
-        
-        newEntry.save()
+        new_entry = Payment(name = request_entry['name'],
+            type = request_entry['type'],
+            createDate = request_entry['createDate'],
+            payDate = request_entry['payDate'],
+            createdBy = request_entry['createdBy'],
+            value = request_entry['value'],
+            paymentType = request_entry['paymentType'],
+            client = request_entry['client'],
+            shopId = request_entry['shopId'])
 
-        return JsonResponse({'': ''})
+        new_entry.save()
+        return HttpResponse(status = 201)
     
     def delete(self, request):
-        entryId = request.GET['id']
-        shopId = request.GET['shopId']
-        Payment.objects.filter(id_barbearia=shopId, id=entryId).delete()
+        entry_id = request.GET['id']
+        shop_id = request.GET['shopId']
 
-        return JsonResponse({'': ''})
+        print(entry_id, shop_id)
+        Payment.objects.filter(shopId=shop_id, id=entry_id).delete()
+
+        return HttpResponse(status=204)
     
     def put(self, request):
         entry = json.loads(self.request.body)
 
-        date = datetime.strptime(entry["diaPago"], '%Y-%m-%d').date()
-        print(date)
+        print(entry)
 
-        Payment.objects.filter(id_barbearia=entry['id_barbearia'], id=entry['id']).update(
-            nome = entry['nome'],
-            tipo = entry['tipo'],
-            diaPago = entry['diaPago'],
-            valor = entry['valor'],
-            formaDePagamento = entry['formaDePagamento'],
-            cliente = entry['cliente'],
-        )
+        Payment.objects.filter(shopId=entry['shopId'], id=entry['id']).update(
+            name = entry['name'],
+            type = entry['type'],
+            payDate = entry['payDate'],
+            value = entry['value'],
+            paymentType = entry['paymentType'])
 
-        return JsonResponse({'': ''})
+        return HttpResponse(status=200)
