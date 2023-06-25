@@ -100,7 +100,7 @@ class ajaxProductConfig(View):
 
         return JsonResponse({'': ''})
 
-class ajaxClients(View): 
+class ajax_clients(View): 
     def get(self, request):
         # Procurar configuração pelo ID da barbearia
         date = request.GET['date']
@@ -129,6 +129,21 @@ class ajaxClients(View):
         newClient.save()
 
         return JsonResponse({'asd': 123})
+
+    def put(self, request):
+        entry = json.loads(self.request.body)
+
+        print(entry)
+
+        if entry.get('wasPresent') is not None:
+            Client.objects.filter(shopId=entry['shopId'], id=entry['id']).update(
+                wasPresent = entry['wasPresent'])
+        else:
+            Client.objects.filter(shopId=entry['shopId'], id=entry['id']).update(
+                hasPayed = entry['hasPayed'])
+
+
+        return HttpResponse(status=200)
 
 class ajaxShopName(View): 
     def get(self, request):

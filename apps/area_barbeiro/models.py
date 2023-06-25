@@ -41,6 +41,8 @@ class Client(models.Model):
     schedule = models.TimeField(default='00:00')
     duration = models.CharField(max_length=5)
     toPay = models.FloatField()
+    hasPayed = models.BooleanField(default=False)
+    wasPresent = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name}"

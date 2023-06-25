@@ -8,6 +8,6 @@ urlpatterns = [
     path('shop/', views.ajaxShopName.as_view()),
     path('shop/config/', views.ajaxShopConfig.as_view()),
     path('shop/config/products', views.ajaxProductConfig.as_view()),
-    path('clients/', views.ajaxClients.as_view()),
+    path('clients/', views.ajax_clients.as_view()),
     path('financial/', views.ajax_financial.as_view()),
 ]

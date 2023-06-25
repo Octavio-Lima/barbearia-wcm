@@ -8,6 +8,8 @@ let tableDate = '';
 const DATE = document.querySelector("#schedule-date");
 const SCHEDULE_TABLE = document.querySelector("#schedule-list");
 let entriesList = [];
+let scheduleEntryList = [];
+let activeSchedule = null;
 // Inicializar
 (async function () {
     await ShopConfigurationSetup(); // Configurações da Barbearia
@@ -53,8 +55,6 @@ function CreateEntry(hour, minute) {
     const EL_INSTA = document.createElement("p");
     const EL_SPACER = document.createElement("p");
     const EL_SPACERTWO = document.createElement("p");
-    // Modal que estava testando
-    // entry.addEventListener("dblclick", () => { modal.displayModal(EL_CLIENT.innerText); })
     entry.classList.add("schedule-entry");
     time.classList.add("time");
     time.classList.add("schedule-entry-time");
@@ -71,7 +71,7 @@ function CreateEntry(hour, minute) {
     EL_SPACERTWO.classList.add("flex-grow-1");
     EL_PHONE.classList.add("schedule-client-phone");
     EL_INSTA.classList.add("schedule-client-insta");
-    time.innerText = formatTimeString(hour) + ":" + formatTimeString(15 * minute);
+    time.innerText = PadNumber(hour) + ":" + PadNumber(15 * minute);
     topRow.appendChild(EL_CLIENT);
     topRow.appendChild(EL_SPACERTWO);
     topRow.appendChild(EL_SERVICE);
@@ -104,6 +104,9 @@ function AddEntryInfo(entry) {
         let j = SCHEDULE_START_INDEX + i;
         scheduleTableEntries[i] = entriesList[j];
     }
+    let scheduleEntry = new ScheduleEntry(entry.id, entry.name, entry.instagram, entry.phone, entry.services, entry.hasPayed, entry.wasPresent);
+    scheduleEntry.elementList = scheduleTableEntries;
+    scheduleEntryList.push(scheduleEntry);
     // Marcar os horarios como ocupados
     for (let i = 0; i < SCHEDULE_DURATION; i++) {
         // Se o horario for maior que o horario que a barbearia fecha, parar para não travar
@@ -112,6 +115,12 @@ function AddEntryInfo(entry) {
         }
         const SCHEDULE_DESCRIPTION = scheduleTableEntries[i].querySelector('.container-entry-details');
         const SCHEDULE_TIME = scheduleTableEntries[i].querySelector('.schedule-entry-time');
+        // Adicionar que estava presente
+        if (entry.wasPresent)
+            SCHEDULE_DESCRIPTION?.classList.add('row-confirm-presence');
+        // Adicionar que foi pago
+        if (entry.hasPayed)
+            SCHEDULE_DESCRIPTION?.classList.add('row-confirm-payment');
         if (i == 0) {
             SCHEDULE_DESCRIPTION?.classList.add('row-busy-top');
             scheduleTableEntries[i]?.classList.add('top');
@@ -166,6 +175,14 @@ function ClearTableInfo() {
         entry?.classList.remove("base");
         entry?.classList.remove("top");
     });
+    // Esvaziar lista de agendamentos
+    scheduleEntryList.length = 0;
+}
+function updateEntryList() {
+    const entriesElementList = document.querySelectorAll(".schedule-entry");
+    entriesElementList.forEach(element => {
+        entriesList.push(element);
+    });
 }
 /* ---------------------------- Atualizar Tabela ---------------------------- */
 DATE.addEventListener("change", async function () {
@@ -181,19 +198,99 @@ async function UpdateScheduleTable() {
     scheduleList.forEach((entry) => {
         AddEntryInfo(entry);
     });
-}
-// || Extra
-function formatTimeString(value) {
-    if (value <= 9) {
-        return `0${value}`;
-    }
-    else {
-        return value.toString();
-    }
-}
-function updateEntryList() {
-    const entriesElementList = document.querySelectorAll(".schedule-entry");
-    entriesElementList.forEach(element => {
-        entriesList.push(element);
+    // Adicionar os eventos de cada agendamento
+    scheduleEntryList.forEach((entry) => {
+        entry.elementList.forEach((element) => {
+            element.addEventListener('click', () => {
+                // Marcar esse agendamento como selecionado
+                activeSchedule = entry;
+                // Adicionar informação
+                console.log(entry.name, entry.instagram, entry.serviceList, entry.phoneNumber);
+                // Exibir modal
+                MODAL?.classList.remove('d-none');
+            });
+        });
     });
 }
+/* -------------------------- Modal de Agendamento -------------------------- */
+const MODAL = document.getElementById('schedule-modal');
+const MODAL_BACKGROUND = document.getElementById('block-bg');
+MODAL_BACKGROUND?.addEventListener('click', () => { MODAL?.classList.add('d-none'); });
+/* -------------------------- Objeto de Agendamento ------------------------- */
+class ScheduleEntry {
+    id;
+    elementList = [];
+    name = '';
+    instagram = '';
+    phoneNumber = '';
+    serviceList = '';
+    hasPayed = false;
+    wasPresent = false;
+    constructor(id, name, instagram, phoneNumber, serviceList, hasPayed, wasPresent) {
+        this.id = id;
+        this.name = name;
+        this.instagram = instagram;
+        this.phoneNumber = phoneNumber;
+        this.serviceList = serviceList;
+        this.hasPayed = hasPayed;
+        this.wasPresent = wasPresent;
+    }
+    async ConfirmPresence() {
+        // Se já estava presente, retornar a função
+        if (this.wasPresent === true)
+            return;
+        // Adicionar estilo no elemento
+        this.elementList.forEach(element => {
+            element.querySelector('.container-entry-details ')?.classList.add('row-confirm-presence');
+        });
+        // Atualizar que estava presente
+        const JSON_ = JSON.stringify({
+            id: this.id,
+            wasPresent: true,
+            shopId: SHOP_ID
+        });
+        await MakeRequest('/ajax/clients/', 'put', JSON_);
+    }
+    async ConfirmPayment() {
+        // Se já foi pago, retornar a função
+        if (this.hasPayed === true)
+            return;
+        // Adicionar estilo no elemento
+        this.elementList.forEach(element => {
+            element.querySelector('.container-entry-details ')?.classList.add('row-confirm-payment');
+        });
+        // Adicionar no fluxo de caixa
+        const ENTRY_TYPE = 'ENTRADA';
+        // Obter dia criado
+        const CREATION_DATE = new Date();
+        // Realizar requisição
+        const JSON_REQUEST = JSON.stringify({
+            name: this.name,
+            type: ENTRY_TYPE,
+            createDate: `${CREATION_DATE.getFullYear()}-${PadNumber(CREATION_DATE.getMonth() + 1)}-${PadNumber(CREATION_DATE.getDate())}`,
+            payDate: `${CREATION_DATE.getFullYear()}-${PadNumber(CREATION_DATE.getMonth() + 1)}-${PadNumber(CREATION_DATE.getDate())}`,
+            createdBy: '',
+            value: 131,
+            paymentType: 'DINHEIRO',
+            client: this.name,
+            shopId: SHOP_ID
+        });
+        await MakeRequest('/ajax/financial/', 'post', JSON_REQUEST);
+        // Atualizar que foi pago
+        const JSON_PAY = JSON.stringify({
+            id: this.id,
+            hasPayed: true,
+            shopId: SHOP_ID
+        });
+        await MakeRequest('/ajax/clients/', 'put', JSON_PAY);
+    }
+}
+/* --------------------- Modal de Detalhe do Agendamento -------------------- */
+const CONFIRM_PRESENCE = document.getElementById('confirm-presence');
+const CONFIRM_PAYMENT = document.getElementById('confirm-payment');
+CONFIRM_PRESENCE?.addEventListener('click', () => {
+    activeSchedule?.ConfirmPresence();
+});
+CONFIRM_PAYMENT?.addEventListener('click', () => {
+    activeSchedule?.ConfirmPayment();
+});

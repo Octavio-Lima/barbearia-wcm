@@ -33,13 +33,13 @@ def TelaPrincipal(request):
     template = loader.get_template('area_barbeiro/tela-principal.html')
     return HttpResponse(template.render(context, request))
 
-class loginPage(View):
+class login_page(View):
     def get(self, request):
         form = UserForm()
-        template = loader.get_template('area_barbeiro/acessar/acessar.html')
+        template = 'area_barbeiro/acessar/acessar.html'
         context = { "form": form }
         
-        return HttpResponse(template.render(context, request))
+        return render(request, template, context)
 
     def post(self, request):
         form = UserForm(request.POST)
@@ -72,9 +72,9 @@ def fluxo_de_caixa(request):
     return render(request, template)
 
 @login_required(login_url='/nomebarbearia/acessar/')
-def Agendamentos(request):
-    template = loader.get_template('area_barbeiro/financeiro/gerenciar-horarios.html')  
-    return HttpResponse(template.render())
+def agendamentos(request):
+    template = 'area_barbeiro/financeiro/gerenciar-horarios.html'
+    return render(request, template)
 
 # Create your views here.
 @login_required(login_url='/nomebarbearia/acessar/')

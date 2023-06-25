@@ -164,11 +164,19 @@ hr {
     color: #ECF0F3;
 }
 
+.row-confirm-presence {
+    background-color: #0b9b9b !important;
+}
+
+.row-confirm-payment {
+    background-color: #091 !important;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                Janela Pop Up                               */
 /* -------------------------------------------------------------------------- */
 
-modal-window .block-bg {
+modal-window #block-bg {
     position: absolute;
     left: 0;
     top: 0;
@@ -210,11 +218,16 @@ modal-window input {
     margin: 0.5rem 0;
 }
 
+/* Input */
+input {
+    background-color: #131313;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                Media Queries                               */
 /* -------------------------------------------------------------------------- */
 
-@media (prefers-color-scheme: asd) {    
+@media (prefers-color-scheme: dark) {    
     body {
         background-color: #131313;
     }

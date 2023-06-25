@@ -19,12 +19,10 @@
 
     <!-- Styles-->
     <link rel="stylesheet" href="{% static 'area_barbeiro/css/gerenciar/manage-schedule.css' %}">
-    {% comment %} <link rel="stylesheet" href="{% static '/gerenciar/css/modal.css' %}"> {% endcomment %}
 
     <!-- Scripts -->
     <script src="{% static 'area_barbeiro/js/gerenciar/js/manage-schedule.js' %}" defer type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <!-- <script src="../js/modal.js" defer type="module"></script> -->
 
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,6 +33,7 @@
 </head>
 
 <body>
+    {% csrf_token %}
     <div class="main-container">
         <header>
             <page-title-container id="schedules">
@@ -67,11 +66,11 @@
         </main>
     </div>
 
-    <modal-window class="d-none">
-        <div class="block-bg"></div>
+    <modal-window class="d-none" id="schedule-modal">
+        <div id="block-bg"></div>
 
         <div class="window">    
-            <h2>Agendamento</h2>
+            <h4>Agendamento</h4>
                 
             <hr>
             
@@ -83,8 +82,8 @@
             <p class="d-inline-block">Total: </p>
             <p class="d-inline-block" id="total-price">R$ 0,00</p>
             
-            <!-- <input type="button" value="confirmar presença"> 
-            <input type="button" id="confirm-payment" value="confirmar pagamento"> -->
+            <input type="button" id="confirm-presence" value="confirmar presença"> 
+            <input type="button" id="confirm-payment" value="confirmar pagamento">
         </div>
     </modal-window>
 </body>
