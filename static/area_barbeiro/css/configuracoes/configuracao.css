@@ -4,20 +4,35 @@
     user-select: none;
 }
 
+#main-header {
+    display: flex;
+    color: #fff;
+}
+
+#main-header #sidebar-toggle {
+    color: #eee;
+    border: none;
+    display: flex;
+    background-color: #0000;
+    margin: .5rem 1rem;
+}
+
 body {
     background-color: #222 !important;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: 56px auto;
+    grid-template-rows: 40px auto;
     height: 100vh;
     transition: .5s;
+    margin-left: 56px;
 }
 
 #main {
     transition: margin-left .5s;
-    padding: 1rem;
+    padding: .4rem 1rem 1rem;
+    margin-left: 0;
 }
 
 main hr {
@@ -54,8 +69,17 @@ main hr {
 }
 
 .sidebar-shortcut {
-    transition: .2s;
     transform-origin: left;
+    margin: 0 .5rem;
+    transition: .2s;
+}
+
+.sidebar-link-name {
+    margin-left: 1rem;
+}
+
+.sidebar-shortcut i {
+    font-size: 1.2rem;
 }
 
 .table-container {
@@ -124,6 +148,14 @@ table td {
     overflow-x: hidden;
     background-color: #111 !important;
     padding: .4rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 100%;
+    width: 56px;
+    transition: .5s;
+    overflow-x: hidden;
 }
 
 #sidebar a {
@@ -135,14 +167,25 @@ table td {
     white-space: nowrap;
 }
 
+#sidebar a p {
+    display: inline-flex;
+    white-space: nowrap;
+    width: 0;
+    opacity: 0;
+    transition: .3s;
+}
+
 #sidebar a:first-child {
     padding-top: 0;
 }
 
 #sidebar hr {
     border-top: 1px solid #fff;
-    margin: 0;
+    margin: 0 0 0 0.5rem;
 }
 
+#sidebar-toggle i {
+    font-size: 1.5rem;
+}
 
 /* #endregion */
