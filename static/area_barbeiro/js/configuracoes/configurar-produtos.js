@@ -4,17 +4,17 @@ let shopId = GetCookie("shopId");
 let productList = [];
 const PRODUCT_TABLE = document.getElementById("service-table");
 // Obter lista de produtos
-(async function () {
-    // Obter lista de produtos do banco de dados
-    let params = `?shopId=${shopId}`;
-    let request = await MakeRequest(`/ajax/shop/config/products${params}`, 'get');
-    let requestProductList = JSON.parse(request.products);
-    // Criar elementos na tabela
-    requestProductList?.forEach((entry) => {
-        let newEntry = new Product(entry.name, entry.value, entry.quantity);
-        PRODUCT_TABLE?.appendChild(newEntry.CreateElement());
-    });
-})();
+// (async function() {
+//     // Obter lista de produtos do banco de dados
+//     let params = `?shopId=${shopId}`
+//     let request = await MakeRequest(`/ajax/shop/config/products${params}`, 'get')
+//     let requestProductList = JSON.parse(request.products) as Array<any> | null
+//     // Criar elementos na tabela
+//     requestProductList?.forEach((entry) => {
+//         let newEntry = new Product(entry.name, entry.value, entry.quantity);
+//         PRODUCT_TABLE?.appendChild(newEntry.CreateElement());
+//     });
+// })();
 // Salvar alterações
 const SAVE_CHANGES = document.querySelector("#btn_save-to-database");
 SAVE_CHANGES?.addEventListener("click", async () => {

@@ -9,9 +9,9 @@ function ToggleSidebar() {
     sidebarState = !sidebarState;
     if (sidebarState == true) {
         if (SIDEBAR)
-            SIDEBAR.style.width = "300px";
+            SIDEBAR.style.width = "260px";
         if (MAIN_CONTENT)
-            MAIN_CONTENT.style.marginLeft = "300px";
+            MAIN_CONTENT.style.marginLeft = "260px";
         LINK_TEXT_LIST?.forEach((text) => {
             text.style.opacity = '1';
             text.style.width = 'auto';

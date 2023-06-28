@@ -17,6 +17,13 @@
     margin: .5rem 1rem;
 }
 
+#main-header h3 {
+    border: none;
+    display: flex;
+    background-color: #0000;
+    margin: .15rem 0;
+}
+
 body {
     background-color: #222 !important;
 }
@@ -92,7 +99,6 @@ form label,
 th {
     font-weight: bold;
     margin: 0 0 0;
-    display: block;
     color: #fff;
 }
 
@@ -101,10 +107,7 @@ form input {
 }
 
 input {
-    border-radius: 4px;
-    border: 2px solid #444;
     margin: 0 0 0.4rem;
-    width: 100%;
 }
 
 /* Caixas de marcar, suas labels(p) e botões radio */
@@ -128,10 +131,10 @@ input {
 
 /* #endregion */
 /* #region  Serviços */
-table tr {
+/* table tr {
     display: grid;
     grid-template-columns: 15% 15% 15% auto 5%;
-}
+} */
 
 table td {
     text-align: left;

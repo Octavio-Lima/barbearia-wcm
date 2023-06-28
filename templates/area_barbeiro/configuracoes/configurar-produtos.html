@@ -57,23 +57,38 @@
         <!-- Lista de Serviços -->
         <main id='main'>
             <div>
-                <table class="w-100">
-                    <thead class="container-fluid">
-                        <tr class="row mb-3">
+                <table class="table table-borderless table-hover">
+                    <thead>
+                        <tr>
                             <th class="col">Nome do Produto</th>
-                            <th class="col-3">Preço</th>
-                            <th class="col-3">Quantidade em Estoque</th>
+                            <th class="col">Preço</th>
+                            <th class="col">Quantidade em Estoque</th>
                         </tr>
                     </thead>
-                    <tbody id="service-table">
+                    <tbody id="service-table" class="">
+                        <tr>
+                            <td><input type="text" name="" id="" placeholder="NOME DO PRODUTO"></td>
+                            <td><input type="text" name="" id="" placeholder="VALOR DO PRODUTO"></td>
+                            <td><input type="number" name="" id="" placeholder="QUANTIDADE EM ESTOQUE"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="" id="" placeholder="NOME DO PRODUTO"></td>
+                            <td><input type="text" name="" id="" placeholder="VALOR DO PRODUTO"></td>
+                            <td><input type="number" name="" id="" placeholder="QUANTIDADE EM ESTOQUE"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="" id="" placeholder="NOME DO PRODUTO"></td>
+                            <td><input type="text" name="" id="" placeholder="VALOR DO PRODUTO"></td>
+                            <td><input type="number" name="" id="" placeholder="QUANTIDADE EM ESTOQUE"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <hr>
+            {% comment %} <hr>
             <div>
                 <Button id="btn_new-entry-modal">Adicionar Novo Produto</Button>
                 <Button id="btn_save-to-database">Salvar Alterações</Button>
-            </div>
+            </div> {% endcomment %}
         </main>
     </div>
 
