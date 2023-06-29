@@ -6,8 +6,7 @@ from apps.area_barbeiro.models import Profile
 import json
 
 # Create your views here.
-def RegisterNewClient(request):
-    shop_id = request.COOKIES.get('shopId')
+def RegisterNewClient(request, shop_id):
     context = {'barberList': AvailableBarbers(shop_id)}
     template = loader.get_template('area_cliente/cadastrar-clientes.html')
     return HttpResponse(template.render(context, request))
@@ -31,6 +30,3 @@ def AvailableBarbers(shopId):
         barberList.append(validBarber)
 
     return barberList
-
-def RedirectToRegister(request):
-    return redirect('Cadastrar Clientes')

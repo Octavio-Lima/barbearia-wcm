@@ -13,11 +13,14 @@ async function LoadBarberServices(barberId) {
     // Obter lista de Serviços do Banco de Dados
     let params = `?shopId=${SHOP_ID}&barberId=${barberId}`;
     let request = await MakeRequest(`/ajax/users/barber/config${params}`, 'get');
+    if (request.status != 200)
+        return;
+    let response = await request.json();
     // Limpar a Tabela
     if (SERVICE_TABLE)
         SERVICE_TABLE.innerHTML = '';
     // Criar lista de serviços na tabela
-    let DataBaseServiceList = JSON.parse(request.services);
+    let DataBaseServiceList = JSON.parse(response.services);
     console.log(DataBaseServiceList);
     DataBaseServiceList.forEach((service) => {
         let newService = new Service(service.service, service.value, service.duration);

@@ -70,6 +70,7 @@ class Shop(models.Model):
     workDays = models.CharField(max_length=255, default="mon,tue,wed,thu,fri")
     firstWeekDay = models.CharField(max_length=255, default="sun")
     products = models.TextField(default="[]")
+    url = models.CharField(max_length=255, default="")
     
     def __str__(self):
         return f"{self.id} - {self.shopName}"

@@ -1,19 +1,19 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.views.generic import View
-from .link_list import CreateLinkList
-from django.template import loader
-from .models import Profile, Shop
 from django.conf import settings
-import json, os
+from django.template import loader
+from .link_list import navigation_link_list
+from .models import Profile, Shop
 from .forms import UserForm
+import json, os
 
-@login_required(login_url='/nomebarbearia/acessar/')
-def TelaPrincipal(request):
+@login_required(login_url='/login/')
+def main_page(request, shop_id):
     accessData = list(Profile.objects.filter(user=request.user).values())[0]
     accessType = (json.loads(accessData['accessType']))['acesso']
 
@@ -27,38 +27,38 @@ def TelaPrincipal(request):
             userJobFunctions += ' - '
 
     # Gerar links para as páginas dependendo do tipo de acesso do usuario
-    pageLinks = CreateLinkList(accessType)
+    pageLinks = navigation_link_list(accessType)
 
+    template = 'area_barbeiro/tela-principal.html'
     context = { 'funcao': userJobFunctions, 'listaLinks': pageLinks }
-    template = loader.get_template('area_barbeiro/tela-principal.html')
-    return HttpResponse(template.render(context, request))
+    return render(request, template, context)
 
 class login_page(View):
-    def get(self, request):
+    def get(self, request, shop_id):
         form = UserForm()
         template = 'area_barbeiro/acessar/acessar.html'
         context = { "form": form }
         
         return render(request, template, context)
 
-    def post(self, request):
+    def post(self, request, shop_id):
         form = UserForm(request.POST)
         
         if form.is_valid():
             data = form.cleaned_data
             user = authenticate(request, username=data["user"], password=data["passw"])
 
+            # Se o usuario é valido, fazer login, e redirecionar
             if user is not None:
                 shopId = list(Profile.objects.filter(user=user).values())[0]['shopId']
                 login(request, user)
-                response = HttpResponse(status=200)
-                response.set_cookie('shopId', shopId)
-                return response
+
+                return JsonResponse({'url': resolve_url('tela_principal'), 'shop_id': shopId, })
         
         # Se não foi validado ou não foi encontrado retornar erro
-        return JsonResponse({'error': True})
+        return HttpResponse(status=500)
 
-def logoutUser(request):
+def logoutUser(request, shop_id):
     logout(request)
     return redirect('acessar')
 
@@ -66,39 +66,37 @@ def redefineAccess(request):
     template = loader.get_template('area_barbeiro/esqueceu-senha.html')
     return HttpResponse(template.render())
 
-@login_required(login_url='/nomebarbearia/acessar/')
-def fluxo_de_caixa(request):
+@login_required(login_url='/login/')
+def fluxo_de_caixa(request, shop_id):
     template = 'area_barbeiro/financeiro/fluxo-caixa.html' 
     return render(request, template)
 
-@login_required(login_url='/nomebarbearia/acessar/')
-def agendamentos(request):
+@login_required(login_url='/login/')
+def agendamentos(request, shop_id):
     template = 'area_barbeiro/financeiro/gerenciar-horarios.html'
     return render(request, template)
 
-# Create your views here.
-@login_required(login_url='/nomebarbearia/acessar/')
-def configShop(request):
+# Telas de Configurações
+@login_required(login_url='/login/')
+def shop_settings_page(request, shop_id):
     # Obter informações da barbearia
-    shopId = request.COOKIES.get('shopId')
     accessData = list(Profile.objects.filter(user=request.user).values())[0]
     accessType = (json.loads(accessData['accessType']))['acesso']
-    shopName = list(Shop.objects.filter(id=shopId).values())[0]['shopName']
+    shopName = list(Shop.objects.filter(id=shop_id).values())[0]['shopName']
 
     # Gerar links para as páginas dependendo do tipo de acesso do usuario
-    pageLinks = CreateLinkList(accessType)
+    pageLinks = navigation_link_list(accessType)
 
     context = {'shopName': shopName , 'listaLinks': pageLinks}
     template = loader.get_template('area_barbeiro/configuracoes/configurar-barbearia.html')
     return HttpResponse(template.render(context, request))
 
-@login_required(login_url='/nomebarbearia/acessar/')
-def configService(request):
+@login_required(login_url='/login/')
+def shop_settings_services_page(request, shop_id):
     # Obter informações da barbearia
-    shopId = request.COOKIES.get('shopId')
     userList = list(User.objects.values())
-    userInfo = list(Profile.objects.filter(shopId=shopId).values())
-    shopName = list(Shop.objects.filter(id=shopId).values())
+    userInfo = list(Profile.objects.filter(shopId=shop_id).values())
+    shopName = list(Shop.objects.filter(id=shop_id).values())
 
 
     # Obter informações da barbearia
@@ -106,7 +104,7 @@ def configService(request):
     accessType = (json.loads(accessData['accessType']))['acesso']
 
     # Gerar links para as páginas dependendo do tipo de acesso do usuario
-    pageLinks = CreateLinkList(accessType)
+    pageLinks = navigation_link_list(accessType)
 
     # ! Refazer esse loop pois está um cocô
     barberList = []
@@ -122,21 +120,21 @@ def configService(request):
     template = loader.get_template('area_barbeiro/configuracoes/configurar-servicos.html')   
     return HttpResponse(template.render(context, request))
 
-@login_required(login_url='/nomebarbearia/acessar/')
-def configProducts(request):# Obter informações da barbearia
-    shopId = request.COOKIES.get('shopId')
+@login_required(login_url='/login/')
+def shop_settings_products_page(request, shop_id):# Obter informações da barbearia
     accessData = list(Profile.objects.filter(user=request.user).values())[0]
     accessType = (json.loads(accessData['accessType']))['acesso']
-    shopName = list(Shop.objects.filter(id=shopId).values())[0]['shopName']
+    shopName = list(Shop.objects.filter(id=shop_id).values())[0]['shopName']
 
     # Gerar links para as páginas dependendo do tipo de acesso do usuario
-    pageLinks = CreateLinkList(accessType)
+    pageLinks = navigation_link_list(accessType)
 
     context = {'shopName': shopName , 'listaLinks': pageLinks}
     template = loader.get_template('area_barbeiro/configuracoes/configurar-produtos.html')    
     return HttpResponse(template.render(context, request))
 
-def CreateLinkList(accessType):
+# Gerar Lista de Links para a barra lateral
+def navigation_link_list(accessType):
     linkList = []
 
     # Carregar lista de links do JSON

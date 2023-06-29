@@ -13,7 +13,10 @@ LoadSettings();
 async function LoadSettings() {
     // Obter lista de Serviços do Banco de Dados
     let params = '?shopId=' + GetCookie('shopId');
-    let shopConfig = await MakeRequest('/ajax/shop/config' + params, 'get');
+    let request = await MakeRequest('/ajax/shop/config' + params, 'get');
+    if (request.status != 200)
+        return;
+    let shopConfig = await request.json();
     // quando a barbearia fecha e abre
     const shop_opensAt = shopConfig.opensAt;
     const shop_closesAt = shopConfig.closesAt;

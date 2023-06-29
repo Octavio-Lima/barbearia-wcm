@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/static/geral/favicon/placeholder.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
     <title>Sistema</title>
 
     <!-- Scripts -->
@@ -24,6 +24,7 @@
 
     <!-- Style -->
     <link rel="stylesheet" href="{% static '/area_barbeiro/css/cadastros/login.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static '/geral/css/loader.css' %}" type="text/css">
 </head>
 <body>
     <div class="main-container">
@@ -31,18 +32,22 @@
 
         <main class="shaded-container">
             <h2 class="title-login">LOGIN</h2>
-            <form id="login-form">
+            <form id="login-form" action="{% url 'acessar' %}">
                 {{ form }}
                 {% csrf_token %}
 
-                <input class="mx-auto" type="submit" id="login-button" value="ENTRAR">
+                <button class="mx-auto d-flex" type="submit" id="login-button">
+                    <div class="mx-auto loader d-none" id="submit-loader"></div>
+                    <span class="mx-auto" id="submit-text">ENTRAR</span>
+                    <span class="mx-auto d-none" id="submit-success">SUCESSO!</span>
+                </button>
             </form>
+            <a id="forgot-password-link" href="{% url 'redefinir_senha' %}">ESQUECI A SENHA</a>
 
             <p class="d-none" id="warning-message">
-                Credendiais incorretas. <br>Verifique novamente as credenciais informadas.
+                Informações incorretas. <br>Verifique novamente as informações fornecidas.
             </p>
 
-            <a id="forgot-password-link" href="{% url 'redefinir-senha' %}">ESQUECI A SENHA</a>
         </main>
     </div>
 </body>

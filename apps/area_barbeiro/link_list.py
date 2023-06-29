@@ -1,7 +1,7 @@
 from django.conf import settings
 import json, os
 
-def CreateLinkList(accessType):
+def navigation_link_list(accessType):
     linkList = []
 
     # Carregar lista de links do JSON

@@ -142,8 +142,11 @@ export async function UpdateEntry(id, name, createType, value, payType, datePaye
 // Carregar todos os lançamentos do banco de dados
 export async function LoadAllEntries() {
     // Obter Lista de Lançamentos da base de dados
-    const PARAMS = `?shopId=${SHOP_ID}`;
-    const databaseEntryList = await MakeRequest(`/ajax/financial${PARAMS}`, 'get');
+    let params = `?shopId=${SHOP_ID}`;
+    let request = await MakeRequest(`/ajax/financial${params}`, 'get');
+    if (request.status != 200)
+        return;
+    const databaseEntryList = await request.json();
     // Limpar tabela atual do lado cliente
     const TABLE_BODY = document.querySelector('tbody');
     if (TABLE_BODY)

@@ -1,37 +1,37 @@
 [
     {
         "nome": "CADASTRAR CLIENTE",
-        "link": "Cadastrar Clientes",
+        "link": "cadastrar_cliente",
         "icone": "fa-regular fa-user",
         "acessaSeFor": ["barbeiro"]
     },
     {
         "nome": "AGENDAMENTOS",
-        "link": "Agendamentos",
+        "link": "agendamentos",
         "icone": "fa-regular fa-calendar",
         "acessaSeFor": ["barbeiro", "gerenciador"]
     },
     {
         "nome": "FLUXO DE CAIXA",
-        "link": "Fluxo de Caixa",
+        "link": "fluxo_de_caixa",
         "icone": "fa-regular fa-dollar-sign",
         "acessaSeFor": ["gerenciador"]
     },
     {
         "nome": "ESTOQUE DE PRODUTOS",
-        "link": "configProducts",
+        "link": "configurar_produtos",
         "icone": "fa-solid fa-table-list",
         "acessaSeFor": ["gerenciador"]
     },
     {
         "nome": "SERVIÇOS PRESTADOS",
-        "link": "configService",
+        "link": "configurar_servicos",
         "icone": "fa-solid fa-table-list",
         "acessaSeFor": ["gerenciador"]
     },
     {
         "nome": "Configurações",
-        "link": "configShop",
+        "link": "configurar_barbearia",
         "icone": "fa-solid fa-gear",
         "acessaSeFor": ["gerenciador"]
     }

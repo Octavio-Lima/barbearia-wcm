@@ -34,8 +34,11 @@ let activeSchedule = null;
 /* -------------------------------------------------------------------------- */
 // Carregar Configurações da Barbearia
 async function ShopConfigurationSetup() {
-    const PARAMS = `?shopId=${SHOP_ID}`;
-    const SHOP_CONFIG = await MakeRequest(`/ajax/shop/config${PARAMS}`, 'get');
+    let params = `?shopId=${SHOP_ID}`;
+    let request = await MakeRequest(`/ajax/shop/config${params}`, 'get');
+    if (request.status != 200)
+        return;
+    const SHOP_CONFIG = await request.json();
     const OPENS_AT = SHOP_CONFIG.opensAt.split(':');
     SHOP_OPENS_AT.setHours(parseInt(OPENS_AT[0]), parseInt(OPENS_AT[1]), (OPENS_AT.length >= 3 ? parseInt(OPENS_AT[0]) : 0));
     const CLOSES_AT = SHOP_CONFIG.closesAt.split(':');
@@ -193,7 +196,10 @@ DATE.addEventListener("change", async function () {
 async function UpdateScheduleTable() {
     // carregar lista de agenda disponivel
     let params = `?date=${DATE.value}&shopId=${SHOP_ID}`;
-    let scheduleList = await MakeRequest('/ajax/clients' + params, 'get');
+    let request = await MakeRequest('/ajax/clients' + params, 'get');
+    if (request.status != 200)
+        return;
+    let scheduleList = await request.json();
     // Adicionar Agendamentos a lista de horarios preenchidos
     scheduleList.forEach((entry) => {
         AddEntryInfo(entry);

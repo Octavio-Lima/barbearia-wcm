@@ -12,11 +12,7 @@ export async function MakeRequest(url, method, body, form = false) {
         headers['X-CSRFToken'] = csrf;
     }
     const response = await fetch(url, { method: method, headers: headers, body: body });
-    let text = await response.text();
-    // Conferir se possui json
-    if (text)
-        return JSON.parse(text);
-    return response.status;
+    return response;
 }
 // Gerenciar cookies
 export function GetCookie(desiredCookie) {

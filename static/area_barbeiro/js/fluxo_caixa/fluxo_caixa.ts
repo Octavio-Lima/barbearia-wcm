@@ -1,5 +1,5 @@
 import * as table from "./fluxo_caixa_tabela.js";
-import { CurrencyToNumber, MakeRequest, NumberToCurrency } from "../../../geral/js/utility.js";
+import { CurrencyToNumber, NumberToCurrency } from "../../../geral/js/utility.js";
 import { BrazilToDefaultDate, ToBrazilDate } from "../../../geral/js/formating.js";
 
 const IN_EDIT_ENTRY_NAME = document.getElementById("edit-entry-name") as HTMLInputElement;
