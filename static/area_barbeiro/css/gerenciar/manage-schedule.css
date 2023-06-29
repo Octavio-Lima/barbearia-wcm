@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #ECF0F3;
+    background-color: #131313;
     background-size: cover;
 }
 
@@ -45,7 +45,7 @@ page-title-container {
     height: 44px;
     font-size: 26px;
 
-    color: #6e6e6e;
+    color: #ddd;
     text-align: center;
 
     display: inline-flex;
@@ -56,7 +56,7 @@ page-title-container {
 }
 
 .page-title {
-    color: #000;
+    color: #ddd;
     font-weight: bold;
     font-size: 1rem;
     text-decoration: none;
@@ -70,7 +70,7 @@ page-title-container {
     margin: 1rem auto;
     font-weight: bold;
     font-size: 1.2rem;
-    color: #000;
+    color: #ddd;
 }
 
 #schedule-date + p {
@@ -81,7 +81,7 @@ page-title-container {
 }
 
 hr {
-    border: 1px #000 solid;
+    border: 1px #ddd solid;
     width: 80%;
     margin: 0;
 }
@@ -107,6 +107,7 @@ hr {
 }
 
 .time {
+    color: #ddd;
     font-size: 1.2rem;
     width: 40px;
     margin: auto 0;
@@ -138,30 +139,27 @@ hr {
 .row-busy-top {
     margin-top: 1.1rem;
     background-color: #15c;
+    color: #ECF0F3;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     min-width: 70%;
     padding: 5px 10px 0px;
-
-    color: #ECF0F3;
 }
 
 .row-busy {
     background-color: #15c;
+    color: #ECF0F3;
     min-width: 70%;
     padding: 5px 10px 0px;
-
-    color: #ECF0F3;
 }
 
 .row-busy-bottom {
     background-color: #15c;
+    color: #ECF0F3;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     min-width: 70%;
     padding: 5px 10px 0px;
-
-    color: #ECF0F3;
 }
 
 .row-confirm-presence {
@@ -221,53 +219,4 @@ modal-window input {
 /* Input */
 input {
     background-color: #131313;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                Media Queries                               */
-/* -------------------------------------------------------------------------- */
-
-@media (prefers-color-scheme: dark) {    
-    body {
-        background-color: #131313;
-    }
-
-    /* --------------------------------- Header --------------------------------- */
-    
-    .title-icon {
-        color: #ddd;
-    }
-    
-    .page-title {
-        color: #ddd;
-    }
-    
-    #schedule-date {
-        color: #ddd;
-    }
-    
-    hr {
-        border-color: #ddd;
-    }
-    
-    /* ---------------------------- Horario Agendado ---------------------------- */
-
-    .time {
-        color: #ddd;
-    }
-
-    .row-busy-top {
-        background-color: #15c;
-        color: #ECF0F3;
-    }
-    
-    .row-busy {
-        background-color: #15c;
-        color: #ECF0F3;
-    }
-    
-    .row-busy-bottom {
-        background-color: #15c;
-        color: #ECF0F3;
-    }
 }

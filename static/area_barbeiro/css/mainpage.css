@@ -11,7 +11,7 @@
 }
 
 body {
-    background-color: #ECF0F3;
+    background-color: #131313;
     background-size: cover;
 }
 
@@ -48,7 +48,7 @@ header {
     /* Nome do trabalhador */
     font-size: 1.1rem;
     font-weight: bold;
-    color: #000;
+    color: #ddd;
     margin: 0;
     margin-left: 0.8rem;
 }
@@ -56,7 +56,7 @@ header {
 #worker-job {
     /* Função do funcionario */
     font-size: 0.8rem;
-    color: #989899;
+    color: #aaa;
     margin: 0;
     margin-left: 0.8rem;
 }
@@ -91,7 +91,7 @@ select-link {
     height: 44px;
     font-size: 26px;
 
-    color: #6e6e6e;
+    color: #ddd;
     text-align: center;
 
     display: inline-flex;
@@ -102,7 +102,7 @@ select-link {
 }
 
 .link {
-    color: #000;
+    color: #ddd;
     font-weight: bold;
     font-size: 1rem;
     text-decoration: none;
@@ -117,7 +117,7 @@ select-link {
 }
 
 hr {
-    border: 1px #000 solid;
+    border: 1px #ddd solid;
     width: 70%;
     margin: 0;
     margin-left: 2rem;
@@ -250,40 +250,4 @@ select-link:hover {
     position: absolute;
     bottom: 10px;
     right: 10px;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                Media Queries                               */
-/* -------------------------------------------------------------------------- */
-
-@media (prefers-color-scheme: dark) {    
-    body {
-        background-color: #131313;
-    }
-    
-    /* --------------------------------- Header --------------------------------- */    
-    #worker-name {
-        color: #ddd;
-    }
-    
-    #worker-job {
-        color: #aaa;
-    }
-    
-    /* ----------------------------- Lista de Links ----------------------------- */    
-    .link-img {
-        color: #ddd;
-    }
-    
-    .link {
-        color: #ddd;
-    }
-    
-    .link:hover {
-        color: #15c;
-    }
-    
-    hr {
-        border-color: #ddd;
-    } 
 }

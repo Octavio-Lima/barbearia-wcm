@@ -8,7 +8,7 @@
 }
 
 body {
-    background-color: #ECF0F3;
+    background-color: #131313;
     /* min-height: calc(var(--vh) * 100); */
     height: 100vh;
     max-height: 100vh;
@@ -27,12 +27,13 @@ header h1 {
     font-weight: bold;
     margin: 1.6rem 0 0;
 
-    color: #000;
+    color: #fff;
 }
 
 #header-hr {
     margin: 0.8rem 0 0;
-    border: 1px #000 solid;
+    border: 1px #ddd solid;
+    opacity: 0.7;
 }
 
 .btn-header {
@@ -156,7 +157,8 @@ main {
 #header-row {
     position: sticky;
     top: 0;
-    background-color: #fff;
+    background-color: #333;
+    color: #ddd;
 }
 
 th, td {
@@ -179,16 +181,16 @@ tr {
 }
 
 /* Entry Credit */
-.entry-credit:nth-child(even) { background-color: #cedfee;}
-.entry-credit:nth-child(odd) { background-color: #f1f6fa; }
-.entry-credit:hover { background-color: #5595c9; transition: 90ms; }
-.entry-credit:is(.selected) { background-color: #0059be; color: #fff; transition: 90ms; }
+.entry-credit:nth-child(even) { background-image: linear-gradient(to right, #111, #222); color: #ddd;}
+.entry-credit:nth-child(odd) { background-image: linear-gradient(to right, #222, #333); color: #ddd;}
+.entry-credit:hover { background-image: linear-gradient(to right, #3a698f, #5595c9); transition: 90ms; }
+.entry-credit:is(.selected) { background-image: linear-gradient(to right, #003879, #0059be); color: #fff; transition: 90ms; }
 
 /* Entry Debt*/
-.entry-debt:nth-child(even) { background-color: #ffcbcb; }
-.entry-debt:nth-child(odd) { background-color: #ff9a9a; }
-.entry-debt:hover { background-color: #f36767; transition: 90ms; }
-.entry-debt:is(.selected) { background-color: #b60000; color: #fff; transition: 90ms; }
+.entry-debt:nth-child(even) { background-image: linear-gradient(to right, #b65151, #d36464); color: #ddd;}
+.entry-debt:nth-child(odd) { background-image: linear-gradient(to right, #d36464, #dd7a7a); color: #ddd;}
+.entry-debt:hover { background-image: linear-gradient(to right, #8f3030, #c75050); transition: 90ms; }
+.entry-debt:is(.selected) { background-image: linear-gradient(to right, #6d0000, #b60000); color: #fff; transition: 90ms; }
 
 
 /* -------------------------------------------------------------------------- */
@@ -328,7 +330,8 @@ h3 {
 }
 
 .pop-up {
-    background-color: #ECF0F3;
+    color: #ddd;
+    background-color: #131313;
     border-radius: 10px;
     padding: 20px 50px;
 
@@ -393,7 +396,9 @@ select {
 /* -------------------------------------------------------------------------- */
 
 .alert-box {
-    background-color: #fff;
+    color: #ddd;
+
+    background-color: #222;
     min-width: 250px;
     max-width: 350px;
 
@@ -403,8 +408,8 @@ select {
     right: 50%;
     transform: translate( 50%, 0);
 
-    border: 1px #aaa solid;
-    box-shadow: 5px 10px 18px #888888;
+    border: 1px #000 solid;
+    box-shadow: 5px 10px 18px #000;
     border-radius: 10px;
 
     animation-name: alertPopUp;
@@ -459,6 +464,11 @@ select {
 /*                              Menu de Contexto                              */
 /* -------------------------------------------------------------------------- */
 
+    
+.dot-spacer {
+    color: #ddd;
+}
+
 .context-menu {
 
     --mouseX: 0;
@@ -492,111 +502,4 @@ select {
 .context-menu a:active {
     background-color: #aaa;    
     transition: .15s;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 Tema Escuro                                */
-/* -------------------------------------------------------------------------- */
-
-@media (prefers-color-scheme: darka) {
-    body {
-        background-color: #131313;
-    }
-    
-    /* -------------------------------------------------------------------------- */
-    /*                                   Header                                   */
-    /* -------------------------------------------------------------------------- */
-    
-    header h1 {
-        color: #fff;
-    }
-    
-    #header-hr {
-        margin: 0.8rem 0 0;
-        border: 1px #ddd solid;
-        opacity: 0.7;
-    }
-    
-    .dot-spacer {
-        color: #ddd;
-    }
-    
-    /* || TABLE */
-    
-    #header-row {
-        background-color: #333;
-        color: #ddd;
-    }
-    
-    /* Entry Credit */
-    .entry-credit:nth-child(even) { background-image: linear-gradient(to right, #111, #222); color: #ddd;}
-    .entry-credit:nth-child(odd) { background-image: linear-gradient(to right, #222, #333); color: #ddd;}
-    .entry-credit:hover { background-image: linear-gradient(to right, #3a698f, #5595c9); transition: 90ms; }
-    .entry-credit:is(.selected) { background-image: linear-gradient(to right, #003879, #0059be); color: #fff; transition: 90ms; }
-    
-    /* Entry Debt*/
-    .entry-debt:nth-child(even) { background-image: linear-gradient(to right, #b65151, #d36464); color: #ddd;}
-    .entry-debt:nth-child(odd) { background-image: linear-gradient(to right, #d36464, #dd7a7a); color: #ddd;}
-    .entry-debt:hover { background-image: linear-gradient(to right, #8f3030, #c75050); transition: 90ms; }
-    .entry-debt:is(.selected) { background-image: linear-gradient(to right, #6d0000, #b60000); color: #fff; transition: 90ms; }
-    /* Entry Debt*/
-    /* .entry-debt:nth-child(even) { background-color: #ffcbcb; }
-    .entry-debt:nth-child(odd) { background-color: #ff9a9a; }
-    .entry-debt:hover { background-color: #f36767; transition: 90ms; }
-    .entry-debt:is(.selected) { background-color: #b60000; color: #fff; transition: 90ms; } */
-    
-    
-    .btn-show-detail {
-        margin: 0; padding: 0; border: 0;
-        min-width: fit-content;
-        width: 40px;
-        height: 100%;
-        background-color: #0000;
-    }
-    
-    .btn-show-detail:hover {
-        color: #fff;
-    }
-    
-    .show-more-btn:hover {
-        background-color: #ECF0F3;
-        border: 2px solid #000;
-        border-radius: 5px;
-        padding: 7px;
-    }
-    
-    /* Caixas de Dialogo */
-    
-    .diag-box-button {
-        background-color: #ECF0F3;
-        color: #000;
-    }
-    
-    /* || Janela de ação */
-    
-    /* Adicionar lançamento */
-    
-    .pop-up {
-        background-color: #131313;
-        color: #ddd;
-    }
-    
-    /* -------------------------------------------------------------------------- */
-    /*                        PopUp Detalhe dos Lançamentos                       */
-    /* -------------------------------------------------------------------------- */
-    
-    #detail-popup p {
-        color: #333;
-    }
-    
-    /* -------------------------------------------------------------------------- */
-    /*                               Caixa de Alerta                              */
-    /* -------------------------------------------------------------------------- */
-    
-    .alert-box {
-        background-color: #222;
-        border: 1px #000 solid;
-        box-shadow: 5px 10px 18px #000;
-        color: #ddd;
-    }
 }
