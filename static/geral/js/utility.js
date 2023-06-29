@@ -16,7 +16,7 @@ export async function MakeRequest(url, method, body, form = false) {
     // Conferir se possui json
     if (text)
         return JSON.parse(text);
-    return null;
+    return response.status;
 }
 // Gerenciar cookies
 export function GetCookie(desiredCookie) {

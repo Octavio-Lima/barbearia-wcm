@@ -22,7 +22,7 @@ export async function MakeRequest(url: string, method: Methods, body?: string, f
     // Conferir se possui json
     if (text) return JSON.parse(text);
 
-    return null;
+    return response.status;
 }
 
 // Gerenciar cookies

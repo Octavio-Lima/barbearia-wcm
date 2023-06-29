@@ -51,7 +51,7 @@ class login_page(View):
             if user is not None:
                 shopId = list(Profile.objects.filter(user=user).values())[0]['shopId']
                 login(request, user)
-                response = redirect('tela-principal')
+                response = HttpResponse(status=200)
                 response.set_cookie('shopId', shopId)
                 return response
         

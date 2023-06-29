@@ -8,7 +8,8 @@ FORM.addEventListener("submit", async (event) => {
     const data = new URLSearchParams(formData).toString();
     const request = await MakeRequest('/nomebarbearia/acessar/', 'post', data, true);
     // Se for aceito, redirecionar para a tela principal do barbeiro
-    if (request.ok) {
+    if (request == 200) {
+        console.log('asd');
         window.location.replace('/nomebarbearia/');
         return;
     }
