@@ -33,13 +33,13 @@
 <body>
     {% csrf_token %}
     <aside id='sidebar'>
-        <a id="brand-name" href="{% url 'tela_principal' %}">
+        <a id="brand-name" href="{% url 'tela_principal' shop_url %}">
             <img src="{% static 'favicon.png' %}" alt="">
             {{ shopName }}
         </a>
         <div class="ps-1 pe-3 d-flex flex-column">                
             {% for link in listaLinks %}
-            <a href="{% url link.link %}" class="sidebar-shortcut">
+            <a href="{% url link.link shop_url %}" class="sidebar-shortcut">
                 <i class="{{link.icone}} m-auto"></i>
                 <p class="sidebar-link-name"> - {{link.nome}}</p>
             </a>

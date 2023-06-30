@@ -12,10 +12,14 @@
                     ".venv/",
                     ".gitignore",
                     "db.sqlite3",
+                    "package.json",
+                    "package-lock.json",
                     "node_modules/",
                     "README.md",
-                    "requeriments.txt"
-                ]
+                    "tsconfig.json",
+                    "requirements.txt"
+                ],
+                "peek": []
             },
             {
                 "name": "Strict",
@@ -37,9 +41,12 @@
         ".venv/": true,
         ".gitignore": true,
         "db.sqlite3": true,
+        "package.json": true,
+        "package-lock.json": true,
         "node_modules/": true,
         "README.md": true,
-        "requeriments.txt": true
+        "tsconfig.json": true,
+        "requirements.txt": true
     },
     "hidefiles.selectedProfile": "Default"
 }

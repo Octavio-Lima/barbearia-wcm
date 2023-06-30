@@ -1,10 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import View
+from django.urls import reverse
+from apps.area_barbeiro.models import Profile, BarberUserSetting, Shop, Client, Payment
 from django.http import JsonResponse, HttpResponse
-from apps.area_barbeiro.models import Profile, BarberUserSetting
-from apps.area_barbeiro.models import Shop
-from apps.area_barbeiro.models import Client, Payment
+from django.contrib.auth import authenticate, login
+from django.shortcuts import resolve_url
+from django.views.generic import View
 from apps.ajaxHandler.forms import ShopSettingsForm
+from apps.area_barbeiro.forms import UserForm
 
 import json
 from datetime import datetime
@@ -222,3 +223,21 @@ class ajax_financial(View):
             paymentType = entry['paymentType'])
 
         return HttpResponse(status=200)
+    
+class ajax_user_authentication(View):
+    def post(self, request):
+        form = UserForm(request.POST)
+        
+        if form.is_valid():
+            data = form.cleaned_data
+            user = authenticate(request, username=data["user"], password=data["passw"])
+
+            # Se o usuario é valido, fazer login, e redirecionar
+            if user is not None:
+                login(request, user)
+                shop_id = list(Profile.objects.filter(user=user).values())[0]['shopId']
+                shop_url = list(Shop.objects.filter(id=shop_id).values())[0]['url']
+                return JsonResponse({'url': resolve_url('tela_principal', shop_url), 'shop_id': shop_id })
+        
+        # Se não foi validado ou não foi encontrado retornar erro
+        return HttpResponse(status=400)

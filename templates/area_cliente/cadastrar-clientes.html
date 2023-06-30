@@ -55,7 +55,7 @@
                 <a draggable="false" class="menu-button" href="https://g.page/r/CRlyE4HO9XUpEBM/review" target="_blank">AVALIE NOSSO SERVIÇO</a>
                 <a draggable="false" class="menu-button" href="/html/about-us.html">SOBRE NÓS</a>
                 {% if user.is_authenticated %}
-                <a draggable="false" class="menu-button" href="{% url 'tela_principal' %}">Voltar</a>
+                <a draggable="false" class="menu-button" href="{% url 'tela_principal' shop_url %}">Voltar</a>
                 {% endif %}
             </div>
         </main>

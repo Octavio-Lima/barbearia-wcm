@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.ajaxHandler',
     'apps.area_cliente',
-    'apps.area_barbeiro'
+    'apps.area_barbeiro',
+    'apps.area_desenvolvedor',
+    'apps.site_principal',
 ]
 
 MIDDLEWARE = [

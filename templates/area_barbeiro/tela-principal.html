@@ -40,7 +40,7 @@
             <select-link>
                 <p class="link-img"><i class="{{link.icone}} m-auto"></i></p>
                 <div class="d-flex">
-                    <a class="link" href="{% url link.link %}">{{link.nome}}</a>
+                    <a class="link" href="{% url link.link shop_url %}">{{link.nome}}</a>
                 </div>
             </select-link>
 
@@ -57,7 +57,7 @@
         <label class="fa-regular fa-moon" for="dark-mode-switch"></label>
     </div> -->
 
-    <a href="{% url 'sair' %}" id="logout">Sair</a>
+    <a href="{% url 'sair' shop_url %}" id="logout">Sair</a>
 
 </body>
 </html>

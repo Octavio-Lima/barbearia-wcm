@@ -21,7 +21,7 @@ FORM.addEventListener("submit", async (event) => {
         SUBMIT_BUTTON_TEXT?.classList.add('d-none');
         SUBMIT_BUTTON_SUCCESS?.classList.remove('d-none');
         let jsonResponse = await request.json();
-        document.cookie = jsonResponse['shop_id'];
+        document.cookie = `shopId=${jsonResponse['shop_id']}; path=/`;
         window.location.href = jsonResponse['url'];
         return;
     }

@@ -32,7 +32,7 @@
 
         <main class="shaded-container">
             <h2 class="title-login">LOGIN</h2>
-            <form id="login-form" action="{% url 'acessar' %}">
+            <form id="login-form" action="{% url 'api_authenticate' %}">
                 {{ form }}
                 {% csrf_token %}
 
@@ -42,7 +42,7 @@
                     <span class="mx-auto d-none" id="submit-success">SUCESSO!</span>
                 </button>
             </form>
-            <a id="forgot-password-link" href="{% url 'redefinir_senha' %}">ESQUECI A SENHA</a>
+            <a id="forgot-password-link" href="{% url 'recuperar_senha_global' %}">ESQUECI A SENHA</a>
 
             <p class="d-none" id="warning-message">
                 Informações incorretas. <br>Verifique novamente as informações fornecidas.
