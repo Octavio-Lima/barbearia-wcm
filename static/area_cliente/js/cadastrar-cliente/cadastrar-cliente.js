@@ -16,9 +16,11 @@ export let selectedBarber;
 (async function () {
     // Obter configurações da barbearia
     let params = `?shopId=${shop_id}`;
-    let shopConfig = await MakeRequest(`/ajax/shop/config${params}`, 'get');
+    let shopConfigRequest = await MakeRequest(`/ajax/shop/config${params}`, 'get');
+    let shopConfig = await shopConfigRequest.json();
     if (shopConfig == null)
         return;
+    console.log(shopConfig);
     // Apropriadamente formatar o horario que a barbearia abre e fecha    
     let parseOpenAt = shopConfig.opensAt.split(":");
     shop_opensAt = parseInt(parseOpenAt[0]);

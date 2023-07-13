@@ -45,23 +45,20 @@
     <div class="main-container">
         <header>
             <img src="{% static 'geral/logo/logo1.svg' %}" alt="Barbearia Logo" id="brand-logo" />
-            <h3 class="slogan">O CABELO É A MOLDURA DO ROSTO, CUIDE BEM DELE.</h3>
-            <h3 class="title-agendamento">AGENDAMENTO:</h3>
-        </header>
-
-        <main>
             <div id="barber-list-container">
                 {% for barber in barberList %}
-                <div class="barber" id="{{ barber.id }}">
+                <h3 class="title-agendamento worker-name">MEU NOME</h3>
+                <div id="{{ barber.id }}">
                     <img src="/static/geral/profilePictures/worker{{ barber.id }}.jpg" class="worker-img" alt="Barbeiro"/>
-                    <h3 class="worker-name">{{ barber.name }}</h3>
                 </div>
                 {% endfor %}
             </div>
+        </header>
+
+        <main>
             <div class="menu-button-group">
+                <button class="menu-button barber">AGENDAR</button>
                 <a draggable="false" class="menu-button" href="https://g.co/kgs/ZuPVoq" target="_blank">LOCALIZAÇÃO</a>
-                <a draggable="false" class="menu-button" href="https://g.page/r/CRlyE4HO9XUpEBM/review" target="_blank">AVALIE NOSSO SERVIÇO</a>
-                <a draggable="false" class="menu-button" href="/html/about-us.html">SOBRE NÓS</a>
                 {% if user.is_authenticated %}
                 <a draggable="false" class="menu-button" href="{% url 'tela_principal' shop_url %}">Voltar</a>
                 {% endif %}
@@ -253,10 +250,40 @@
             </pop-up>
         </main-pop-up>
         
-        <footer>
-            <a href="#" target="_blank" class="fa fa-instagram"></a>
-            <a href="#" class="fa fa-whatsapp" target="_blank"></a>
-            <a href="#" class="fa fa-spotify"></a>
+        <footer class="mt-4">
+            <div class="row">
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+                <div class="col">
+                    <a href="#" target="_blank" class="fa fa-instagram"></a>
+                </div>
+            </div>
         </footer>
 
         <!--  Espaçamento entre o fundo da tela e a caixa de dialogo  -->
