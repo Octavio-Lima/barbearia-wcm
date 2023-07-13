@@ -18,8 +18,8 @@
         crossorigin="anonymous"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/static/area_cliente/css/cadastrar-cliente/cadastrar-cliente-dialogo.css">
-    <link rel="stylesheet" href="/static/area_cliente/css/cadastrar-cliente/cadastrar-cliente.css">
+    <link rel="stylesheet" href="{% static 'area_cliente/css/cadastrar-cliente/cadastrar-cliente-dialogo.css' %}">
+    <link rel="stylesheet" href="{% static 'area_cliente/css/cadastrar-cliente/cadastrar-cliente.css' %}">
 
     <!-- Scripts -->
     <script src="/static/area_cliente/js/cadastrar-cliente/cadastrar-cliente.js" type="module" defer></script>
@@ -31,6 +31,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
         rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #000;
+            background-image: url("/static/branding/{{ shop_url }}/bg/client-page-bg.jpg");
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     {% csrf_token %}

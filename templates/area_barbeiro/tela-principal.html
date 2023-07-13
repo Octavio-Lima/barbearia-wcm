@@ -22,12 +22,14 @@
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
         
+    <script src="{% static 'area_barbeiro/js/tela-principal.js' %}" defer></script>
+
     <!-- Styles -->
     <link rel="stylesheet" href='{% static "area_barbeiro/css/mainpage.css" %}'>
 </head>
 <body>
     <div class="main-container">
-        <header>
+        <header id="user-profile">
             <img src="{% static '/geral/profilePictures/worker' %}{{ user.id }}.jpg" id="user-img">
             <div class="my-auto">
                 <h1 id="worker-name">{{user.get_full_name}}</h1>

@@ -12,6 +12,8 @@ from .forms import UserForm
 from .extra_functions.extra import redirect_to_correct_shop
 import json, os
 
+print('etc')
+
 @login_required(login_url='/login/')
 def main_page(request, shop_url):
     # Redirecionar o barbeiro para a barbearia certa

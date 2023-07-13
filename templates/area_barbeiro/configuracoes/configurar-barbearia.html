@@ -23,8 +23,9 @@
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Antonio:wght@100;400;700&display=swap"
-    rel="stylesheet">
+        rel="stylesheet">
     <script src="https://kit.fontawesome.com/0d15831467.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -44,13 +45,14 @@
         </div>
     </aside>
     
-    <div class="grid-container">
-        <header id="main-header">
+    <div class="main-container">
+        <header>
             <button id='sidebar-toggle'><i class="fa-solid fa-bars"></i></button>
             <h3>Configurar Barbearia</h3>
         </header>
         
-        <main id='main'>
+        <main>
+            <hr>
             <form id="configuration-form">
                 {% csrf_token %}
                 <label for="start-work">Abre As:</label>
@@ -122,6 +124,8 @@
                         <input type="radio" name="firstDay" value="sat">
                     </div>
                 </div>
+
+                <hr>
 
                 <input type="submit" value="Salvar Alterações">
             </form>

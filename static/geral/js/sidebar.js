@@ -1,4 +1,4 @@
-const MAIN_CONTENT = document.querySelector('.grid-container');
+const MAIN_CONTENT = document.querySelector('.main-container');
 const SIDEBAR = document.getElementById('sidebar');
 const TOGGLER = document.getElementById('sidebar-toggle');
 const TOGGLER_INSIDE = document.getElementById('sidebar-toggle-inside');

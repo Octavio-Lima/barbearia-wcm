@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "barbearia/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "barbearia/wsgi.py"
+      }
+    ]
+  }

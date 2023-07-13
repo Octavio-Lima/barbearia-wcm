@@ -1,34 +1,15 @@
 * {
     font-family: 'Antonio', sans-serif;
     text-transform: uppercase;
+    /* font-family: 'Roboto', sans-serif; */
     user-select: none;
-}
-
-#main-header {
-    display: flex;
-    color: #fff;
-}
-
-#main-header #sidebar-toggle {
-    color: #eee;
-    border: none;
-    display: flex;
-    background-color: #0000;
-    margin: .5rem 1rem;
-}
-
-#main-header h3 {
-    border: none;
-    display: flex;
-    background-color: #0000;
-    margin: .15rem 0;
 }
 
 body {
     background-color: #222 !important;
 }
 
-.grid-container {
+.main-container {
     display: grid;
     grid-template-rows: 40px auto;
     height: 100vh;
@@ -36,81 +17,63 @@ body {
     margin-left: 56px;
 }
 
-#main {
+header {
+    display: flex;
+    color: #fff;
+}
+
+header h3 {
+    border: none;
+    display: flex;
+    background-color: #0000;
+    margin: .15rem 0;
+}
+
+main {
     transition: margin-left .5s;
     padding: .4rem 1rem 1rem;
     margin-left: 0;
 }
 
-main hr {
-    margin: 10px 0;
+.main-container hr {
+    border-top: 1px solid #fff;
+    margin: 0px 0 15px;
 }
-
-/* Nome que aparece no canto esquerdo superior da tela */
-#brand-name {
-    display: flex;
-    flex: row;
-
-    text-decoration: none;
-    color: black;
-    margin: .2rem 0 2rem;
-    padding: 0;
-}
-
-#brand-name img {
-    max-width: 35px;
-    max-height: 35px;
-    margin: auto 5px auto 5px;
-}
-
-#brand-name h5 {
-    margin: auto 0;
-    color: #fff
-}
-
-.sidebar-shortcut:hover {
-    color: #15c;
-    transform: scale(109%);
-    transform-origin: left;
-    transition: .2s;
-}
-
-.sidebar-shortcut {
-    transform-origin: left;
-    margin: 0 .5rem;
-    transition: .2s;
-}
-
-.sidebar-link-name {
-    margin-left: 1rem;
-}
-
-.sidebar-shortcut i {
-    font-size: 1.2rem;
-}
-
-.table-container {
-    padding: 0 1rem 0;
-}
-
 /* #region  Formulario */
+/* Geral */
+input {
+    display: block;
 
-form label,
-th {
+    margin: .4rem 0 .8rem;
+    padding: 2px;
+    
+    background-color: #fff;
+    
+    border-radius: 2px;
+    border: none;
+}
+
+input[type=submit] {
+    padding: 4px 8px;
+}
+
+input[type=submit]:hover {
+    background-color: #ddd;
+}
+
+input[type=submit]:active {
+    background-color: #3284ff;
+    color: #fff;
+}
+
+label {
+    display: block;
     font-weight: bold;
     margin: 0 0 0;
     color: #fff;
 }
 
-form input {
-    margin: .4rem 0 .8rem;
-}
-
-input {
-    margin: 0 0 0.4rem;
-}
-
-/* Caixas de marcar, suas labels(p) e botões radio */
+/* Caixas de marcar */
 .chk-box,
 .chk-box input {
     display: inline-block;
@@ -146,7 +109,16 @@ table td {
 
 
 /* #endregion */
-/* #region  Barra Lateral1 */
+/* #region  Barra Lateral */
+
+header #sidebar-toggle {
+    color: #eee;
+    border: none;
+    display: flex;
+    background-color: #0000;
+    margin: .5rem 1rem;
+}
+
 #sidebar {
     overflow-x: hidden;
     background-color: #111 !important;
@@ -189,6 +161,58 @@ table td {
 
 #sidebar-toggle i {
     font-size: 1.5rem;
+}
+
+#brand-name {
+    display: flex;
+    flex: row;
+
+    text-decoration: none;
+    color: black;
+    margin: .2rem 0 2rem;
+    padding: 0;
+}
+
+#brand-name img {
+    max-width: 35px;
+    max-height: 35px;
+    margin: auto 5px auto 5px;
+}
+
+#brand-name h5 {
+    margin: auto 0;
+    color: #fff
+}
+
+.sidebar-shortcut:hover {
+    color: #15c;
+    transform: scale(109%);
+    transform-origin: left;
+    transition: .2s;
+}
+
+.sidebar-shortcut {
+    transform-origin: left;
+    margin: 0 .5rem;
+    transition: .2s;
+}
+
+.sidebar-link-name {
+    margin-left: .1rem;
+}
+
+.sidebar-shortcut i {
+    font-size: 1.2rem;
+}
+
+.table-container {
+    padding: 0 1rem 0;
+}
+
+/* #endregion */
+/* #region  Formulario de Configuração */
+#configuration-form input {
+    margin-bottom: 1rem
 }
 
 /* #endregion */

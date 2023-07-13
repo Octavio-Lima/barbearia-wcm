@@ -31,10 +31,18 @@ body {
 }
 
 /* --------------------------------- Header --------------------------------- */
-header {
+#user-profile {
     display: flex;
     flex-direction: row;
     margin-bottom: 2rem;
+    transform-origin: left;
+    transition: transform ease-in-out .1s;
+}
+
+#user-profile:hover {
+    transform: scale(1.1);
+    transition: transform ease-out .1s;
+    cursor: pointer;
 }
 
 /*  ||  PROFILE STYLE  ||  */
